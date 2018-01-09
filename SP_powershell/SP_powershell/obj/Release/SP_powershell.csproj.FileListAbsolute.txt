@@ -1,0 +1,12 @@
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Release\swagger.json
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Release\SP_powershell.dll
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Release\SP_powershell.pdb
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Release\Newtonsoft.Json.dll
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Release\System.Management.Automation.dll
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Release\Microsoft.Management.Infrastructure.dll
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Release\Newtonsoft.Json.xml
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Release\System.Management.Automation.xml
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\obj\Release\SP_powershell.dll
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\obj\Release\SP_powershell.pdb
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Release\SP_powershell.psd1
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\obj\Release\SP_powershell.csprojResolveAssemblyReference.cache

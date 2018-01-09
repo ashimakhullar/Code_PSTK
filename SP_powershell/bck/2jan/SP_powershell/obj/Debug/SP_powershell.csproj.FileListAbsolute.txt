@@ -1,0 +1,43 @@
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Debug\SP_powershell.dll
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Debug\SP_powershell.pdb
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Debug\Newtonsoft.Json.dll
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Debug\System.Management.Automation.dll
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Debug\Microsoft.Management.Infrastructure.dll
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Debug\Newtonsoft.Json.xml
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Debug\System.Management.Automation.xml
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\obj\Debug\SP_powershell.dll
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\obj\Debug\SP_powershell.pdb
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Debug\swagger.json
+c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Debug\SP_powershell.psd1
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\SP_powershell.psd1
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\swagger.json
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\SP_powershell.dll
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\SP_powershell.pdb
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\IO.Swagger.dll
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\Newtonsoft.Json.dll
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\System.Management.Automation.dll
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\RestSharp.dll
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\Microsoft.Management.Infrastructure.dll
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\IO.Swagger.pdb
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\Newtonsoft.Json.xml
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\System.Management.Automation.xml
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\bin\Debug\RestSharp.xml
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\obj\Debug\SP_powershell.csprojResolveAssemblyReference.cache
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\obj\Debug\SP_powershell.dll
+C:\Users\ashima.bahl\Desktop\HX Data Protection\SP_powershell\SP_powershell\obj\Debug\SP_powershell.pdb
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\SP_powershell.psd1
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\swagger.json
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\SP_powershell.dll
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\SP_powershell.pdb
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\IO.Swagger.dll
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\Newtonsoft.Json.dll
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\System.Management.Automation.dll
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\RestSharp.dll
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\Microsoft.Management.Infrastructure.dll
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\IO.Swagger.pdb
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\Newtonsoft.Json.xml
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\System.Management.Automation.xml
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\bin\Debug\RestSharp.xml
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\obj\Debug\SP_powershell.csproj.CoreCompileInputs.cache
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\obj\Debug\SP_powershell.dll
+C:\Users\asbahl\Documents\proj\SP_powershell\SP_powershell\obj\Debug\SP_powershell.pdb
