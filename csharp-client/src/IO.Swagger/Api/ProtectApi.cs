@@ -781,11 +781,15 @@ namespace IO.Swagger.Api
             String localVarHttpHeaderAccept = Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null)
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
-
+            //set the configuration to default
+            Configuration = Configuration.Default;
+            //encoding the username and password 
+            string base64Encoded = GetBase64Encoded(Configuration);
             if (name != null) localVarQueryParams.Add("name", Configuration.ApiClient.ParameterToString(name)); // query parameter
             if (type != null) localVarQueryParams.Add("type", Configuration.ApiClient.ParameterToString(type)); // query parameter
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
-            localVarHeaderParams.Add("Authorization", "Basic cm9vdDpDaXNjbzEyMw==");
+            //adding the Authorization to the Header Parameter
+            localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
 
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
@@ -1060,10 +1064,15 @@ namespace IO.Swagger.Api
             String localVarHttpHeaderAccept = Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null)
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
-
+            //set the configuration to default
+            Configuration = Configuration.Default;
+            //encoding the username and password 
+            string base64Encoded = GetBase64Encoded(Configuration);
             if (groupId != null) localVarPathParams.Add("groupId", Configuration.ApiClient.ParameterToString(groupId)); // path parameter
             if (fields != null) localVarQueryParams.Add("fields", Configuration.ApiClient.ParameterToString(fields)); // query parameter
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
+            //adding the Authorization to the Header Parameter
+            localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
 
 
             // make the HTTP request
@@ -1836,12 +1845,14 @@ namespace IO.Swagger.Api
             String localVarHttpHeaderAccept = Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null)
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
-            //Configuration = Configuration.Default;
-            string base64Encoded = GetBase64Encoded();
+            Configuration = Configuration.Default;
+            //encoding the username and password 
+            string base64Encoded = GetBase64Encoded(Configuration);
             if (name != null) localVarQueryParams.Add("name", Configuration.ApiClient.ParameterToString(name)); // query parameter
             if (type != null) localVarQueryParams.Add("type", Configuration.ApiClient.ParameterToString(type)); // query parameter
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
             //localVarHeaderParams.Add("Authorization", "Basic cm9vdDpDaXNjbzEyMw==");
+            //adding the Authorization to the Header Parameter
             localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
@@ -1849,10 +1860,13 @@ namespace IO.Swagger.Api
                 localVarPathParams, localVarHttpContentType);
 
             int localVarStatusCode = (int)localVarResponse.StatusCode;
-
+            //UnauthorizedAccessException unauthorized = new UnauthorizedAccessException();
             if (ExceptionFactory != null)
             {
                 Exception exception = ExceptionFactory("OpDpVmGet", localVarResponse);
+                //added check for incorrect credentials
+                if (localVarStatusCode == 401 && exception != null) throw new ApiException(localVarStatusCode,"Credentials entered are incorrect."); 
+                else
                 if (exception != null) throw exception;
             }
 
@@ -1861,11 +1875,30 @@ namespace IO.Swagger.Api
                 (List<ProtectedVMInfo>)Configuration.ApiClient.Deserialize(localVarResponse, typeof(List<ProtectedVMInfo>)));
         }
 
-        private string GetBase64Encoded()
+        //////interpreting the status code and defining the error response
+        ////private string GetStatusMsg(int varStatusCode)
+        ////{
+        ////    if(varStatusCode==401)
+        ////    {
+        ////        return "The Credentials are not Valid";
+        ////    }
+        ////    else
+        ////    {
+        ////        return "OpDpVmGet";
+        ////    }
+        ////}
+        /// <summary>
+        /// Gets uername and password encoded into base64 and returned as string
+        /// </summary>
+        /// <exception cref="IO.Swagger.Client.ApiException">none</exception>
+        /// <param name="configuration">Configuration</param>
+        /// <returns>base64Encoded as string</returns>
+        //encoding the username and password 
+        private string GetBase64Encoded(Configuration configuration)
         {
-            Configuration.Username = "root";
-            Configuration.Password = "Cisco123";
-            String userpass = Configuration.Username + ":" + Configuration.Password;
+            //Configuration.Username = "root";
+            //Configuration.Password = "Cisco123";
+            String userpass = configuration.Username+ ":" + configuration.Password;
             //String basicAuth = Base64Encode(userpass.ToString());
             byte[] encodedByte = System.Text.ASCIIEncoding.UTF8.GetBytes(userpass);
             string base64Encoded = Convert.ToBase64String(encodedByte);
@@ -1999,7 +2032,8 @@ namespace IO.Swagger.Api
             {
                 localVarPostBody = body; // byte array
             }
-            string base64Encoded = GetBase64Encoded();
+
+            string base64Encoded = GetBase64Encoded(Configuration);
             localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
 
             // make the HTTP request
@@ -2474,8 +2508,8 @@ namespace IO.Swagger.Api
 
             if (vmId != null) localVarPathParams.Add("vmId", Configuration.ApiClient.ParameterToString(vmId)); // path parameter
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
-
-            string base64Encoded = GetBase64Encoded();
+            Configuration = Configuration.Default;
+            string base64Encoded = GetBase64Encoded(Configuration);
             localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,

@@ -4,6 +4,7 @@ using IO.Swagger.Api;
 using IO.Swagger.Model;
 using System.Diagnostics;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace SP_powershell
@@ -18,61 +19,85 @@ namespace SP_powershell
         // Properties (PowerShell Parameters) to be defined below
         //
 
+        [Parameter(Mandatory = true)]
+        [Alias("srvr")]
+        public string Server { get; set; }
+        //UserName Parameter contains the Cisco HXConnect UserName
+        [Parameter(Mandatory = true ,Position = 1, ParameterSetName = "UserNamePassword")]
+        [Alias("user")]
+        public string UserName { get; set; }
+        //Password Parameter contains the Cisco HXConnect Password
+        [Parameter(Mandatory = true, Position = 2, ParameterSetName = "UserNamePassword")]
+        [Alias("pwd")]
+        public string Password { get; set; }
+        //Groupid will pass the Group uid
+        //[Parameter(ParameterSetName = "HXGrUid")]
         [Parameter()]
-        [Alias("prt")]
-        public SwitchParameter Protect { get; set; }
+        [ValidateNotNullOrEmpty]
+        [Alias("Grpid")]
+        public string Groupid { get; set; }
+
+        [Parameter()]
+        [ValidateNotNullOrEmpty]
+        [Alias("GrpName")]
+        public string GroupName { get; set; }
+
         //
         // Cmdlet body
         //
         protected override void ProcessSPRecord()
         {
-            // Configure OAuth2 access token for authorization: petstore_auth
-            //Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-            Configuration.Default = new Configuration();
-            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-            var apiInstance = new ProtectApi("https://10.198.2.214/dataprotection/v1");
-          
+            if (ValidateParameters() == false)
+                return;
+
             try
             {
+                // Configure OAuth2 access token for authorization
 
+                Configuration.Default = new Configuration();
+                Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+                Configuration.Default.Username = UserName.ToString();
+                Configuration.Default.Password = Password.ToString();
+                var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
+                var apiInstance = new ProtectApi(apiString);
+
+
+                //
+                // Find a specific Protected Group
+                //
+                if (Groupid != null)
+                {
+                    var groupSpecific = Groupid.ToString();
+                    ProtectionGroupInfo result1 = apiInstance.OpDpGroupGroupidGet(groupSpecific);
+                    WriteObject(result1, true);
+                    return;
+                }
                 // Find Protection Groups
-                // List<ProtectedVMInfo> result = apiInstance.OpDpGroupGet();
+
                 List<ProtectionGroupInfo> result = apiInstance.OpDpGroupGet();
+                //find the Group details matching to the GroupName provided as parameter
+                if (GroupName != null)
+                {
+                    var grpMatch = result.FirstOrDefault(vm => vm.Er.Name == GroupName.ToString());
+                    WriteObject(grpMatch, true);
+                    return;
+                }
+
+               
                 WriteObject(result,true); 
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling apiInstance.OpDpVmGet: " + e.Message);
+
+                ErrorRecord psErrRecord = new ErrorRecord(
+                          e,
+                          "Exception when calling apiInstance.OpDpGroupGet: ",
+                          ErrorCategory.NotSpecified,
+                          e.Message);
+                WriteError(psErrRecord);
+                
             }
-            //////try
-            //////{
-            //////    // Deletes a pet
-            //////    //apiInstance.DeletePet(petId, apiKey);
-            //////    apiInstance.OpDpVmPost(petId, null);
-            //////}
-            //////catch (Exception e)
-            //////{
-            //////    throw new NotImplementedException();
-            //////   // WriteError(e.Message);
-            //////   // Debug.Print("Exception when calling PetApi.DeletePet: " + e.Message);
-            //////}
-
-            /*
-            //Server authentication to be done
-            //ValidateServerSessions();
-            if (ValidateParameters() == false)
-                return;
-
-            VirtualMachineEx VMex = new VirtualMachineEx();
-            //fetches the list of vms as per the filter criteria set
-            var ListOfVms = VMex.GetVMs();
-
-            if (ListOfVms != null)
-            {
-                //display the list of vms 
-                WriteObject(ListOfVms);
-            }
-            */
+            
         }
 
 

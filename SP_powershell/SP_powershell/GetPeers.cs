@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace SP_powershell
 {
     [Cmdlet(VerbsCommon.Get, "Peers")]
-    [OutputType(typeof(VirtualMachine))]
+    [OutputType(typeof(MapPairErToReplicationPeerInfo),typeof(ReplicationDatastore))]
 
     public class Peers : SPCmdlet
     {
@@ -17,62 +17,72 @@ namespace SP_powershell
         // 
         // Properties (PowerShell Parameters) to be defined below
         //
+       
+        [Parameter(Mandatory = true)]
+        [Alias("srvr")]
+        public string Server { get; set; }
 
+        //UserName Parameter contains the Cisco HXConnect UserName
+        [Parameter(Mandatory = true, Position = 1, ParameterSetName = "UserNamePassword")]
+        [Alias("user")]
+        public string UserName { get; set; }
+
+        //Password Parameter contains the Cisco HXConnect Password
+        [Parameter(Mandatory = true, Position = 2, ParameterSetName = "UserNamePassword")]
+        [Alias("pwd")]
+        public string Password { get; set; }
+
+        //VMUid will pass the VM uid
         [Parameter()]
-        [Alias("prt")]
-        public SwitchParameter Protect { get; set; }
+        [ValidateNotNullOrEmpty]
+        [Alias("peerclusterid")]
+        public string ClusterID { get; set; }
+
         //
         // Cmdlet body
         //
         protected override void ProcessSPRecord()
         {
-            // Configure OAuth2 access token for authorization: petstore_auth
-            //Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-            Configuration.Default = new Configuration();
-            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-            var apiInstance = new ReplicationApi("https://10.198.2.214/dataprotection/v1");
-          
+            if (ValidateParameters() == false)
+                return;
             try
             {
+                // Configure OAuth2 access token for authorization: petstore_auth
+                //Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+                Configuration.Default = new Configuration();
+                Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+                Configuration.Default.Username = UserName.ToString();
+                Configuration.Default.Password = Password.ToString();
+                var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
+                var apiInstance = new ReplicationApi(apiString);
 
-                // Find Protection Groups
-                // List<ProtectedVMInfo> result = apiInstance.OpDpGroupGet();
+                //if (ParameterSetName == "HXClusterid")
+                if (ClusterID != null)
+                {
+                    var clusterSpecific = ClusterID.ToString();
+                    //GetSpecific VM;
+                    List<ReplicationDatastore> result1 = apiInstance.OpReplicationPeerPeerClusterIdDatastoresGet(clusterSpecific);
+                    WriteObject(result1, true);
+                    return;
+                }
+                // Find Replication peers of the current cluster
+
+
                 List<MapPairErToReplicationPeerInfo> result = apiInstance.OpReplicationPeerGet();
                 WriteObject(result,true); 
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling apiInstance.OpDpVmGet: " + e.Message);
+
+                ErrorRecord psErrRecord = new ErrorRecord(
+                          e,
+                          "Exception when calling apiInstance.OpDpVmGet: ",
+                          ErrorCategory.NotSpecified,
+                          e.Message);
+                WriteError(psErrRecord);
+                
             }
-            //////try
-            //////{
-            //////    // Deletes a pet
-            //////    //apiInstance.DeletePet(petId, apiKey);
-            //////    apiInstance.OpDpVmPost(petId, null);
-            //////}
-            //////catch (Exception e)
-            //////{
-            //////    throw new NotImplementedException();
-            //////   // WriteError(e.Message);
-            //////   // Debug.Print("Exception when calling PetApi.DeletePet: " + e.Message);
-            //////}
-
-            /*
-            //Server authentication to be done
-            //ValidateServerSessions();
-            if (ValidateParameters() == false)
-                return;
-
-            VirtualMachineEx VMex = new VirtualMachineEx();
-            //fetches the list of vms as per the filter criteria set
-            var ListOfVms = VMex.GetVMs();
-
-            if (ListOfVms != null)
-            {
-                //display the list of vms 
-                WriteObject(ListOfVms);
-            }
-            */
+            
         }
 
 

@@ -21,6 +21,7 @@ using System.Text;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography;
 
 namespace IO.Swagger.Client
 {
@@ -54,20 +55,21 @@ namespace IO.Swagger.Client
         public ApiClient()
         {
             Configuration = Configuration.Default;
-            AddCertificate();
+            //AddCertificate(basePath);
         }
 
-        private void AddCertificate()
+        private void AddCertificate(String basePath)
         {
-            X509Certificate2 clientCert = GetClientCertificate();
-            RestClient = new RestClient("https://10.198.2.214/dataprotection/v1");
-            RestClient.ClientCertificates = new X509CertificateCollection();
-            RestClient.ClientCertificates.Add(clientCert);
+            //X509Certificate2 clientCert = GetClientCertificate();
+
+            //RestClient = new RestClient(basePath);
+            //RestClient.ClientCertificates = new X509CertificateCollection();
+            //RestClient.ClientCertificates.Add(clientCert);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiClient" /> class
-        /// with default base path (https://api.springpathinc.com/v1).
+        /// with default base path (https://<SERVER_IP>/dataprotection/v1).
         /// </summary>
         /// <param name="config">An instance of Configuration.</param>
         public ApiClient(Configuration config = null)
@@ -76,34 +78,42 @@ namespace IO.Swagger.Client
                 Configuration = Configuration.Default;
             else
                 Configuration = config;
-
-            RestClient = new RestClient("https://10.198.2.214/dataprotection/v1");
-            AddCertificate();
+            RestClient = new RestClient(basePath);
+            
+            //AddCertificate(basePath);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiClient" /> class
         /// with default configuration.
         /// </summary>
+        /// ab
+        ///  <exception cref="CryptographicException">Thrown when fails to validate Certificate</exception>
         /// <param name="basePath">The base path.</param>
-        public ApiClient(String basePath = "https://10.198.2.214/dataprotection/v1")
+        public ApiClient(String basePath)
         {
            if (String.IsNullOrEmpty(basePath))
                 throw new ArgumentException("basePath cannot be empty");
 
             RestClient = new RestClient(basePath);
-            AddCertificate();
+            
+            //AddCertificate(basePath);
             Configuration = Configuration.Default;
-            Configuration.Username = "administrator@vsphere.local";
-            Configuration.Password = "Cisco123";
+            //Code added to pass configuration and encoding it to base 64
             String userpass = Configuration.Username + ":" + Configuration.Password;
-            //String basicAuth = Base64Encode(userpass.ToString());
             byte[] encodedByte = System.Text.ASCIIEncoding.UTF8.GetBytes(userpass);
             string base64Encoded = Convert.ToBase64String(encodedByte);
             //Trust all certificates
-            System.Net.ServicePointManager.ServerCertificateValidationCallback =
-                ((sender, certificate, chain, sslPolicyErrors) => true);
-
+            try
+            {
+                System.Net.ServicePointManager.ServerCertificateValidationCallback =
+                    ((sender, certificate, chain, sslPolicyErrors) => true);
+            }
+            //added for certificate related exceptions 
+            catch (CryptographicException)
+            {
+                
+            }
 
         }
 
@@ -114,6 +124,8 @@ namespace IO.Swagger.Client
         /// <value>The default API client.</value>
         [Obsolete("ApiClient.Default is deprecated, please use 'Configuration.Default.ApiClient' instead.")]
         public static ApiClient Default;
+        private readonly string basePath;
+        
 
         /// <summary>
         /// Gets or sets the Configuration.

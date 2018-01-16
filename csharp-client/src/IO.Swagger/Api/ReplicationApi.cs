@@ -2097,12 +2097,19 @@ namespace IO.Swagger.Api
             String[] localVarHttpHeaderAccepts = new String[] {
                 "application/json"
             };
+
+            //set the configuration to default
+            Configuration = Configuration.Default;
+            //encoding the username and password 
+            string base64Encoded = GetBase64Encoded(Configuration);
             String localVarHttpHeaderAccept = Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null)
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
 
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
-            localVarHeaderParams.Add("Authorization", "Basic cm9vdDpDaXNjbzEyMw==");
+            //localVarHeaderParams.Add("Authorization", "Basic cm9vdDpDaXNjbzEyMw==");
+            //adding the Authorization to the Header Parameter
+            localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
 
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
@@ -2232,10 +2239,14 @@ namespace IO.Swagger.Api
             String localVarHttpHeaderAccept = Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null)
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
-
+            //set the configuration to default
+            Configuration = Configuration.Default;
+            //encoding the username and password 
+            string base64Encoded = GetBase64Encoded(Configuration);
             if (peerClusterId != null) localVarPathParams.Add("peerClusterId", Configuration.ApiClient.ParameterToString(peerClusterId)); // path parameter
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
-
+            //adding the Authorization to the Header Parameter
+            localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
 
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
@@ -2806,5 +2817,22 @@ namespace IO.Swagger.Api
                 (MapPairErToReplicationPeerInfo) Configuration.ApiClient.Deserialize(localVarResponse, typeof(MapPairErToReplicationPeerInfo)));
         }
 
+        /// <summary>
+        /// Gets uername and password encoded into base64 and returned as string
+        /// </summary>
+        /// <exception cref="IO.Swagger.Client.ApiException">none</exception>
+        /// <param name="configuration">Configuration</param>
+        /// <returns>base64Encoded as string</returns>
+        //encoding the username and password 
+        private string GetBase64Encoded(Configuration configuration)
+        {
+            //Configuration.Username = "root";
+            //Configuration.Password = "Cisco123";
+            String userpass = configuration.Username + ":" + configuration.Password;
+            //String basicAuth = Base64Encode(userpass.ToString());
+            byte[] encodedByte = System.Text.ASCIIEncoding.UTF8.GetBytes(userpass);
+            string base64Encoded = Convert.ToBase64String(encodedByte);
+            return base64Encoded;
+        }
     }
 }

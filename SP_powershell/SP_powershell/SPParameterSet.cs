@@ -10,8 +10,8 @@ namespace SP_powershell
     {
         
         public const string VMGetAll = "VirtualMachineGetAll";
-
-        
+        public const string HXVMname = "HXVMname";
+        public const string HXUid = "HXUid";
     }
 
 }

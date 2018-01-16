@@ -17,6 +17,15 @@
         <TableColumnHeader>
           <Width>38</Width>
         </TableColumnHeader>
+        <TableColumnHeader>
+          <Width>38</Width>
+        </TableColumnHeader>
+        <TableColumnHeader>
+          <Width>38</Width>
+        </TableColumnHeader>
+        <TableColumnHeader>
+          <Width>38</Width>
+        </TableColumnHeader>
       </TableHeaders>
       <TableRowEntries>
         <TableRowEntry>
@@ -29,6 +38,15 @@
             </TableColumnItem>
             <TableColumnItem>
               <PropertyName>ProtectionInfo</PropertyName>
+            </TableColumnItem>
+            <TableColumnItem>
+              <PropertyName>Schedule</PropertyName>
+            </TableColumnItem>
+            <TableColumnItem>
+              <PropertyName>Er</PropertyName>
+            </TableColumnItem>
+            <TableColumnItem>
+              <PropertyName>Ex</PropertyName>
             </TableColumnItem>
           </TableColumnItems>
         </TableRowEntry>

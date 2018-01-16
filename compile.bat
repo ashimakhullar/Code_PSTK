@@ -1,0 +1,1 @@
+msbuild.exe IO.Swagger.sln /p:Configuration=Release

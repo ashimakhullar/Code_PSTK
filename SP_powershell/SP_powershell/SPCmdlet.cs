@@ -24,6 +24,10 @@ namespace SP_powershell
                 ProcessSPRecord();
 
             }
+            catch (IO.Swagger.Client.ApiException e)
+            {
+                WriteErrorRecord(e, "", ErrorCategory.NotSpecified, "");
+            }
             catch (HttpRequestException e)
             {
                 WriteErrorRecord(e, "", ErrorCategory.ConnectionError, "");
@@ -31,6 +35,10 @@ namespace SP_powershell
             catch (PipelineStoppedException e)
             {
                 // Obtrusive to write this message.
+            }
+            catch (ArgumentException e)
+            {
+                WriteErrorRecord(e, "", ErrorCategory.InvalidArgument, "");
             }
             catch (Exception e)
             {
