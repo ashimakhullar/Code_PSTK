@@ -790,7 +790,7 @@ namespace IO.Swagger.Api
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
             //adding the Authorization to the Header Parameter
             localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
-
+            //localVarHeaderParams.Add("Authorization", "Basic eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2Vycy9sb2NhbC9yb290IiwiZXhwIjoxNTE3NzQ0OTUzLCJ1c2VyIjoibG9jYWwvcm9vdCIsInRva2VuIjoiY205dmREcERhWE5qYnpFeU13PT0iLCJzY29wZSI6IlJFQUQsTU9ESUZZIiwiaXNzdWVkQXQiOjE1MTYxODk3NTMyNTksInRva2VuTGlmZVRpbWUiOjE1NTUyMDAwMDAsImlkbGVUaW1lb3V0IjoxODAwMDAwLCJ3YXJuSWRsZVRpbWVvdXQiOjEwMDAwfQ.BjjlIGt5hroP4hlKh9KsJK3t5C9rEVkqUvh5lCRQfkg");
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.GET, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,

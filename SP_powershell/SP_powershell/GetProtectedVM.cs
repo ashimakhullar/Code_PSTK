@@ -1,6 +1,7 @@
 ﻿using IO.Swagger.Api;
 using IO.Swagger.Client;
 using IO.Swagger.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +56,7 @@ namespace SP_powershell
         //VMState will pass the VM name
         [Parameter()]
         [ValidateNotNullOrEmpty]
+        [ValidateSet("ACTIVE", "HALTED", "RECOVERED", "FAILED", "IN_PROGRESS")]
         [Alias("VMState")]
         public string State { get; set; }
 
@@ -100,9 +102,20 @@ namespace SP_powershell
 
 
                 // Find All Protected VMs
-                List<ProtectedVMInfo> result = apiInstance.OpDpVmGet();
+                ////////////VMHXobject objVmJson = new VMHXobject();
 
-               
+                var output = apiInstance.OpDpVmGet();
+                ////////////var new1 = output.FirstOrDefault();
+
+
+                
+                ////////////objVmJson.id = new1.Er.Id.ToString();
+                ////////////objVmJson.name = new1.Er.Name.ToString();
+                //////////////objVmJson = JsonConvert.DeserializeObject<VMHXobject>(output);
+                ////////////VMHXobject myresult = objVmJson;
+                List<ProtectedVMInfo> result = apiInstance.OpDpVmGet();
+                List<VMHXobject> myresult2 = GetVirtualMachineResources(output);
+                List<containerHXobject> myresult3 = GetVirtualMachineDetail(output);
                 //find the vm details matching to the vmName provided as parameter
                 if (VMname!=null)
                 { 
@@ -110,8 +123,15 @@ namespace SP_powershell
                     WriteObject(vmMatch, true);
                     return;
                 }
-                
-                WriteObject(result, true);
+                //find the vm details matching to the state provided as parameter-"ACTIVE", "HALTED", "RECOVERED", "FAILED", "IN_PROGRESS"
+                if (State!=null)
+                {
+                    List<ProtectedVMInfo> vmStateMatch = result.FindAll(vm => vm.ProtectionStatus.ToString() == State.ToString());
+                    WriteObject(vmStateMatch, true);
+                    return;
+                }
+                WriteContainerecord(myresult3);
+               // WriteObject(myresult3, true);
             }
             catch (ApiException e)
             {
@@ -140,6 +160,96 @@ namespace SP_powershell
             
         }
 
+        private void WriteContainerecord(List<containerHXobject> myresult3)
+        {
+            foreach (var resultset in myresult3)
+            {   if (resultset.VMHXobject != null)
+                { 
+                    WriteObject(resultset.VMHXobject);
+                    WriteObject("---------------------------------------------------------------------");
+                }
+                if (resultset.ClusterHXobject.clusterEr != null)
+                {
+                    WriteObject(resultset.ClusterHXobject.clusterEr);
+                    WriteObject("---------------------------------------------------------------------");
+                }
+                if (resultset.VmInfoHXobject.vmCurrentProtectionInfo != null)
+                {
+                    WriteObject(resultset.VmInfoHXobject.vmCurrentProtectionInfo.VmInfo);
+                }
+                WriteObject("=====================================================================");
+            }
+        }
+
+        private List<containerHXobject> GetVirtualMachineDetail(List<ProtectedVMInfo> output)
+        {
+            
+                List<containerHXobject> list = new List<containerHXobject>();
+            try
+            {
+                foreach (var virtualMachineHostResource in output)
+                {
+                    containerHXobject obj = new containerHXobject();
+                    obj.VMHXobject = new VMHXobject(virtualMachineHostResource.Er.Name, virtualMachineHostResource.Er.Id, virtualMachineHostResource.Er.Type);
+                    if (virtualMachineHostResource.ClusterEr==null)
+                    {
+                        obj.ClusterHXobject = new ClusterHXobject();
+                    }
+                    else
+                    { 
+                        obj.ClusterHXobject = new ClusterHXobject(virtualMachineHostResource.ClusterEr);
+                    }
+                    if (virtualMachineHostResource.ProtectionInfo == null)
+                    {
+                        obj.VmInfoHXobject = new VmInfoHXobject();
+                    } 
+                    else
+                    { 
+                        obj.VmInfoHXobject = new VmInfoHXobject(virtualMachineHostResource.ProtectionInfo.VmCurrentProtectionInfo);
+                    }
+                    //list.Add(new VMHXobject(virtualMachineHostResource.Er.Name, virtualMachineHostResource.Er.Id, virtualMachineHostResource.Er.Type)); // Read variables from item...
+                    list.Add(obj);
+
+                                                                                                                                                       ////    virtualMachineHostResource.ApplianceUuid = tintriServer.Uuid;
+                }
+                return list;
+
+            }
+            catch (Exception e)
+            {
+
+                ErrorRecord psErrRecord = new ErrorRecord(
+                          e,
+                          "##Exception when calling apiInstance.OpDpVmGet: ",
+                          ErrorCategory.NotSpecified,
+                          e.Message);
+                WriteError(psErrRecord);
+                return list;
+            }
+        }
+
+        private List<VMHXobject> GetVirtualMachineResources(List<ProtectedVMInfo> output)
+        {
+
+            //var ts = serverMap[tintriServer];
+            //var hostResources = vminfo;
+            List<VMHXobject> list = new List<VMHXobject>(); 
+            // var hostResources = ts.Datastore.GetVMHostResources().Result.ToList();
+
+            //if (!string.IsNullOrEmpty(tintriServer.ApplianceHostName) &&
+            //    !string.IsNullOrEmpty(tintriServer.Uuid))
+            //{
+            foreach (var virtualMachineHostResource in output)
+            {
+                list.Add(new VMHXobject(virtualMachineHostResource.Er.Name, virtualMachineHostResource.Er.Id, virtualMachineHostResource.Er.Type)); // Read variables from item...
+                                                                                                                                                    ////virtualMachineHostResource.ApplianceHostName = tintriServer.ApplianceHostName;
+                                                                                                                                                    ////    virtualMachineHostResource.ApplianceUuid = tintriServer.Uuid;
+            }
+            //}
+
+            return list;
+        }
+
         private void WriteErrorRecord(Exception e, string v, ErrorCategory connectionError, string message)
         {
             throw new NotImplementedException();
@@ -155,5 +265,69 @@ namespace SP_powershell
             return true;
         }
     }
+    public class VMHXobject
+    {
+        public string name;
+        public EntityRef.TypeEnum? type;
+        public string id;
 
+        public VMHXobject()
+        {
+        }
+
+        public VMHXobject(string name, string id, EntityRef.TypeEnum? type1)
+        {
+            this.name = name;
+            this.id = id;
+            this.type = type1;
+        }
+    }
+
+    public class ClusterHXobject
+    {
+       
+        public EntityRef clusterEr;
+
+        public ClusterHXobject()
+        {
+        }
+
+        public ClusterHXobject(EntityRef clusterEr)
+        {
+            this.clusterEr = clusterEr;
+        }
+    }
+
+
+    public class VmInfoHXobject
+    {
+
+        public SnapshotInfo vmCurrentProtectionInfo;
+
+        public VmInfoHXobject()
+        {
+        }
+        
+        public VmInfoHXobject(SnapshotInfo vmCurrentProtectionInfo)
+        {
+            this.vmCurrentProtectionInfo = vmCurrentProtectionInfo;
+        }
+    }
+
+    public class containerHXobject
+    {
+       
+        public VMHXobject VMHXobject { get; set; }
+        public ClusterHXobject ClusterHXobject { get; set; }
+        public VmInfoHXobject VmInfoHXobject { get; set; }
+
+
+        public containerHXobject()
+        {
+        }
+
+
+    }
+
+    
 }

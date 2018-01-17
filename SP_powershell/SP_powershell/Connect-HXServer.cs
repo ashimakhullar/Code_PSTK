@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace SP_powershell
 {
@@ -45,46 +46,76 @@ namespace SP_powershell
         [Alias("Srvr")]
         public string Server { get; set; }
 
+        [Parameter]
+        [Alias("ignorecerts")]
+        public SwitchParameter IgnoreCertificateWarnings { get; set; }
 
 
         //
         // Cmdlet body
         //
-        
-    protected override void ProcessSPRecord()
+
+        protected override void ProcessSPRecord()
         {
-            // Configure OAuth2 access token for authorization: petstore_auth
-            //Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-            Configuration.Default = new Configuration();
-            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-            Configuration.Default.Username = "root";
-            Configuration.Default.Password = "Cisco123";
-            //$PsCmdlet.SessionState.PSVariable.Set("_Server", Server);
-            var apiInstance = new AboutApi("https://10.198.2.214/dataprotection/v1");
-            // var apiInstance = new ProtectApi("https://10.198.2.214/dataprotection/v1");
-            ////////var petId = 789;  // long? | Pet id to delete
-            ////////                  //  var apiKey = apiKey_example;  // string |  (optional) 
+            ValidateParameters();
 
-            ////////Func<IEnumerable<VirtualMachine>, VirtualMachine> selectByDisplayName = (VMList) =>
-            ////////  VMList.FirstOrDefault(hvds => String.Equals(hvds.Name, DisplayName,
-            ////////        StringComparison.OrdinalIgnoreCase));
+            // Callback method for handling the certificates returned by each
+            // TintriServer to which we are trying to establish a session
 
+            if (Server == null)
+            {
+                throw new InvalidProgramException("Please enter a valid IP Address of a server to continue");
+               
+            }
+
+            //////// Configure OAuth2 access token for authorization: petstore_auth
+            ////////Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            //////Configuration.Default = new Configuration();
+            //////Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            //////Configuration.Default.Username = "root";
+            //////Configuration.Default.Password = "Cisco123";
+            ////////$PsCmdlet.SessionState.PSVariable.Set("_Server", Server);
+            //////var apiInstance = new AboutApi("https://10.198.2.214/dataprotection/v1");
+            //////// var apiInstance = new ProtectApi("https://10.198.2.214/dataprotection/v1");
+            //////////////var petId = 789;  // long? | Pet id to delete
+            //////////////                  //  var apiKey = apiKey_example;  // string |  (optional) 
+
+            //////////////Func<IEnumerable<VirtualMachine>, VirtualMachine> selectByDisplayName = (VMList) =>
+            //////////////  VMList.FirstOrDefault(hvds => String.Equals(hvds.Name, DisplayName,
+            //////////////        StringComparison.OrdinalIgnoreCase));
             try
             {
-                //
-                // Find a specific Protected VM
-                //
+                var objAccessTokenJson = new AccessToken
+                {
+                    username="local/root",
+                    password= "Cisco123",
+                    client_id= "HxGuiClient",
+                    client_secret= "Sunnyvale",
+                    redirect_uri= "http://localhost/aaa/redirect"
+                };
+                
 
-                ////if (ParameterSetName == DisplayName)
-                ////{
-                ////    var VmSpecific = DisplayName.ToString();
-                ////    //GetSpecificHypervisorDatastore();
-                ////    return;
-                ////}
+                Configuration.Default = new Configuration();
+                Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+                if (Username != null && Password != null)
+                {
+                    Configuration.Default.Username = Username.ToString();
+                    Configuration.Default.Password = Password.ToString();
+                }
+                else
+                {
+                    throw new ArgumentException("Username/Password has to be provided");
+                }
+                var apiString = "https://" + Server.ToString().Trim() + "/aaa/v1/auth?grant_type=password";
 
-                // Find All Protected VMs
-                AboutInfo result = apiInstance.OpAboutGet();
-                WriteObject(result,true);
+                var json = JsonConvert.SerializeObject(objAccessTokenJson);
+
+
+                JsonToken objEF = JsonConvert.DeserializeObject<JsonToken>(json);
+                //ProtectedVMSpec body = new ProtectedVMSpec(objEF);
+
+                //ProtectedVMInfo result1 = apiInstance.OpDpVmPost(body);
+                var apiInstance = new ProtectApi(apiString);
             }
             catch (Exception e)
             {

@@ -76,3 +76,5 @@ C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.cspro
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.csproj.CoreCompileInputs.cache
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.dll
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.pdb
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\AutoMapper.dll
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\AutoMapper.xml
