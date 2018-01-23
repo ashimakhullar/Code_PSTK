@@ -61,8 +61,7 @@ OpenAPI spec version: 1.0.0
   </ItemGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" Exclude="obj\**" />
-    <Compile Include="Api\AAAApi.cs" />
-  </ItemGroup>
+   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

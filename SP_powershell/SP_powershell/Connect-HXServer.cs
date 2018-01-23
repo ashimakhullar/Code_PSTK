@@ -1,24 +1,23 @@
-﻿using IO.Swagger.Client;
-using System.Management.Automation;
-using IO.Swagger.Api;
+﻿using IO.Swagger.Api;
+using IO.Swagger.Client;
 using IO.Swagger.Model;
-using System.Diagnostics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.ComponentModel;
-using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Management.Automation;
 
 namespace SP_powershell
 {
+    /// <summary>
+    /// The Connect-HXServer PowerShell CmdLet is used to establish sessions with 
+    /// HXServer instances.
+    /// </summary>
     [Cmdlet(VerbsCommunications.Connect, "HXServer")]
     [OutputType(typeof(VirtualMachine))]
     //[Category(CmdletCategory.Session)]
     [CmdletBinding]
     public class ConnectHXServer : SPCmdlet
     {
-        SessionState se1 = new SessionState();
-
 
 
 
@@ -50,6 +49,17 @@ namespace SP_powershell
         [Alias("ignorecerts")]
         public SwitchParameter IgnoreCertificateWarnings { get; set; }
 
+        public static Dictionary<string, dynamic> storageKeyDictionary;
+
+        public ConnectHXServer()
+        {
+            if (storageKeyDictionary == null)
+            {
+                storageKeyDictionary = new Dictionary<string, dynamic>();
+            }
+        }
+
+
 
         //
         // Cmdlet body
@@ -65,38 +75,23 @@ namespace SP_powershell
             if (Server == null)
             {
                 throw new InvalidProgramException("Please enter a valid IP Address of a server to continue");
-               
+
             }
-
-            //////// Configure OAuth2 access token for authorization: petstore_auth
-            ////////Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-            //////Configuration.Default = new Configuration();
-            //////Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-            //////Configuration.Default.Username = "root";
-            //////Configuration.Default.Password = "Cisco123";
-            ////////$PsCmdlet.SessionState.PSVariable.Set("_Server", Server);
-            //////var apiInstance = new AboutApi("https://10.198.2.214/dataprotection/v1");
-            //////// var apiInstance = new ProtectApi("https://10.198.2.214/dataprotection/v1");
-            //////////////var petId = 789;  // long? | Pet id to delete
-            //////////////                  //  var apiKey = apiKey_example;  // string |  (optional) 
-
-            //////////////Func<IEnumerable<VirtualMachine>, VirtualMachine> selectByDisplayName = (VMList) =>
-            //////////////  VMList.FirstOrDefault(hvds => String.Equals(hvds.Name, DisplayName,
-            //////////////        StringComparison.OrdinalIgnoreCase));
             try
             {
-                var objAccessTokenJson = new AccessToken
-                {
-                    username="local/root",
-                    password= "Cisco123",
-                    client_id= "HxGuiClient",
-                    client_secret= "Sunnyvale",
-                    redirect_uri= "http://localhost/aaa/redirect"
-                };
-                
+                //var objAccessTokenJson = new AccessToken
+                //{
+                //username="local/root",
+                //password= "Cisco123",
+                var client_id = "HxGuiClient";
+                var client_secret = "Sunnyvale";
+                var redirect_uri = "http://localhost/aaa/redirect";
+                //};
+
+                Debug.Assert(Username != null);
 
                 Configuration.Default = new Configuration();
-                Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+                //Configuration.Default.AccessToken = objAccessTokenJson;
                 if (Username != null && Password != null)
                 {
                     Configuration.Default.Username = Username.ToString();
@@ -106,50 +101,53 @@ namespace SP_powershell
                 {
                     throw new ArgumentException("Username/Password has to be provided");
                 }
-                var apiString = "https://" + Server.ToString().Trim() + "/aaa/v1/auth?grant_type=password";
+                var apiString = "https://" + Server.ToString().Trim() + "/aaa/v1";
 
-                var json = JsonConvert.SerializeObject(objAccessTokenJson);
+                // var json = JsonConvert.SerializeObject(objAccessTokenJson);
 
 
-                JsonToken objEF = JsonConvert.DeserializeObject<JsonToken>(json);
-                //ProtectedVMSpec body = new ProtectedVMSpec(objEF);
-
+                //  var objEF = JsonConvert.DeserializeObject<UserCredentials>(json);
+                UserCredentials body = new UserCredentials(Username.ToString().Trim(), Password.ToString().Trim(), client_id.Trim(), client_secret.Trim(), redirect_uri.Trim());
+                //  TokenInfo body = new TokenInfo(objEF);
                 //ProtectedVMInfo result1 = apiInstance.OpDpVmPost(body);
-                var apiInstance = new ProtectApi(apiString);
+                var apiInstance = new ObtainAccessTokenApi(apiString);
+                AccessTokenEnvelope result = apiInstance.ObtainAccessToken("password", body);
+                WriteObject(result, true);
+                // return;
+
+                // Check if connection present in the dic
+                //if(HXServerExists!=true)
+                //{ 
+                    Token vtoken = new Token();
+                    vtoken.AccessToken = result.AccessToken;
+                    vtoken.RefreshToken = result.RefreshToken;
+                    vtoken.TokenType = result.TokenType;
+                    storageKeyDictionary.Add(Server.ToString(), vtoken);
+                //}
+
+                // { { Server.ToString(),vtoken } };
+                //Token.ServerConnected = new Dictionary<string, object>();
+                //Token.ServerConnected.Add(Server.ToString(), Token.AccessToken.ToString());
+                //var localserverDict = new Dictionary<String, String>;
+                ////////  Dictionary<string, object> storageKeyDictionary = new Dictionary<string, object>() { { Server.ToString(), Token.AccessToken.ToString() }};
+
+                //SessionState ss = new SessionState(); } };
+
+                //Storage.Store.Add(clientId, storageKeyDictionary);
+
+                //// private static Dictionary<string, string> ServerConnected;
+
+                //localserverDict.Add(Server.ToString(),Token.AccessToken);
+                //SessionState ss = new SessionState();
+                //ss.InvokeCommand.InvokeScript("new-variable -scope global -name gtest -value 3");
             }
             catch (Exception e)
             {
                 Debug.Print("Exception when calling apiInstance.OpDpVmGet: " + e.Message);
             }
-            //////try
-            //////{
-            //////    // Deletes a pet
-            //////    //apiInstance.DeletePet(petId, apiKey);
-            //////    apiInstance.OpDpVmPost(petId, null);
-            //////}
-            //////catch (Exception e)
-            //////{
-            //////    throw new NotImplementedException();
-            //////   // WriteError(e.Message);
-            //////   // Debug.Print("Exception when calling PetApi.DeletePet: " + e.Message);
-            //////}
 
-            /*
-            //Server authentication to be done
-            //ValidateServerSessions();
-            if (ValidateParameters() == false)
-                return;
 
-            VirtualMachineEx VMex = new VirtualMachineEx();
-            //fetches the list of vms as per the filter criteria set
-            var ListOfVms = VMex.GetVMs();
-
-            if (ListOfVms != null)
-            {
-                //display the list of vms 
-                WriteObject(ListOfVms);
-            }
-            */
+           
         }
 
 
@@ -163,6 +161,23 @@ namespace SP_powershell
             // on the first one we find.
             return true;
         }
+
+
+        /// <summary>
+        /// Checks to see if the Server exists (by its IP Address key) in collections.
+        /// </summary>
+        /// <param name="HXServer">An HX ConnectServer instance.</param>
+        /// <returns><c>true</c> if the IP address exists as a key in the dictionaries, 
+        /// <c>false</c> otherwise.</returns>
+        private bool HXServerExists(IHXServer tintriServer)
+        {
+            //if (tintriServer.) { }
+                return true;
+        }
+
     }
 
+    internal class IHXServer
+    {
+    }
 }

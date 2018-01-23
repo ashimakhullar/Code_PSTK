@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace SP_powershell
 {
     [Cmdlet(VerbsCommon.Get, "Peers")]
-    [OutputType(typeof(MapPairErToReplicationPeerInfo),typeof(ReplicationDatastore))]
+    [OutputType(typeof(MapPairErToReplicationPeerInfo), typeof(ReplicationDatastore))]
 
     public class Peers : SPCmdlet
     {
@@ -17,7 +17,7 @@ namespace SP_powershell
         // 
         // Properties (PowerShell Parameters) to be defined below
         //
-       
+
         [Parameter(Mandatory = true)]
         [Alias("srvr")]
         public string Server { get; set; }
@@ -69,7 +69,8 @@ namespace SP_powershell
 
 
                 List<MapPairErToReplicationPeerInfo> result = apiInstance.OpReplicationPeerGet();
-                WriteObject(result,true); 
+                //WriteObject(result,true);
+                WritePeerRecord(result);
             }
             catch (Exception e)
             {
@@ -80,12 +81,24 @@ namespace SP_powershell
                           ErrorCategory.NotSpecified,
                           e.Message);
                 WriteError(psErrRecord);
-                
+
             }
-            
+
         }
 
+        private void WritePeerRecord(List<MapPairErToReplicationPeerInfo> result)
+        {
+            List<MapPairErToReplicationPeerInfo> list = new List<MapPairErToReplicationPeerInfo>();
 
+            foreach (var item in result)
+            {
+                if (item.PeerInfo != null)
+                {
+                    WriteObject(item.PeerInfo);
+                    WriteObject("---------------------------------------------------------------------");
+                }
+            }
+        }
 
         protected internal override bool ValidateParameters()
         {

@@ -24,7 +24,8 @@ namespace SP_powershell
         [Alias("name")]
         public string VMName { get; set; }
 
-        [Parameter(ParameterSetName = "HXName")]
+        //[Parameter(ParameterSetName = "HXName")]
+        [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("vmid1")]
         public string VMId { get; set; }
@@ -34,8 +35,9 @@ namespace SP_powershell
         ////[ValidateSet("DISK", "PNODE", "NODE", "CLUSTER", "DATASTORE", "VIRTNODE", "VIRTCLUSTER", "VIRTDATASTORE", "VIRTMACHINE", "PDISK", "PDATASTORE", "VIRTMACHINESNAPSHOT", "FOLDER", "RESOURCEPOOL", "FILE", "VIRTDATACENTER", "REPLICATION_APPLIANCE", "REPLICATION_JOB", "IP_POOL", "DP_VM_SNAPSHOT", "DP_VMGROUP_SNAPSHOT", "DP_VM", "DP_VMGROUP", "DP_VM_CONFIG", "DP_VM_SNAPSHOT_POINT", "CLUSTER_PAIR")]
         ////[Alias("vmtyp")]
         ////public string VMType { get; set; }
-        
-        [Parameter(ParameterSetName = "HXName")]
+
+        //[Parameter(ParameterSetName = "HXName")]
+        [Parameter()]
         [ValidateNotNullOrEmpty]
         [ValidateSet("VCMOID", "VMBIOSUUID", "VMDSPATH")]
         [Alias("vmidty")]
@@ -45,7 +47,17 @@ namespace SP_powershell
         [Alias("srvr")]
         public string Server { get; set; }
 
+        //UserName Parameter contains the Cisco HXConnect UserName
+        [Parameter(Mandatory = true, Position = 1)]
+        [ValidateNotNullOrEmpty]
+        [Alias("user")]
+        public string UserName { get; set; }
 
+        //Password Parameter contains the Cisco HXConnect Password
+        [Parameter(Mandatory = true, Position = 2)]
+        [ValidateNotNullOrEmpty]
+        [Alias("pwd")]
+        public string Password { get; set; }
 
 
         //
@@ -62,23 +74,43 @@ namespace SP_powershell
             
             Configuration.Default = new Configuration();
             Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            if (UserName != null && Password != null)
+            {
+                Configuration.Default.Username = UserName.ToString();
+                Configuration.Default.Password = Password.ToString();
+            }
+            else
+            {
+                throw new ArgumentException("Username/Password has to be provided");
+            }
             var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
             var apiInstance = new ProtectApi(apiString);
-
-            //Func<IEnumerable<VirtualMachine>, VirtualMachine> selectByDisplayName = (VMList) =>
-            //  VMList.FirstOrDefault(hvds => String.Equals(hvds.Name, DisplayName,
-            //        StringComparison.OrdinalIgnoreCase));
-
+            var jparams = "";
+            
             try
             {
-                var jName = VMName.ToString().Trim();
-                var jIdtype = VMidtype.ToString();
+                if (VMName == null)
+                {
+                 jparams = "VMName";
+                }
+                if (VMId == null)
+                {
+                 jparams += ",VMId";
+                }
+                if (VMidtype == null)
+                {
+                 jparams += ",VMidtype";
+                }
+                if (jparams != "")
+                {
+                    throw new ArgumentException("Please enter the following params"+ jparams);
+                }
                 var objVmJson = new VMDet
                 {
-                    name = jName,
+                    name = VMName.ToString(),
                     type = "DP_VM",
                     id = VMId.ToString(),
-                    idtype = jIdtype,
+                    idtype = VMidtype.ToString(),
                     confignum="0"
                 };
 
@@ -107,6 +139,12 @@ namespace SP_powershell
                 WriteObject(result1, true);
                 return;
                 
+            }
+            catch (ArgumentException e)
+            {
+                ErrorRecord psErrRecord = new ErrorRecord(
+                           e, "Arguments not provided.", ErrorCategory.AuthenticationError, e.Message);
+                WriteError(psErrRecord);
             }
             catch (Exception e)
             {

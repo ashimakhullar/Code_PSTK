@@ -10,3 +10,22 @@ c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powe
 c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\obj\Release\SP_powershell.pdb
 c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\bin\Release\SP_powershell.psd1
 c:\users\ashima.bahl\documents\visual studio 2015\Projects\SP_powershell\SP_powershell\obj\Release\SP_powershell.csprojResolveAssemblyReference.cache
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\SP_powershell.psd1
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\swagger.json
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\SP_powershell.dll
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\SP_powershell.pdb
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\AutoMapper.dll
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\IO.Swagger.dll
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\Newtonsoft.Json.dll
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\System.Management.Automation.dll
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\RestSharp.dll
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\Microsoft.Management.Infrastructure.dll
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\IO.Swagger.pdb
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\AutoMapper.xml
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\Newtonsoft.Json.xml
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\System.Management.Automation.xml
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Release\RestSharp.xml
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Release\SP_powershell.csprojResolveAssemblyReference.cache
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Release\SP_powershell.csproj.CoreCompileInputs.cache
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Release\SP_powershell.dll
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Release\SP_powershell.pdb

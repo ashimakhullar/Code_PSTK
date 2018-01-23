@@ -78,6 +78,7 @@ namespace SP_powershell
                 {
                     Configuration.Default.Username = UserName.ToString();
                     Configuration.Default.Password = Password.ToString();
+                    
                 }
                 else
                 {
@@ -104,16 +105,17 @@ namespace SP_powershell
                 // Find All Protected VMs
                 ////////////VMHXobject objVmJson = new VMHXobject();
 
-                var output = apiInstance.OpDpVmGet();
-                ////////////var new1 = output.FirstOrDefault();
-
-
+                var num=ConnectHXServer.storageKeyDictionary.Count();
+                dynamic dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
+                var accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
                 
-                ////////////objVmJson.id = new1.Er.Id.ToString();
-                ////////////objVmJson.name = new1.Er.Name.ToString();
-                //////////////objVmJson = JsonConvert.DeserializeObject<VMHXobject>(output);
-                ////////////VMHXobject myresult = objVmJson;
-                List<ProtectedVMInfo> result = apiInstance.OpDpVmGet();
+
+               
+                var output = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
+                               
+                    //**
+                List<ProtectedVMInfo> result = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
+                SessionState valc = new SessionState();
                 List<VMHXobject> myresult2 = GetVirtualMachineResources(output);
                 List<containerHXobject> myresult3 = GetVirtualMachineDetail(output);
                 //find the vm details matching to the vmName provided as parameter
@@ -130,8 +132,9 @@ namespace SP_powershell
                     WriteObject(vmStateMatch, true);
                     return;
                 }
-                WriteContainerecord(myresult3);
-               // WriteObject(myresult3, true);
+               // WriteContainerecord(myresult3);
+                WriteObject(result, true);
+               // WriteVMrecord(result);
             }
             catch (ApiException e)
             {
@@ -176,6 +179,34 @@ namespace SP_powershell
                 if (resultset.VmInfoHXobject.vmCurrentProtectionInfo != null)
                 {
                     WriteObject(resultset.VmInfoHXobject.vmCurrentProtectionInfo.VmInfo);
+                }
+                WriteObject("=====================================================================");
+            }
+        }
+        /// <summary>
+        /// Write VM record.
+        /// </summary>
+        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when null values </exception>
+        /// <param name="body">Protect VM Spec</param>
+        /// <returns></returns>
+        private void WriteVMrecord(List<ProtectedVMInfo> myresult)
+        {
+            foreach (var resultset in myresult)
+            {
+                if(resultset.Er!=null)
+                {
+                    WriteObject(resultset.Er.ToString());
+                    WriteObject(resultset.Er);
+                    WriteObject("---------------------------------------------------------------------");
+                }
+                if (resultset.ClusterEr != null)
+                {
+                    WriteObject(resultset.ClusterEr);
+                    WriteObject("---------------------------------------------------------------------");
+                }
+                if (resultset.ProtectionInfo != null)
+                {
+                    WriteObject(resultset.ProtectionInfo.VmCurrentProtectionInfo.VmInfo);
                 }
                 WriteObject("=====================================================================");
             }

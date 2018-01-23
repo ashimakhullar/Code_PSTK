@@ -65,6 +65,7 @@
     <Compile Include="SPCmdlet.cs" />
     <Compile Include="SPParameterSet.cs" />
     <Compile Include="Task.cs" />
+    <Compile Include="Token.cs" />
     <Compile Include="VirtualMachine.cs" />
     <Compile Include="VirtualMachineEx.cs" />
   </ItemGroup>
@@ -88,6 +89,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SP_powershell.Help.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

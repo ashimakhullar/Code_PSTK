@@ -18,6 +18,7 @@ using IO.Swagger.Model;
 using System.Diagnostics;
 using Newtonsoft.Json;
 
+
 namespace IO.Swagger.Api
 {
     /// <summary>
@@ -1824,7 +1825,7 @@ namespace IO.Swagger.Api
         /// <returns>ApiResponse of List&lt;ProtectedVMInfo&gt;</returns>
         public ApiResponse<List<ProtectedVMInfo>> OpDpVmGetWithHttpInfo(string name = null, string type = null, string acceptLanguage = null)
         {
-
+            
             var localVarPath = "/vms";
             var localVarPathParams = new Dictionary<String, String>();
             var localVarQueryParams = new Dictionary<String, String>();
@@ -1832,7 +1833,7 @@ namespace IO.Swagger.Api
             var localVarFormParams = new Dictionary<String, String>();
             var localVarFileParams = new Dictionary<String, FileParameter>();
             Object localVarPostBody = null;
-
+           
             // to determine the Content-Type header
             String[] localVarHttpContentTypes = new String[] {
             };
@@ -1845,15 +1846,24 @@ namespace IO.Swagger.Api
             String localVarHttpHeaderAccept = Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null)
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
-            Configuration = Configuration.Default;
+            //Configuration = Configuration.Default;
             //encoding the username and password 
             string base64Encoded = GetBase64Encoded(Configuration);
             if (name != null) localVarQueryParams.Add("name", Configuration.ApiClient.ParameterToString(name)); // query parameter
             if (type != null) localVarQueryParams.Add("type", Configuration.ApiClient.ParameterToString(type)); // query parameter
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
-            //localVarHeaderParams.Add("Authorization", "Basic cm9vdDpDaXNjbzEyMw==");
+                                                                                                                                                //localVarHeaderParams.Add("Authorization", "Basic cm9vdDpDaXNjbzEyMw==");
+            var objEF = JsonConvert.SerializeObject(type);
+            
             //adding the Authorization to the Header Parameter
-            localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
+            if (base64Encoded != null)
+            //{
+            //    localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
+            //}
+            //else
+            {
+                localVarHeaderParams.Add("Authorization", type);
+            }
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.GET, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
@@ -1904,6 +1914,22 @@ namespace IO.Swagger.Api
             string base64Encoded = Convert.ToBase64String(encodedByte);
             return base64Encoded;
         }
+
+        private string GetBase64Encoded(Configuration configuration,string token)
+        {
+            //Configuration.Username = "root";
+            //Configuration.Password = "Cisco123";
+            //var json = JsonConvert.SerializeObject(token);
+            token = token.Substring(9, token.Length - 10);
+            var objEF = JsonConvert.DeserializeObject<AccessTokenEnvelope>(token);
+            String userpass = configuration.Username + ":" + configuration.Password;
+            
+            //String basicAuth = Base64Encode(userpass.ToString());
+            byte[] encodedByte = System.Text.ASCIIEncoding.UTF8.GetBytes(userpass);
+            string base64Encoded = Convert.ToBase64String(encodedByte);
+            return base64Encoded;
+        }
+
 
         /// <summary>
         /// Gets list of protected VMs 
@@ -2022,7 +2048,7 @@ namespace IO.Swagger.Api
             String localVarHttpHeaderAccept = Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null)
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
-
+            Configuration = Configuration.Default;
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
             if (body != null && body.GetType() != typeof(byte[]))
             {
@@ -2622,6 +2648,10 @@ namespace IO.Swagger.Api
             //Assert.IsInstanceOf<ProtectedVMInfo> (response, "response is ProtectedVMInfo");
             Console.WriteLine(response);
             
+        }
+
+        private class SP_powershell
+        {
         }
     }
 }
