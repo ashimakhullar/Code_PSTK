@@ -29,13 +29,13 @@ namespace SP_powershell
         public string Server { get; set; }
         
         //UserName Parameter contains the Cisco HXConnect UserName
-        [Parameter(Mandatory = true , Position = 1, ParameterSetName = "UserNamePassword")]
+        [Parameter(Position = 1, ParameterSetName = "UserNamePassword")]
         [ValidateNotNullOrEmpty]
         [Alias("user")]
         public string UserName { get; set; }
 
         //Password Parameter contains the Cisco HXConnect Password
-        [Parameter(Mandatory = true , Position = 2, ParameterSetName = "UserNamePassword")]
+        [Parameter(Position = 2, ParameterSetName = "UserNamePassword")]
         [ValidateNotNullOrEmpty]
         [Alias("pwd")]
         public string Password { get; set; }
@@ -74,16 +74,7 @@ namespace SP_powershell
             {
                 Configuration.Default = new Configuration();
                 Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-                if (UserName != null && Password != null)
-                {
-                    Configuration.Default.Username = UserName.ToString();
-                    Configuration.Default.Password = Password.ToString();
-                    
-                }
-                else
-                {
-                    throw new ArgumentException("Username/Password has to be provided");
-                }
+                
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
 
                 var apiInstance = new ProtectApi(apiString);
@@ -107,13 +98,19 @@ namespace SP_powershell
 
                 var num=ConnectHXServer.storageKeyDictionary.Count();
                 dynamic dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
-                var accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
-                
+                String accessTkn=null;
+                if (dictServerCnnctd!=null)
+                {
+                    accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
+                }
+                else
+                {
+                    throw new Exception("The Server is not connected;Please check the IP address of Server");
+                }
 
-               
+
                 var output = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
-                               
-                    //**
+               
                 List<ProtectedVMInfo> result = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
                 SessionState valc = new SessionState();
                 List<VMHXobject> myresult2 = GetVirtualMachineResources(output);

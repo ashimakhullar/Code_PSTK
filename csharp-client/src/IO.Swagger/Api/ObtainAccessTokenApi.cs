@@ -256,6 +256,9 @@ namespace IO.Swagger.Api
             if (ExceptionFactory != null)
             {
                 Exception exception = ExceptionFactory("ObtainAccessToken", localVarResponse);
+                //added check for incorrect credentials
+                if (localVarStatusCode == 401 && exception != null) throw new ApiException(localVarStatusCode, "Credentials entered are incorrect.");
+                else
                 if (exception != null) throw exception;
             }
 

@@ -65,6 +65,7 @@
     <Compile Include="SPCmdlet.cs" />
     <Compile Include="SPParameterSet.cs" />
     <Compile Include="Task.cs" />
+    <Compile Include="TCmdLetEx.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="VirtualMachine.cs" />
     <Compile Include="VirtualMachineEx.cs" />
@@ -88,7 +89,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SP_powershell.Help.xml" />
+    <Content Include="SP_powershell.Help.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

@@ -23,11 +23,11 @@ namespace SP_powershell
         [Alias("srvr")]
         public string Server { get; set; }
         //UserName Parameter contains the Cisco HXConnect UserName
-        [Parameter(Mandatory = true ,Position = 1, ParameterSetName = "UserNamePassword")]
+        [Parameter(Position = 1, ParameterSetName = "UserNamePassword")]
         [Alias("user")]
         public string UserName { get; set; }
         //Password Parameter contains the Cisco HXConnect Password
-        [Parameter(Mandatory = true, Position = 2, ParameterSetName = "UserNamePassword")]
+        [Parameter(Position = 2, ParameterSetName = "UserNamePassword")]
         [Alias("pwd")]
         public string Password { get; set; }
         //Groupid will pass the Group uid
@@ -56,11 +56,23 @@ namespace SP_powershell
 
                 Configuration.Default = new Configuration();
                 Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-                Configuration.Default.Username = UserName.ToString();
-                Configuration.Default.Password = Password.ToString();
+                //Configuration.Default.Username = UserName.ToString();
+                //Configuration.Default.Password = Password.ToString();
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
                 var apiInstance = new ProtectApi(apiString);
+                var num = ConnectHXServer.storageKeyDictionary.Count();
+                dynamic dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
+                String accessTkn = null;
+                if (dictServerCnnctd != null)
+                {
+                    accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
+                }
+                else
+                {
+                    throw new Exception("The Server is not connected;Please check the IP address of Server");
+                }
 
+                List<ProtectionGroupInfo> result = apiInstance.OpDpGroupGet(null, accessTkn.ToString(), "en-US");
 
                 //
                 // Find a specific Protected Group
@@ -74,7 +86,7 @@ namespace SP_powershell
                 }
                 // Find Protection Groups
 
-                List<ProtectionGroupInfo> result = apiInstance.OpDpGroupGet();
+               // List<ProtectionGroupInfo> result = apiInstance.OpDpGroupGet();
                 //find the Group details matching to the GroupName provided as parameter
                 if (GroupName != null)
                 {
