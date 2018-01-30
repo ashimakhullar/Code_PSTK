@@ -9,5 +9,10 @@ namespace SP_powershell
         {
             throw new NotImplementedException();
         }
+
+        internal static ErrorRecord GetAuthErrorRecord(string v1, string v2)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

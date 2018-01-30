@@ -1075,8 +1075,8 @@ namespace IO.Swagger.Api
             if (fields != null) localVarQueryParams.Add("fields", Configuration.ApiClient.ParameterToString(fields)); // query parameter
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
             //adding the Authorization to the Header Parameter
-            localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
-
+            //localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
+            localVarHeaderParams.Add("Authorization", fields);
 
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
@@ -2556,7 +2556,78 @@ namespace IO.Swagger.Api
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
                 (ProtectedVMInfo)Configuration.ApiClient.Deserialize(localVarResponse, typeof(ProtectedVMInfo)));
         }
+        /*code change*/
+        /// <summary>
+        /// Gets the details of a protected VM 
+        /// </summary>
+        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="vmId"></param>
+        /// <param name="acceptLanguage"> (optional)</param>
+        /// <returns>ProtectedVMInfo</returns>
+        public ProtectedVMInfo OpDpVmVmidGet1(string vmId,string type, string acceptLanguage = null)
+        {
+            ApiResponse<ProtectedVMInfo> localVarResponse = OpDpVmVmidGetWithHttpInfo1(vmId,type, acceptLanguage);
+            return localVarResponse.Data;
+        }
 
+        /// <summary>
+        /// Gets the details of a protected VM 
+        /// </summary>
+        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="vmId"></param>
+        /// <param name="acceptLanguage"> (optional)</param>
+        /// <returns>ApiResponse of ProtectedVMInfo</returns>
+        public ApiResponse<ProtectedVMInfo> OpDpVmVmidGetWithHttpInfo1(string vmId,string type, string acceptLanguage = null)
+        {
+            // verify the required parameter 'vmId' is set
+            if (vmId == null)
+                throw new ApiException(400, "Missing required parameter 'vmId' when calling ProtectApi->OpDpVmVmidGet");
+
+            var localVarPath = "/vms/{vmId}";
+            var localVarPathParams = new Dictionary<String, String>();
+            var localVarQueryParams = new Dictionary<String, String>();
+            var localVarHeaderParams = new Dictionary<String, String>(Configuration.DefaultHeader);
+            var localVarFormParams = new Dictionary<String, String>();
+            var localVarFileParams = new Dictionary<String, FileParameter>();
+            Object localVarPostBody = null;
+
+            // to determine the Content-Type header
+            String[] localVarHttpContentTypes = new String[] {
+            };
+            String localVarHttpContentType = Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
+
+            // to determine the Accept header
+            String[] localVarHttpHeaderAccepts = new String[] {
+                "application/json"
+            };
+            String localVarHttpHeaderAccept = Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
+            if (localVarHttpHeaderAccept != null)
+                localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
+
+            if (vmId != null) localVarPathParams.Add("vmId", Configuration.ApiClient.ParameterToString(vmId)); // path parameter
+            if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
+            Configuration = Configuration.Default;
+            string base64Encoded = GetBase64Encoded(Configuration);
+            //localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
+            localVarHeaderParams.Add("Authorization", type);
+            // make the HTTP request
+            IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
+                Method.GET, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
+                localVarPathParams, localVarHttpContentType);
+
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
+
+            if (ExceptionFactory != null)
+            {
+                Exception exception = ExceptionFactory("OpDpVmVmidGet", localVarResponse);
+                if (exception != null) throw exception;
+            }
+
+            return new ApiResponse<ProtectedVMInfo>(localVarStatusCode,
+                localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
+                (ProtectedVMInfo)Configuration.ApiClient.Deserialize(localVarResponse, typeof(ProtectedVMInfo)));
+        }
+/*code change ends*/
         /// <summary>
         /// Gets the details of a protected VM 
         /// </summary>

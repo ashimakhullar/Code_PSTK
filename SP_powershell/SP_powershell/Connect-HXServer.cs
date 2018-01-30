@@ -1,5 +1,5 @@
 ﻿// Author(s): 
-// Ashima Bahl, abahl@cisco.com 
+// Ashima Bahl, asbahl@cisco.com 
 using IO.Swagger.Api;
 using IO.Swagger.Client;
 using IO.Swagger.Model;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
-using System.Security;
+using System.Security.Principal;
 
 namespace SP_powershell
 {
@@ -34,33 +34,22 @@ namespace SP_powershell
         [Alias("cred")]
         public PSCredential Credential { get; set; }
 
-        [Parameter(Position = 0)]
+
+        [Parameter(Position = 0,Mandatory =true)]
+        [ValidateNotNullOrEmpty]
+        [Alias("Srvr")]
+        public string Server { get; set; }
+
+        [Parameter(Position = 1)]
         [ValidateNotNullOrEmpty]
         [Alias("Uname")]
         public string Username { get; set; }
 
-        [Parameter(Position = 1)]
+        [Parameter(Position = 2)]
         [ValidateNotNullOrEmpty]
         [Alias("Pswrd")]
         public string Password { get; set ; }
 
-        private void ConvertToSecurePassword()
-        {
-            //private SecureString SecureStringConverter(string pass)
-           
-                SecureString ret = new SecureString();
-
-                foreach (char chr in Password.ToCharArray())
-                    ret.AppendChar(chr);
-
-               // return ret;
-           
-        }
-
-        [Parameter(Position = 2)]
-        [ValidateNotNullOrEmpty]
-        [Alias("Srvr")]
-        public string Server { get; set; }
 
         [Parameter]
         [Alias("ignorecerts")]
@@ -87,7 +76,7 @@ namespace SP_powershell
             ValidateParameters();
 
             // Callback method for handling the certificates returned by each
-            // TintriServer to which we are trying to establish a session
+            // Server to which we are trying to establish a session
 
             if (Server == null)
             {
@@ -96,6 +85,7 @@ namespace SP_powershell
             }
             try
             {
+                //attempt for regular login using ip address
                 ResolveCredentials();
                 if (Username != null && Password != null)
                 {
@@ -106,14 +96,7 @@ namespace SP_powershell
                 {
                     Username = Credential.UserName.ToString();
                     Password = Credential.GetNetworkCredential().Password.ToString();
-                    //var vpass=Credential.GetNetworkCredential().Password.ToString();
-                    //var vpass1 = Credential.GetNetworkCredential().SecurePassword.ToString();
-
                 }
-                //var objAccessTokenJson = new AccessToken
-                //{
-                //username="local/root",
-                //password= "Cisco123",
                 var client_id = "HxGuiClient";
                 var client_secret = "Sunnyvale";
                 var redirect_uri = "http://localhost/aaa/redirect";
@@ -122,7 +105,7 @@ namespace SP_powershell
                 Debug.Assert(Username != null);
 
                 Configuration.Default = new Configuration();
-                //Configuration.Default.AccessToken = objAccessTokenJson;
+                
                 if (Username != null && Password != null)
                 {
                     Configuration.Default.Username = Username.ToString();
@@ -137,18 +120,23 @@ namespace SP_powershell
                 UserCredentials body = new UserCredentials(Username.ToString().Trim(), Password.ToString().Trim(), client_id.Trim(), client_secret.Trim(), redirect_uri.Trim());
                 var apiInstance = new ObtainAccessTokenApi(apiString);
                 AccessTokenEnvelope result = apiInstance.ObtainAccessToken("password", body);
-                WriteObject(result, true);
-                // return;
+                
 
-                // Check if connection present in the dic
-                //if(HXServerExists!=true)
-                //{ 
-                    Token vtoken = new Token();
-                    vtoken.AccessToken = result.AccessToken;
-                    vtoken.RefreshToken = result.RefreshToken;
-                    vtoken.TokenType = result.TokenType;
-                    storageKeyDictionary.Add(Server.ToString(), vtoken);
-                //}
+
+                // Access Token for each server connected is maintained in Dictionary object
+                //storageKeyDictionary-server ip is key while response token is value;
+                Token vtoken = new Token();
+                vtoken.AccessToken = result.AccessToken;
+                vtoken.RefreshToken = result.RefreshToken;
+                vtoken.TokenType = result.TokenType;
+                dynamic dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
+                if (dictServerCnnctd != null)
+                {
+                    throw new Exception("Server is already connected!");
+                }
+                WriteObject(result, true);
+                storageKeyDictionary.Add(Server.ToString(), vtoken);
+                
 
             }
             catch (ApiException e)
@@ -159,7 +147,9 @@ namespace SP_powershell
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling apiInstance.OpDpVmGet: " + e.Message);
+                ErrorRecord psErrRecord = new ErrorRecord(
+                           e, "", ErrorCategory.AuthenticationError, e.Message);
+                WriteError(psErrRecord);
             }
 
 
@@ -170,9 +160,7 @@ namespace SP_powershell
 
         protected internal override bool ValidateParameters()
         {
-
-
-            // Leave this here so that we can add more checks if needed
+             // Leave this here so that we can add more checks if needed
             // and return all errors if there are multiple without returning
             // on the first one we find.
             return true;
@@ -189,23 +177,6 @@ namespace SP_powershell
 
             if (RequirePromptForCredentials())
             {
-                ////////if (UseCurrentUserCredentials)
-                ////////{
-                ////////    // We can get the user name, but the user will still
-                ////////    // need to supply a password.
-                ////////    var windowsIdentity = WindowsIdentity.GetCurrent();
-                ////////    if (windowsIdentity == null)
-                ////////    {                        WriteError(TCmdLetEx.GetAuthErrorRecord(
-                ////////            "Current Identity",
-                ////////            "The identity of the current user cannot " +
-                ////////            "be obtained from the current session."));
-                ////////    }
-
-                ////////    Debug.Assert(windowsIdentity != null);
-
-                ////////    UserName = windowsIdentity.Name;
-                ////////}
-
                 // PowerShell PromptForCredential() will return an initialized
                 // PSCredential object if the user doesn't cancel the dialog.
                 Credential = Host.UI.PromptForCredential(
@@ -227,8 +198,7 @@ namespace SP_powershell
             {
                 if (Password!=null)
                 {
-                    //Credential = new PSCredential(
-                    //    Username, Password.ConvertToSecurePassword());
+                    //
                 }
             }
         }

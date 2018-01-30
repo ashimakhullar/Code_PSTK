@@ -1,4 +1,6 @@
-﻿using IO.Swagger.Api;
+﻿// Author(s): 
+// Ashima Bahl, asbahl@cisco.com 
+using IO.Swagger.Api;
 using IO.Swagger.Client;
 using IO.Swagger.Model;
 using Newtonsoft.Json;
@@ -6,6 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
+using Vestris.VMWareLib;
+using System.Management.Automation.Runspaces;
+using VMware.VimAutomation.ViCore.Types.V1;
 
 
 namespace SP_powershell
@@ -20,10 +25,11 @@ namespace SP_powershell
         // Properties (PowerShell Parameters) to be defined below
         //
         List<string> listParamtersetName = new List<string>();
-       
+
 
         //Server Parameter contains the Cisco HXConnect IP
-        [Parameter(Mandatory =true)]
+  
+        [Parameter()] 
         [ValidateNotNull]
         [Alias("srvr")]
         public string Server { get; set; }
@@ -65,6 +71,7 @@ namespace SP_powershell
         //
         protected override void ProcessSPRecord()
         {
+
             if (ValidateParameters() == false)
                 return;
             // Configure access token for authorization
@@ -72,45 +79,94 @@ namespace SP_powershell
            
             try
             {
+               
                 Configuration.Default = new Configuration();
                 Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-                
+                if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
+                {
+                    throw new Exception("No server is connected.");
+                }
+                //var valServer = "";
+                if (Server!=null )
+                {
+                    Server = Server.ToString().Trim();
+                }
+                else if (ConnectHXServer.storageKeyDictionary != null)
+                {
+                    var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
+                    Server = firstElement.Key;
+                }
+
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
 
                 var apiInstance = new ProtectApi(apiString);
+
+              
+                
+
+                // Find All Protected VMs
+                ////////////VMHXobject objVmJson = new VMHXobject();
+                var num=0;
+                //if (ConnectHXServer.storageKeyDictionary == null)
+                //{
+                //    num = 0;
+
+                //}
+                //else
+                //{
+                //    num = ConnectHXServer.storageKeyDictionary.Count();
+                //check the server ip provided by user if it exists in dictionary containing the list of all servers connected
+               // dynamic dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
+                String accessTkn = "";
+
+                dynamic dictServerCnnctd = null;
+                if (ConnectHXServer.storageKeyDictionary != null)
+                {
+                    num= ConnectHXServer.storageKeyDictionary.Count();
+                    if (num == 1)
+                    {
+                        
+                        dictServerCnnctd = ConnectHXServer.storageKeyDictionary.First(x => x.Key == Server.ToString()).Value;
+
+                    }
+                    else
+                    {
+                         dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
+                    }
+                }
+                else
+                {
+                    num = 0;
+                    throw new Exception("Please connect to a server.");
+                }
+                
+
+               
+
+                    if (dictServerCnnctd != null)
+                    {
+                        accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
+                    }
+                    else
+                    {
+                        throw new Exception("The Server is not connected;Please check the IP address of Server");
+                    }
 
                 //
                 // Find a specific Protected VM
                 //
 
+
                 if (VMUid != null)
                 {
                     var VmSpecific = VMUid.ToString();
                     //GetSpecific VM;
-                    ProtectedVMInfo result1 = apiInstance.OpDpVmVmidGet(VmSpecific);
+                    ProtectedVMInfo result1 = apiInstance.OpDpVmVmidGet1(VmSpecific, accessTkn,"en-US");
                     WriteObject(result1, true);
                     return;
                 }
-
-
-                // Find All Protected VMs
-                ////////////VMHXobject objVmJson = new VMHXobject();
-
-                var num=ConnectHXServer.storageKeyDictionary.Count();
-                dynamic dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
-                String accessTkn=null;
-                if (dictServerCnnctd!=null)
-                {
-                    accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
-                }
-                else
-                {
-                    throw new Exception("The Server is not connected;Please check the IP address of Server");
-                }
-
-
                 var output = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
-               
+                //List<VMware.VimAutomation.ViCore.Types.V1.VM.Guest.VMGuest> result = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
                 List<ProtectedVMInfo> result = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
                 SessionState valc = new SessionState();
                 List<VMHXobject> myresult2 = GetVirtualMachineResources(output);
@@ -131,7 +187,8 @@ namespace SP_powershell
                 }
                // WriteContainerecord(myresult3);
                 WriteObject(result, true);
-               // WriteVMrecord(result);
+                // WriteVMrecord(result);
+                Execute_vCenter_Tasks("10.198.2.215", "administrator@vsphere.local", "Cisco123");
             }
             catch (ApiException e)
             {
@@ -154,10 +211,27 @@ namespace SP_powershell
                           ErrorCategory.NotSpecified,
                           e.Message);
                 WriteError(psErrRecord);
-                WriteWarning(psErrRecord.Exception.Message);
+                //WriteWarning(psErrRecord.Exception.Message);
                 //WriteErrorRecord(e,"Exception when calling apiInstance.OpDpVmGet: ", ErrorCategory.ConnectionError, e.Message);
             }
             
+        }
+
+        private static void Execute_vCenter_Tasks(string vCenterIp, string vCenterUsername, string vCenterPassword)
+        {
+          
+                var shell = PowerShell.Create();
+
+
+
+                string PsCmd = "Get-Module -Name VMware.VimAutomation.Core; $vCenterServer = '" + vCenterIp + "';$vCenterAdmin = '" + vCenterUsername + "' ;$vCenterPassword = '" + vCenterPassword + "';" + System.Environment.NewLine;
+
+
+
+                PsCmd = PsCmd + "$VIServer = Connect-VIServer -Server $vCenterServer -User $vCenterAdmin -Password $vCenterPassword;" + System.Environment.NewLine;
+
+                shell.Commands.AddScript(PsCmd);
+          
         }
 
         private void WriteContainerecord(List<containerHXobject> myresult3)
@@ -254,6 +328,9 @@ namespace SP_powershell
                 WriteError(psErrRecord);
                 return list;
             }
+
+
+           
         }
 
         private List<VMHXobject> GetVirtualMachineResources(List<ProtectedVMInfo> output)
@@ -357,5 +434,9 @@ namespace SP_powershell
 
     }
 
-    
+
+
+   
+
+
 }

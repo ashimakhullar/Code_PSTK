@@ -1,8 +1,9 @@
-﻿using IO.Swagger.Client;
+﻿// Author(s): 
+// Ashima Bahl, asbahl@cisco.com 
+using IO.Swagger.Client;
 using System.Management.Automation;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
-using System.Diagnostics;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace SP_powershell
         // Properties (PowerShell Parameters) to be defined below
         //
 
-        [Parameter(Mandatory = true)]
+        [Parameter()]
         [Alias("srvr")]
         public string Server { get; set; }
         //UserName Parameter contains the Cisco HXConnect UserName
@@ -56,13 +57,50 @@ namespace SP_powershell
 
                 Configuration.Default = new Configuration();
                 Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-                //Configuration.Default.Username = UserName.ToString();
-                //Configuration.Default.Password = Password.ToString();
+                if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
+                {
+                    throw new Exception("No server is connected.");
+                }
+                //var valServer = "";
+                if (Server != null)
+                {
+                    Server = Server.ToString().Trim();
+                }
+                else if (ConnectHXServer.storageKeyDictionary != null)
+                {
+                    var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
+                    Server = firstElement.Key;
+                }
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
                 var apiInstance = new ProtectApi(apiString);
-                var num = ConnectHXServer.storageKeyDictionary.Count();
-                dynamic dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
-                String accessTkn = null;
+                var num = 0;
+             
+                String accessTkn = "";
+
+                dynamic dictServerCnnctd = null;
+                if (ConnectHXServer.storageKeyDictionary != null)
+                {
+                    num = ConnectHXServer.storageKeyDictionary.Count();
+                    if (num == 1)
+                    {
+
+                        dictServerCnnctd = ConnectHXServer.storageKeyDictionary.First(x => x.Key == Server.ToString()).Value;
+
+                    }
+                    else
+                    {
+                        dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
+                    }
+                }
+                else
+                {
+                    num = 0;
+                    throw new Exception("Please connect to a server.");
+                }
+
+
+
+
                 if (dictServerCnnctd != null)
                 {
                     accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
@@ -71,6 +109,8 @@ namespace SP_powershell
                 {
                     throw new Exception("The Server is not connected;Please check the IP address of Server");
                 }
+
+               
 
                 List<ProtectionGroupInfo> result = apiInstance.OpDpGroupGet(null, accessTkn.ToString(), "en-US");
 
