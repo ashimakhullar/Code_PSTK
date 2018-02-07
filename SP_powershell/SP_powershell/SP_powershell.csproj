@@ -50,19 +50,58 @@
     <Reference Include="Vestris.VMWareLib">
       <HintPath>..\..\..\..\..\Users\asbahl\Downloads\VMWareTasks-1.7\Bin\Vestris.VMWareLib.dll</HintPath>
     </Reference>
+    <Reference Include="VMware.Vim">
+      <HintPath>..\..\..\..\..\Program Files (x86)\VMware\Infrastructure\PowerCLI\Modules\VMware.VimAutomation.Core\VMware.Vim.dll</HintPath>
+    </Reference>
+    <Reference Include="VMware.VimAutomation.Sdk.Impl">
+      <HintPath>..\..\..\..\..\Program Files (x86)\VMware\Infrastructure\PowerCLI\Modules\VMware.VimAutomation.Sdk\VMware.VimAutomation.Sdk.Impl.dll</HintPath>
+    </Reference>
+    <Reference Include="VMware.VimAutomation.Sdk.Interop">
+      <HintPath>..\..\..\..\..\Program Files (x86)\VMware\Infrastructure\PowerCLI\Modules\VMware.VimAutomation.Sdk\VMware.VimAutomation.Sdk.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="VMware.VimAutomation.Sdk.Types">
+      <HintPath>..\..\..\..\..\Program Files (x86)\VMware\Infrastructure\PowerCLI\Modules\VMware.VimAutomation.Sdk\VMware.VimAutomation.Sdk.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="VMware.VimAutomation.Sdk.Util10">
+      <HintPath>..\..\..\..\..\Program Files (x86)\VMware\Infrastructure\PowerCLI\Modules\VMware.VimAutomation.Sdk\VMware.VimAutomation.Sdk.Util10.dll</HintPath>
+    </Reference>
+    <Reference Include="VMware.VimAutomation.Sdk.Util10Ps">
+      <HintPath>..\..\..\..\..\Program Files (x86)\VMware\Infrastructure\PowerCLI\Modules\VMware.VimAutomation.Sdk\VMware.VimAutomation.Sdk.Util10Ps.dll</HintPath>
+    </Reference>
+    <Reference Include="VMware.VimAutomation.ViCore.Cmdlets">
+      <HintPath>..\..\..\..\..\Program Files (x86)\VMware\Infrastructure\PowerCLI\Modules\VMware.VimAutomation.Core\VMware.VimAutomation.ViCore.Cmdlets.dll</HintPath>
+    </Reference>
+    <Reference Include="VMware.VimAutomation.ViCore.Impl">
+      <HintPath>..\..\..\..\..\Program Files (x86)\VMware\Infrastructure\PowerCLI\Modules\VMware.VimAutomation.Core\VMware.VimAutomation.ViCore.Impl.dll</HintPath>
+    </Reference>
+    <Reference Include="VMware.VimAutomation.ViCore.Interop">
+      <HintPath>..\..\..\..\..\Program Files (x86)\VMware\Infrastructure\PowerCLI\Modules\VMware.VimAutomation.Core\VMware.VimAutomation.ViCore.Interop.dll</HintPath>
+    </Reference>
     <Reference Include="VMware.VimAutomation.ViCore.Types">
       <HintPath>..\..\..\..\..\Program Files (x86)\VMware\Infrastructure\PowerCLI\Modules\VMware.VimAutomation.Core\VMware.VimAutomation.ViCore.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="VMware.VimAutomation.ViCore.Util10">
+      <HintPath>..\..\..\..\..\Program Files (x86)\VMware\Infrastructure\PowerCLI\Modules\VMware.VimAutomation.Core\VMware.VimAutomation.ViCore.Util10.dll</HintPath>
+    </Reference>
+    <Reference Include="VMware.VimAutomation.ViCore.Util10Ps">
+      <HintPath>..\..\..\..\..\Program Files (x86)\VMware\Infrastructure\PowerCLI\Modules\VMware.VimAutomation.Core\VMware.VimAutomation.ViCore.Util10Ps.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessToken.cs" />
     <Compile Include="Connect-HXServer.cs" />
+    <Compile Include="Disconnect-HXServer.cs" />
+    <Compile Include="EntityDetail.cs" />
     <Compile Include="GetPeers.cs" />
     <Compile Include="GetProtectedVM.cs" />
     <Compile Include="GetProtectionGroup.cs" />
+    <Compile Include="GetSPVM.cs" />
     <Compile Include="HXParameterSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtectedVM.cs" />
+    <Compile Include="Recovery\HaltReplication.cs" />
+    <Compile Include="Recovery\SetFailover.cs" />
+    <Compile Include="Recovery\SetTestFailover .cs" />
     <Compile Include="SetProtectedVM.cs" />
     <Compile Include="SPCmdlet.cs" />
     <Compile Include="SPParameterSet.cs" />
@@ -73,6 +112,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Product.wxs" />
     <None Include="SP_powershell.format.ps1xml">
       <SubType>Designer</SubType>
     </None>
@@ -97,9 +137,7 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Recovery\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

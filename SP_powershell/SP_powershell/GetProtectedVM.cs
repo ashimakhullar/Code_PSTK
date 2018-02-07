@@ -9,8 +9,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
 using Vestris.VMWareLib;
-using System.Management.Automation.Runspaces;
-using VMware.VimAutomation.ViCore.Types.V1;
+//using System.Management.Automation.Runspaces;
+//using VMware.VimAutomation.ViCore.Types.V1;
+//using VMware.Vim;
+using System.Collections.Specialized;
 
 
 namespace SP_powershell
@@ -71,6 +73,12 @@ namespace SP_powershell
         //
         protected override void ProcessSPRecord()
         {
+            ////VimClient vimClient = new VimClientImpl();
+            ////List<EntityViewBase> vmlist = new List<EntityViewBase>();
+            ////vimClient.Connect("https://10.198.2.214");
+            ////vimClient.Login("administrator@vsphere.local","Cisco123");
+            ////vmlist[0] = vimClient.FindEntityView(typeof(VMware.Vim.VirtualMachine), null, null, null);
+            //////VMware.Vim.VirtualMachine obj2 = new VMware.Vim.VirtualMachine();
 
             if (ValidateParameters() == false)
                 return;
@@ -165,6 +173,8 @@ namespace SP_powershell
                     WriteObject(result1, true);
                     return;
                 }
+               // VMware.Vim.VirtualMachine vm = new VMware.Vim.VirtualMachine();
+               
                 var output = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
                 //List<VMware.VimAutomation.ViCore.Types.V1.VM.Guest.VMGuest> result = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
                 List<ProtectedVMInfo> result = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");

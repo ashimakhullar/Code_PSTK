@@ -752,7 +752,7 @@ namespace IO.Swagger.Api
                 localVarPostBody = body; // byte array
             }
 
-
+            localVarHeaderParams.Add("Authorization", acceptLanguage);
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
                 Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
@@ -1176,7 +1176,7 @@ namespace IO.Swagger.Api
             {
                 localVarPostBody = body; // byte array
             }
-
+            localVarHeaderParams.Add("Authorization", acceptLanguage);
 
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
