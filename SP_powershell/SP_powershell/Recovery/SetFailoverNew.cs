@@ -12,10 +12,10 @@ using Newtonsoft.Json;
 
 namespace SP_powershell
 {
-    [Cmdlet(VerbsCommon.Set, "Failover")]
+    [Cmdlet(VerbsCommon.Set, "FailoverNew")]
     [OutputType(typeof(VirtualMachine))]
 
-    public class SetFailover : SPCmdlet
+    public class SetFailoverNew : SPCmdlet
     {
 
         // 
