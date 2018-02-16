@@ -76,18 +76,7 @@ namespace SP_powershell
             
             Configuration.Default = new Configuration();
             Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-            //if (UserName != null && Password != null)
-            //{
-            //    Configuration.Default.Username = UserName.ToString();
-            //    Configuration.Default.Password = Password.ToString();
-            //}
-            //else
-            //{
-            //    throw new ArgumentException("Username/Password has to be provided");
-            //}
-            //var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
-            //var apiInstance = new ProtectApi(apiString);
-            //var jparams = "";
+          
             
             try
             {
@@ -145,48 +134,11 @@ namespace SP_powershell
                 {
                     throw new Exception("The Server is not connected;Please check the IP address of Server");
                 }
-                //if (VMName == null)
-                //{
-                // jparams = "VMName";
-                //}
-                //if (VMId == null)
-                //{
-                // jparams += ",VMId";
-                //}
-                //if (VMidtype == null)
-                //{
-                // jparams += ",VMidtype";
-                //}
-                //if (jparams != "")
-                //{
-                //    throw new ArgumentException("Please enter the following params"+ jparams);
-                //}
-                var objResPoolJson = new EntityDetail
-                {
-                name= "vm_src11",
-                type = "DP_VM",
-                id = "string",
-                idtype = "VCMOID",
-                confignum = "0",
-                };
-                var objFolderJson = new EntityDetail
-                {
-                    name = "vm_src11",
-                    type = "DP_VM",
-                    id = "string",
-                    idtype = "VCMOID",
-                    confignum = "0",
-                };
-
-                var jsonPool = JsonConvert.SerializeObject(objResPoolJson);
-
-                var jsonFolder = JsonConvert.SerializeObject(objFolderJson);
-                EntityRef objEF_pool = JsonConvert.DeserializeObject<EntityRef>(jsonPool);
-                EntityRef objEF_folder = JsonConvert.DeserializeObject<EntityRef>(jsonFolder);
-                RecoverVmOptions body = new RecoverVmOptions(objEF_pool, objEF_folder);
-
-                string result1 = apiInstance.OpDpVmRecoveryFailoverPut("4218d69f-bbbf-5632-229d-d1a299478f3a",body,accessTkn.ToString());
-                WriteObject(result1, true);
+               
+               
+                
+                apiInstance.OpDpVmHaltPutCustom("4218d69f-bbbf-5632-229d-d1a299478f3a", "en-US", accessTkn.ToString());
+                WriteObject("Halted Replication", true);
                 return;
                 
             }

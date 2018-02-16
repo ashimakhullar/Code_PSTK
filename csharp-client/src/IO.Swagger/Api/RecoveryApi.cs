@@ -57,7 +57,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns></returns>
-        void OpDpVmHaltPut (string vmId, string acceptLanguage = null);
+        void OpDpVmHaltPut (string vmId,string accessToken, string acceptLanguage = null);
 
         /// <summary>
         /// Halt replication for the given VM
@@ -69,7 +69,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        ApiResponse<Object> OpDpVmHaltPutWithHttpInfo (string vmId, string acceptLanguage = null);
+        ApiResponse<Object> OpDpVmHaltPutWithHttpInfo (string vmId,string accessToken ,string acceptLanguage = null);
         /// <summary>
         /// Failover recovery for the given VM
         /// </summary>
@@ -103,8 +103,9 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="acceptLanguage"> (optional)</param>
+        /// <param name="accessToken"></param>
         /// <returns>List&lt;Job&gt;</returns>
-        List<Job> OpDpVmRecoveryJobsGet (string acceptLanguage = null);
+        List<Job> OpDpVmRecoveryJobsGet (string accessToken,string acceptLanguage = null);
 
         /// <summary>
         /// Recover job status for the given VM
@@ -114,8 +115,9 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="acceptLanguage"> (optional)</param>
+        /// <param name="accessToken"> (optional)</param>
         /// <returns>ApiResponse of List&lt;Job&gt;</returns>
-        ApiResponse<List<Job>> OpDpVmRecoveryJobsGetWithHttpInfo (string acceptLanguage = null);
+        ApiResponse<List<Job>> OpDpVmRecoveryJobsGetWithHttpInfo (string accessToken,string acceptLanguage = null);
         /// <summary>
         /// Recover job status for the given VM
         /// </summary>
@@ -125,8 +127,9 @@ namespace IO.Swagger.Api
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="jobId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
+        /// <param name="accessToken"></param>
         /// <returns>List&lt;Job&gt;</returns>
-        List<Job> OpDpVmRecoveryJobsJobIdGet (string jobId, string acceptLanguage = null);
+        List<Job> OpDpVmRecoveryJobsJobIdGet (string jobId, string accessToken,string acceptLanguage = null);
 
         /// <summary>
         /// Recover job status for the given VM
@@ -137,8 +140,9 @@ namespace IO.Swagger.Api
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="jobId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
+        /// <param name="accessToken"></param>
         /// <returns>ApiResponse of List&lt;Job&gt;</returns>
-        ApiResponse<List<Job>> OpDpVmRecoveryJobsJobIdGetWithHttpInfo (string jobId, string acceptLanguage = null);
+        ApiResponse<List<Job>> OpDpVmRecoveryJobsJobIdGetWithHttpInfo (string jobId, string accessToken, string acceptLanguage = null);
         /// <summary>
         /// Test recovery for the given VM
         /// </summary>
@@ -554,17 +558,18 @@ namespace IO.Swagger.Api
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
                 null);
         }
-
+        /*change to add access token*/
         /// <summary>
         /// Halt replication for the given VM 
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns></returns>
-        public void OpDpVmHaltPut (string vmId, string acceptLanguage = null)
+        public void OpDpVmHaltPut (string vmId, string accessToken,string acceptLanguage = null)
         {
-             OpDpVmHaltPutWithHttpInfo(vmId, acceptLanguage);
+             OpDpVmHaltPutWithHttpInfo(vmId, accessToken,acceptLanguage);
         }
 
         /// <summary>
@@ -572,9 +577,10 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        public ApiResponse<Object> OpDpVmHaltPutWithHttpInfo (string vmId, string acceptLanguage = null)
+        public ApiResponse<Object> OpDpVmHaltPutWithHttpInfo (string vmId, string accessToken, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -604,9 +610,11 @@ namespace IO.Swagger.Api
             if (vmId != null) localVarPathParams.Add("vmId", Configuration.ApiClient.ParameterToString(vmId)); // path parameter
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
 
-
-            // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
+            //adding the Authorization to the Header Parameter
+            
+                localVarHeaderParams.Add("Authorization", accessToken);
+                // make the HTTP request
+                IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
                 Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
@@ -622,7 +630,76 @@ namespace IO.Swagger.Api
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
                 null);
         }
+        /*custome method added by ashima*/
+        /// <summary>
+        /// Halt replication for the given VM 
+        /// </summary>
+        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="vmId"></param>
+        ///  <param name="accessToken"> </param>
+        /// <param name="acceptLanguage"> (optional)</param>
+        /// <returns></returns>
+        public void OpDpVmHaltPutCustom(string vmId,  string accessToken, string acceptLanguage = null)
+        {
+            OpDpVmHaltPutWithHttpInfoCustom(vmId, acceptLanguage, accessToken);
+        }
 
+        /// <summary>
+        /// Halt replication for the given VM 
+        /// </summary>
+        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="vmId"></param>
+        /// <param name="acceptLanguage"> (optional)</param>
+        ///  <param name="accessToken"> </param>
+        public ApiResponse<Object> OpDpVmHaltPutWithHttpInfoCustom(string vmId,string accessToken, string acceptLanguage = null)
+        {
+            // verify the required parameter 'vmId' is set
+            if (vmId == null)
+                throw new ApiException(400, "Missing required parameter 'vmId' when calling RecoveryApi->OpDpVmHaltPut");
+
+            var localVarPath = "/vms/{vmId}/halt";
+            var localVarPathParams = new Dictionary<String, String>();
+            var localVarQueryParams = new Dictionary<String, String>();
+            var localVarHeaderParams = new Dictionary<String, String>(Configuration.DefaultHeader);
+            var localVarFormParams = new Dictionary<String, String>();
+            var localVarFileParams = new Dictionary<String, FileParameter>();
+            Object localVarPostBody = null;
+
+            // to determine the Content-Type header
+            String[] localVarHttpContentTypes = new String[] {
+            };
+            String localVarHttpContentType = Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
+
+            // to determine the Accept header
+            String[] localVarHttpHeaderAccepts = new String[] {
+                "application/json"
+            };
+            String localVarHttpHeaderAccept = Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
+            if (localVarHttpHeaderAccept != null)
+                localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
+
+            if (vmId != null) localVarPathParams.Add("vmId", Configuration.ApiClient.ParameterToString(vmId)); // path parameter
+            if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
+
+            localVarHeaderParams.Add("Authorization", accessToken);
+            // make the HTTP request
+            IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
+                Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
+                localVarPathParams, localVarHttpContentType);
+
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
+
+            if (ExceptionFactory != null)
+            {
+                Exception exception = ExceptionFactory("OpDpVmHaltPut", localVarResponse);
+                if (exception != null) throw exception;
+            }
+
+            return new ApiResponse<Object>(localVarStatusCode,
+                localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
+                null);
+        }
+        /*custom method added by ashima*/
         /// <summary>
         /// Halt replication for the given VM 
         /// </summary>
@@ -856,10 +933,11 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="acceptLanguage"> (optional)</param>
+        /// <param name="accessToken"> </param>
         /// <returns>List&lt;Job&gt;</returns>
-        public List<Job> OpDpVmRecoveryJobsGet (string acceptLanguage = null)
+        public List<Job> OpDpVmRecoveryJobsGet (string accessToken,string acceptLanguage = null)
         {
-             ApiResponse<List<Job>> localVarResponse = OpDpVmRecoveryJobsGetWithHttpInfo(acceptLanguage);
+             ApiResponse<List<Job>> localVarResponse = OpDpVmRecoveryJobsGetWithHttpInfo(accessToken,acceptLanguage);
              return localVarResponse.Data;
         }
 
@@ -868,8 +946,9 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="acceptLanguage"> (optional)</param>
+        /// <param name="accessToken"></param>
         /// <returns>ApiResponse of List&lt;Job&gt;</returns>
-        public ApiResponse< List<Job> > OpDpVmRecoveryJobsGetWithHttpInfo (string acceptLanguage = null)
+        public ApiResponse< List<Job> > OpDpVmRecoveryJobsGetWithHttpInfo (string accessToken, string acceptLanguage = null)
         {
 
             var localVarPath = "/recovery/jobs";
@@ -894,8 +973,8 @@ namespace IO.Swagger.Api
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
 
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
-
-
+            //added to pass access token
+            localVarHeaderParams.Add("Authorization", accessToken);
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
                 Method.GET, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
@@ -915,7 +994,6 @@ namespace IO.Swagger.Api
         }
 
         /// <summary>
-        /// Recover job status for the given VM 
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="acceptLanguage"> (optional)</param>
@@ -984,10 +1062,11 @@ namespace IO.Swagger.Api
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="jobId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
+        /// <param name="accessToken"></param>
         /// <returns>List&lt;Job&gt;</returns>
-        public List<Job> OpDpVmRecoveryJobsJobIdGet (string jobId, string acceptLanguage = null)
+        public List<Job> OpDpVmRecoveryJobsJobIdGet (string jobId,string accessToken, string acceptLanguage = null)
         {
-             ApiResponse<List<Job>> localVarResponse = OpDpVmRecoveryJobsJobIdGetWithHttpInfo(jobId, acceptLanguage);
+             ApiResponse<List<Job>> localVarResponse = OpDpVmRecoveryJobsJobIdGetWithHttpInfo(jobId, accessToken, acceptLanguage);
              return localVarResponse.Data;
         }
 
@@ -997,8 +1076,9 @@ namespace IO.Swagger.Api
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="jobId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
+        /// <param name="accessToken"></param>
         /// <returns>ApiResponse of List&lt;Job&gt;</returns>
-        public ApiResponse< List<Job> > OpDpVmRecoveryJobsJobIdGetWithHttpInfo (string jobId, string acceptLanguage = null)
+        public ApiResponse< List<Job> > OpDpVmRecoveryJobsJobIdGetWithHttpInfo (string jobId,string accessToken, string acceptLanguage = null)
         {
             // verify the required parameter 'jobId' is set
             if (jobId == null)
@@ -1028,6 +1108,8 @@ namespace IO.Swagger.Api
             if (jobId != null) localVarPathParams.Add("jobId", Configuration.ApiClient.ParameterToString(jobId)); // path parameter
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
 
+            //change to add the accesstoken
+            localVarHeaderParams.Add("Authorization", accessToken);
 
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
@@ -1276,9 +1358,6 @@ namespace IO.Swagger.Api
                 (string) Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
         }
 
-        public void DeletePet(int petId, object apiKey)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

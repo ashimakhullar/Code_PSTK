@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
-using System.Security.Principal;
+
 
 namespace SP_powershell
 {
@@ -18,13 +18,9 @@ namespace SP_powershell
     /// </summary>
     [Cmdlet(VerbsCommunications.Connect, "HXServer")]
     [OutputType(typeof(VirtualMachine))]
-    //[Category(CmdletCategory.Session)]
     [CmdletBinding]
     public class ConnectHXServer : SPCmdlet
     {
-
-
-
         // 
         // Properties (PowerShell Parameters) to be defined below
         //
@@ -100,10 +96,7 @@ namespace SP_powershell
                 var client_id = "HxGuiClient";
                 var client_secret = "Sunnyvale";
                 var redirect_uri = "http://localhost/aaa/redirect";
-                //};
-
                 Debug.Assert(Username != null);
-
                 Configuration.Default = new Configuration();
                 
                 if (Username != null && Password != null)
@@ -115,14 +108,11 @@ namespace SP_powershell
                 {
                     throw new ArgumentException("Username/Password has to be provided");
                 }
-                var apiString = "https://" + Server.ToString().Trim() + "/aaa/v1";
-                               
+                var apiString = "https://" + Server.ToString().Trim() + "/aaa/v1";                          
                 UserCredentials body = new UserCredentials(Username.ToString().Trim(), Password.ToString().Trim(), client_id.Trim(), client_secret.Trim(), redirect_uri.Trim());
                 var apiInstance = new ObtainAccessTokenApi(apiString);
                 AccessTokenEnvelope result = apiInstance.ObtainAccessToken("password", body);
                 
-
-
                 // Access Token for each server connected is maintained in Dictionary object
                 //storageKeyDictionary-server ip is key while response token is value;
                 Token vtoken = new Token();
@@ -136,8 +126,6 @@ namespace SP_powershell
                 }
                 WriteObject(result, true);
                 storageKeyDictionary.Add(Server.ToString(), vtoken);
-                
-
             }
             catch (ApiException e)
             {
@@ -150,10 +138,7 @@ namespace SP_powershell
                 ErrorRecord psErrRecord = new ErrorRecord(
                            e, "", ErrorCategory.AuthenticationError, e.Message);
                 WriteError(psErrRecord);
-            }
-
-
-           
+            }      
         }
 
 
@@ -245,9 +230,6 @@ namespace SP_powershell
         }
 
     }
-
-    
-
 
     internal class IHXServer
     {

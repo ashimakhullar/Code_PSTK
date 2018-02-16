@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SP_powershell", "SP_powershell\SP_powershell\SP_powershell.csproj", "{C4404C76-F1A4-46E3-8F3F-3207F12ED67F}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PSTK_Installer", "WixProject1\PSTK_Installer.wixproj", "{C651C974-1602-45A9-8353-739A51AD1335}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD} = {3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

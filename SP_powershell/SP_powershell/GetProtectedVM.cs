@@ -8,11 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
-using Vestris.VMWareLib;
-//using System.Management.Automation.Runspaces;
-//using VMware.VimAutomation.ViCore.Types.V1;
-//using VMware.Vim;
-using System.Collections.Specialized;
+
 
 
 namespace SP_powershell
@@ -36,20 +32,20 @@ namespace SP_powershell
         [Alias("srvr")]
         public string Server { get; set; }
         
-        //UserName Parameter contains the Cisco HXConnect UserName
-        [Parameter(Position = 1, ParameterSetName = "UserNamePassword")]
-        [ValidateNotNullOrEmpty]
-        [Alias("user")]
-        public string UserName { get; set; }
+        //////UserName Parameter contains the Cisco HXConnect UserName
+        ////[Parameter(Position = 1, ParameterSetName = "UserNamePassword")]
+        ////[ValidateNotNullOrEmpty]
+        ////[Alias("user")]
+        ////public string UserName { get; set; }
 
-        //Password Parameter contains the Cisco HXConnect Password
-        [Parameter(Position = 2, ParameterSetName = "UserNamePassword")]
-        [ValidateNotNullOrEmpty]
-        [Alias("pwd")]
-        public string Password { get; set; }
+        //////Password Parameter contains the Cisco HXConnect Password
+        ////[Parameter(Position = 2, ParameterSetName = "UserNamePassword")]
+        ////[ValidateNotNullOrEmpty]
+        ////[Alias("pwd")]
+        ////public string Password { get; set; }
 
         //VMUid will pass the VM uid
-        //[Parameter(ParameterSetName = "HXUid")]
+  
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("vmid")]
@@ -73,28 +69,19 @@ namespace SP_powershell
         //
         protected override void ProcessSPRecord()
         {
-            ////VimClient vimClient = new VimClientImpl();
-            ////List<EntityViewBase> vmlist = new List<EntityViewBase>();
-            ////vimClient.Connect("https://10.198.2.214");
-            ////vimClient.Login("administrator@vsphere.local","Cisco123");
-            ////vmlist[0] = vimClient.FindEntityView(typeof(VMware.Vim.VirtualMachine), null, null, null);
-            //////VMware.Vim.VirtualMachine obj2 = new VMware.Vim.VirtualMachine();
-
-            if (ValidateParameters() == false)
-                return;
+         if (ValidateParameters() == false)
+         return;
             // Configure access token for authorization
             
            
             try
             {
-               
                 Configuration.Default = new Configuration();
                 Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
                 if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
                 {
                     throw new Exception("No server is connected.");
                 }
-                //var valServer = "";
                 if (Server!=null )
                 {
                     Server = Server.ToString().Trim();
@@ -104,27 +91,12 @@ namespace SP_powershell
                     var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
                     Server = firstElement.Key;
                 }
-
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
-
                 var apiInstance = new ProtectApi(apiString);
-
-              
-                
-
+                           
                 // Find All Protected VMs
                 ////////////VMHXobject objVmJson = new VMHXobject();
                 var num=0;
-                //if (ConnectHXServer.storageKeyDictionary == null)
-                //{
-                //    num = 0;
-
-                //}
-                //else
-                //{
-                //    num = ConnectHXServer.storageKeyDictionary.Count();
-                //check the server ip provided by user if it exists in dictionary containing the list of all servers connected
-               // dynamic dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
                 String accessTkn = "";
 
                 dynamic dictServerCnnctd = null;
@@ -198,7 +170,7 @@ namespace SP_powershell
                // WriteContainerecord(myresult3);
                 WriteObject(result, true);
                 // WriteVMrecord(result);
-                Execute_vCenter_Tasks("10.198.2.215", "administrator@vsphere.local", "Cisco123");
+               
             }
             catch (ApiException e)
             {
@@ -227,23 +199,7 @@ namespace SP_powershell
             
         }
 
-        private static void Execute_vCenter_Tasks(string vCenterIp, string vCenterUsername, string vCenterPassword)
-        {
-          
-                var shell = PowerShell.Create();
-
-
-
-                string PsCmd = "Get-Module -Name VMware.VimAutomation.Core; $vCenterServer = '" + vCenterIp + "';$vCenterAdmin = '" + vCenterUsername + "' ;$vCenterPassword = '" + vCenterPassword + "';" + System.Environment.NewLine;
-
-
-
-                PsCmd = PsCmd + "$VIServer = Connect-VIServer -Server $vCenterServer -User $vCenterAdmin -Password $vCenterPassword;" + System.Environment.NewLine;
-
-                shell.Commands.AddScript(PsCmd);
-          
-        }
-
+       
         private void WriteContainerecord(List<containerHXobject> myresult3)
         {
             foreach (var resultset in myresult3)
@@ -431,12 +387,9 @@ namespace SP_powershell
 
     public class containerHXobject
     {
-       
         public VMHXobject VMHXobject { get; set; }
         public ClusterHXobject ClusterHXobject { get; set; }
         public VmInfoHXobject VmInfoHXobject { get; set; }
-
-
         public containerHXobject()
         {
         }

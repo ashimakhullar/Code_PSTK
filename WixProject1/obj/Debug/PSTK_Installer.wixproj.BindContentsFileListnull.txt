@@ -1,1 +1,1 @@
-C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\SP_powershell.dll
+LICENSE

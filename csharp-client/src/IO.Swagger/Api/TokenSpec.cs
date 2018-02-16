@@ -12,10 +12,10 @@ namespace IO.Swagger.Api
 {
     internal class TokenSpec
     {
-        public string username;
-        public string password;
-        public string client_id;
-        public string client_secret;
-        public string redirect_uri;
+        //public string username;
+        //public string password;
+        //public string client_id;
+        //public string client_secret;
+        //public string redirect_uri;
     }
 }

@@ -1,30 +1,189 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="4321067a-2cd6-4d67-a399-6f00c2aa1311" Name="PSTK_Installer" Language="1033" Version="1.0.0.0" Manufacturer="SP" UpgradeCode="b0bf6fed-02f6-4019-a841-2a9786838f01">
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate />
+  <Product Id="*"
+           Name="TelemetryNode"
+           Language="1033"
+           Version="1.1.9.0"
+           Manufacturer="Illumio"
+           UpgradeCode="b3a142c6-4b9f-4af0-9086-232b6342c0fc">
 
-		<Feature Id="ProductFeature" Title="PSTK_Installer" Level="1">
-			<ComponentGroupRef Id="ProductComponents" />
-		</Feature>
-	</Product>
+    <Package InstallerVersion="200" Compressed="yes"  InstallPrivileges="elevated" InstallScope="perMachine"/>
 
-	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="PSTK_Installer" />
-			</Directory>
-		</Directory>
-	</Fragment>
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed."  AllowSameVersionUpgrades="yes" IgnoreRemoveFailure="no" />
+    <MediaTemplate EmbedCab="yes" />
 
-	<Fragment>
-		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-      <Component Id="ProductComponent">
-        <File Source="$(var.SP_powershell.TargetPath)" />
+    <Upgrade Id="b3a142c6-4b9f-4af0-9086-232b6342c0fc">
+      <UpgradeVersion Minimum="1.0.0"
+                IncludeMinimum="yes"
+                OnlyDetect="no"
+                Maximum="99.99.99.99"
+                IncludeMaximum="no"
+                Property="PREVIOUSFOUND" />
+    </Upgrade>
+
+    <Condition Message="A newer version of this software is already installed.">NOT NEWERVERSIONDETECTED</Condition>
+
+    <Property Id="ServiceSharedSecret" Secure="no" Value="NONE"/>
+    <Property Id="ServiceFQDN" Secure="no" Value="NONE"/>
+    <Property Id="ServicePort" Secure="no" Value="8445"/>
+    <Property Id="IntervalKeepAliveSec" Secure="no" Value="3600"/>
+
+    <Feature Id="Feature_Main" Title="[ProductName]" Level="1" Absent="disallow" Description="Installs all necessary [ProductName] components." >
+      <ComponentGroupRef Id="MainComponents" />
+      <ComponentRef Id="StartMenuShortComponent" />
+    </Feature>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    <!--UIRef Id="WixUI_InstallDir" /-->
+    <!--UIRef Id="SetupDialogUI" /-->
+    <Icon Id="icon.ps1" SourceFile="icon.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="icon.ps1" />
+
+    <InstallUISequence>
+      <Show Dialog="UserInputDlg" After="CostFinalize"/>
+    </InstallUISequence>
+  </Product>
+
+  <Fragment>
+
+    <Directory Id="TARGETDIR" Name="SourceDir" >
+
+      <Directory Id="StartMenuFolder" Name="Programs">
+        <Component Id="StartMenuShortComponent" Guid="BA970047-A2B1-425C-AE87-47F9C7EAE8F3">
+          <Shortcut Id="Illumio.Shortcut" Name="Telemetry Node" IconIndex="0" Icon="icon.ps1" Target="[WindowsFolder]system32\WindowsPowerShell\v1.0\powershell.exe" Arguments="-File &quot;[INSTALLFOLDER]TelemetryNode.ps1&quot;"/>
+          <RegistryKey Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+            <RegistryValue  Type="integer" Value="1" Name="Installed" KeyPath="yes" />
+          </RegistryKey>
+          <RemoveFolder Id="StartMenuFolder" On="uninstall"/>
+        </Component>
+      </Directory>
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLILLUMIO" Name="Illumio" >
+          <Directory Id="INSTALLFOLDER" Name="Telemetry Node" >
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+  </Fragment>
+
+
+  <Fragment>
+    <Feature Id="TNReinstall" Title="IllRegistry" Level="1">
+      <ComponentGroupRef Id="MainComponents"/>
+    </Feature>
+
+
+    <ComponentGroup Id="MainComponents" Directory="INSTALLFOLDER" >
+      <Component Id="CMP_PS_SCRIPT" Guid="CC0E0E77-810F-4DFE-88F8-9FDA840EC0D0"  NeverOverwrite="no" >
+
+     
+        <File Source="LICENSE"/>
+      </Component>
+
+      <Component Id="CMP_REGISTRY" NeverOverwrite="no">
+        <RegistryKey Root="HKLM" Key="Software\[Manufacturer]\[ProductName]" >
+          <RegistryValue Type="integer" Name="Installed" Value="1" KeyPath="yes"  />
+          <RegistryValue Type="string"  Name="ServiceSharedSecret" Value="[ServiceSharedSecret]" />
+          <RegistryValue Type="string"  Name="ServiceFQDN" Value="[ServiceFQDN]" />
+          <RegistryValue Type="string"  Name="ServicePort" Value="[ServicePort]" />
+          <RegistryValue Type="string"  Name="IntervalKeepAliveSec" Value="[IntervalKeepAliveSec]" />
+        </RegistryKey>
       </Component>
     </ComponentGroup>
-	</Fragment>
+
+
+
+
+    <CustomAction Id="SetREINSTALL" Property="REINSTALL" Value="TNReinstall"/>
+
+    <InstallUISequence>
+      <Custom Action="SetREINSTALL" Before="CostInitialize"><![CDATA[Installed AND NOT (REMOVE ~= "ALL") AND NOT REINSTALL]]></Custom>
+    </InstallUISequence>
+
+  </Fragment>
+
+  <Fragment>
+    <UI Id="SetupDialogUI" >
+
+      <Dialog Id="UserInputDlg" Width ="370" Height="270" Title ="[ProductName] Setup" >
+        <Control Id ="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" >
+          <Text>Set Configurations</Text>
+        </Control>
+
+        <Control Id="LabelKey" Type="Text" X="85" Y="120" Height ="17" Width="65" Transparent="yes" Text="Key" />
+        <Control Id="TextBoxKey" Type="Edit" X="150" Y="120" Height ="17" Width="120" Property="SERVICESHAREDSECRET" />
+
+        <Control Id="LabelServerName" Type="Text" X="85" Y="140" Height ="17" Width="65" Transparent="yes" Text="Server FQDN" />
+        <Control Id="TextBoxServerName" Type="Edit" X="150" Y="140" Height ="17" Width="120" Property="SERVICEFQDN" />
+
+        <Control Id="LabelPortNo" Type="Text" X="85" Y="160" Height ="17" Width="65" Transparent="yes" Text="Port Number" />
+        <Control Id="TextBoxPortNo" Type="Edit" X="150" Y="160" Height ="17" Width="120" Property="SERVICEPORT" />
+
+        <Control Id="Next" Type="PushButton" X="234" Y="243" Width="56" Height ="17" Default ="yes" Text="Next" />
+        <Control Id="Back" Type="PushButton" X="184" Y="243" Width="56" Height ="17" Default ="yes" Text="Back" />
+
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height ="17" Default ="yes" Text="Cancel" Cancel="yes" >
+          <Publish Event="SpawnDialog" Value="CancelDlg" >1</Publish>
+        </Control>
+
+      </Dialog>
+
+      <TextStyle Id="WixUI_Font_Normal"  FaceName="Tahoma" Size="8" />
+      <TextStyle Id="WixUI_Font_Bigger"  FaceName="Tahoma" Size="12" />
+      <TextStyle Id="WixUI_Font_Title"   FaceName="Tahoma" Size="9" Bold="yes" />
+
+      <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+      <Property Id="WixUI_Mode" Value="InstallDir" />
+
+      <DialogRef Id="BrowseDlg"/>
+      <DialogRef Id="DiskCostDlg" />
+      <DialogRef Id="ErrorDlg" />
+      <DialogRef Id="FatalError" />
+      <DialogRef Id="FilesInUse" />
+      <DialogRef Id="MsiRMFilesInUse" />
+      <DialogRef Id="PrepareDlg" />
+      <!--DialogRef Id="ProgressDlg" /-->
+      <DialogRef Id="ResumeDlg" />
+      <DialogRef Id="UserExit" />
+
+      <Publish Dialog="BrowseDlg" Control="OK" Event="DoAction" Value="WixUIValidatePath" Order="3">1</Publish>
+      <Publish Dialog="BrowseDlg" Control="OK" Event="SpawnDialog" Value="InvalidDirDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+
+      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+
+      <!--Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">NOT Installed</Publish-->
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="UserInputDlg">1</Publish>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">Installed AND PATCH</Publish>
+
+      <!--Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish-->
+      <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="UserInputDlg">1</Publish>
+      <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">LicenseAccepted = "1"</Publish>
+
+      <Publish Dialog="UserInputDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+      <Publish Dialog="UserInputDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+
+      <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+      <Publish Dialog="InstallDirDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+      <Publish Dialog="InstallDirDlg" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
+      <Publish Dialog="InstallDirDlg" Control="Next" Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+      <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="4">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+      <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+      <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
+
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg" Order="1">NOT Installed</Publish>
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed AND NOT PATCH</Publish>
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">Installed AND PATCH</Publish>
+
+      <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+
+      <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+
+      <Property Id="ARPNOMODIFY" Value="1" />
+
+    </UI>
+    <UIRef Id="WixUI_Common" />
+  </Fragment>
 </Wix>

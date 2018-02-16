@@ -60,8 +60,79 @@ OpenAPI spec version: 1.0.0
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="**\*.cs" Exclude="obj\**" />
-   </ItemGroup>
+    <Compile Include="Api\AAAConfigurationParametersApi.cs" />
+    <Compile Include="Api\AboutApi.cs" />
+    <Compile Include="Api\ObtainAccessTokenApi.cs" />
+    <Compile Include="Api\ProtectApi.cs" />
+    <Compile Include="Api\RecoveryApi.cs" />
+    <Compile Include="Api\RefreshAccessTokenApi.cs" />
+    <Compile Include="Api\ReplicationApi.cs" />
+    <Compile Include="Api\RevokeTokenApi.cs" />
+    <Compile Include="Api\VaaiApi.cs" />
+    <Compile Include="Api\ValidateAccessTokenApi.cs" />
+    <Compile Include="Client\ApiClient.cs" />
+    <Compile Include="Client\ApiException.cs" />
+    <Compile Include="Client\ApiResponse.cs" />
+    <Compile Include="Client\Configuration.cs" />
+    <Compile Include="Client\ExceptionFactory.cs" />
+    <Compile Include="Client\IApiAccessor.cs" />
+    <Compile Include="Client\SwaggerDateConverter.cs" />
+    <Compile Include="Model\AAAConfiguration.cs" />
+    <Compile Include="Model\AboutInfo.cs" />
+    <Compile Include="Model\AccessTokenEnvelope.cs" />
+    <Compile Include="Model\AccessTokenInfo.cs" />
+    <Compile Include="Model\AccessTokenSpec.cs" />
+    <Compile Include="Model\AccessTokenToValidate.cs" />
+    <Compile Include="Model\AuthError.cs" />
+    <Compile Include="Model\Credential.cs" />
+    <Compile Include="Model\DisplayReplicationDetails.cs" />
+    <Compile Include="Model\DvsDeviceNetworkMap.cs" />
+    <Compile Include="Model\EntityRef.cs" />
+    <Compile Include="Model\EntityRefToStepMap.cs" />
+    <Compile Include="Model\ErrorStack.cs" />
+    <Compile Include="Model\GroupEditParams.cs" />
+    <Compile Include="Model\IpPoolInfo.cs" />
+    <Compile Include="Model\IpPoolSpec.cs" />
+    <Compile Include="Model\IpRange.cs" />
+    <Compile Include="Model\Job.cs" />
+    <Compile Include="Model\LocalizableMessage.cs" />
+    <Compile Include="Model\LocalizableValue.cs" />
+    <Compile Include="Model\MapPairErToReplicationPeerInfo.cs" />
+    <Compile Include="Model\MapPortTypeToPortNumber.cs" />
+    <Compile Include="Model\MapReplPlatDatastoreToReplPlatDatastore.cs" />
+    <Compile Include="Model\NetworkMapping.cs" />
+    <Compile Include="Model\ProtectedVMInfo.cs" />
+    <Compile Include="Model\ProtectedVMSpec.cs" />
+    <Compile Include="Model\ProtectionGroupInfo.cs" />
+    <Compile Include="Model\ProtectionGroupSpec.cs" />
+    <Compile Include="Model\ProtectionInfo.cs" />
+    <Compile Include="Model\RecoverVmOptions.cs" />
+    <Compile Include="Model\RefreshTokenEnvelope.cs" />
+    <Compile Include="Model\ReplicationClusterErToSchedule.cs" />
+    <Compile Include="Model\ReplicationDatastore.cs" />
+    <Compile Include="Model\ReplicationNetwork.cs" />
+    <Compile Include="Model\ReplicationPeerInfo.cs" />
+    <Compile Include="Model\ReplicationPeerSpec.cs" />
+    <Compile Include="Model\ReplicationPlatDatastore.cs" />
+    <Compile Include="Model\ReplicationPlatDatastorePair.cs" />
+    <Compile Include="Model\ReplicationSchedule.cs" />
+    <Compile Include="Model\ReplicationStatus.cs" />
+    <Compile Include="Model\RevokeError.cs" />
+    <Compile Include="Model\RevokeTokenEnvelope.cs" />
+    <Compile Include="Model\RpoStatus.cs" />
+    <Compile Include="Model\SnapshotInfo.cs" />
+    <Compile Include="Model\SnapshotStatus.cs" />
+    <Compile Include="Model\Step.cs" />
+    <Compile Include="Model\StringToListStringMap.cs" />
+    <Compile Include="Model\UserCredentials.cs" />
+    <Compile Include="Model\ValidateError.cs" />
+    <Compile Include="Model\VirtualMachine.cs" />
+    <Compile Include="Model\VirtualMachineRuntimeInfo.cs" />
+    <Compile Include="Model\VlanReplication.cs" />
+    <Compile Include="Model\VmCloneSpec.cs" />
+    <Compile Include="Model\VmProtectionSpaceUsage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

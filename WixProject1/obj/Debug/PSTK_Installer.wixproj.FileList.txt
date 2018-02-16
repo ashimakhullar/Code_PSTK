@@ -1,4 +1,3 @@
-C:\temp\test\Code_PSTK\WixProject1\bin\Debug\cab1.cab
 C:\temp\test\Code_PSTK\WixProject1\bin\Debug\PSTK_Installer.msi
 C:\temp\test\Code_PSTK\WixProject1\bin\Debug\PSTK_Installer.wixpdb
 obj\Debug\Product.wixobj

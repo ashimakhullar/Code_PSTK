@@ -31,13 +31,7 @@ namespace SP_powershell
         [ValidateNotNullOrEmpty]
         [Alias("vmid1")]
         public string VMId { get; set; }
-        //commented out as DP_VM is default being used-reference stcli
-        ////[Parameter(ParameterSetName = "HXName")]
-        ////[ValidateNotNullOrEmpty]
-        ////[ValidateSet("DISK", "PNODE", "NODE", "CLUSTER", "DATASTORE", "VIRTNODE", "VIRTCLUSTER", "VIRTDATASTORE", "VIRTMACHINE", "PDISK", "PDATASTORE", "VIRTMACHINESNAPSHOT", "FOLDER", "RESOURCEPOOL", "FILE", "VIRTDATACENTER", "REPLICATION_APPLIANCE", "REPLICATION_JOB", "IP_POOL", "DP_VM_SNAPSHOT", "DP_VMGROUP_SNAPSHOT", "DP_VM", "DP_VMGROUP", "DP_VM_CONFIG", "DP_VM_SNAPSHOT_POINT", "CLUSTER_PAIR")]
-        ////[Alias("vmtyp")]
-        ////public string VMType { get; set; }
-
+       
         //[Parameter(ParameterSetName = "HXName")]
         [Parameter()]
         [ValidateNotNullOrEmpty]
@@ -117,24 +111,12 @@ namespace SP_powershell
                 };
 
 
-                ////string json1 = @"{
-                ////    ""name"": ""vm_src12"",
-                ////    ""type"": ""DP_VM"",
-                ////    ""id"": ""vm-53"",
-                ////    ""idtype"": ""VCMOID"",
-                ////    ""confignum"": 0
-                ////    }";
-
-
+           
                 var json = JsonConvert.SerializeObject(objVmJson);
 
 
                 EntityRef objEF = JsonConvert.DeserializeObject<EntityRef>(json);
-                //objEF.Name = "vm_src11";
-                //objEF.Idtype = EntityRef.IdtypeEnum.VCMOID;
-                //objEF.Type = EntityRef.TypeEnum.DPVM;
-                //objEF.Id = "421875b8-f66b-2e88-41e3-997abc2c4f38";
-                //objEF.Confignum = null;
+      
                 ProtectedVMSpec body = new ProtectedVMSpec(objEF);
                                  
                 ProtectedVMInfo result1 = apiInstance.OpDpVmPost(body);

@@ -1858,14 +1858,8 @@ namespace IO.Swagger.Api
             var objEF = JsonConvert.SerializeObject(type);
             
             //adding the Authorization to the Header Parameter
-            if (base64Encoded != null)
-            //{
-            //    localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
-            //}
-            //else
-            {
-                localVarHeaderParams.Add("Authorization", type);
-            }
+            localVarHeaderParams.Add("Authorization", type);
+            
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.GET, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
