@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IO.Swagger", "csharp-client\src\IO.Swagger\IO.Swagger.csproj", "{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IO.Swagger.Test", "csharp-client\src\IO.Swagger.Test\IO.Swagger.Test.csproj", "{19F1DEBC-DE5E-4517-8062-F000CD499087}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SP_powershell", "SP_powershell\SP_powershell\SP_powershell.csproj", "{C4404C76-F1A4-46E3-8F3F-3207F12ED67F}"
@@ -14,6 +12,8 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PSTK_Installer", "WixProjec
 		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD} = {3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IO.Swagger", "csharp-client\src\IO.Swagger\IO.Swagger.csproj", "{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,14 +22,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Debug|x86.Build.0 = Debug|Any CPU
-		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Release|x86.ActiveCfg = Release|Any CPU
-		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Release|x86.Build.0 = Release|Any CPU
 		{19F1DEBC-DE5E-4517-8062-F000CD499087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{19F1DEBC-DE5E-4517-8062-F000CD499087}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19F1DEBC-DE5E-4517-8062-F000CD499087}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -52,6 +44,14 @@ Global
 		{C651C974-1602-45A9-8353-739A51AD1335}.Release|Any CPU.ActiveCfg = Release|x86
 		{C651C974-1602-45A9-8353-739A51AD1335}.Release|x86.ActiveCfg = Release|x86
 		{C651C974-1602-45A9-8353-739A51AD1335}.Release|x86.Build.0 = Release|x86
+		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Debug|x86.Build.0 = Debug|Any CPU
+		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Release|x86.ActiveCfg = Release|Any CPU
+		{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

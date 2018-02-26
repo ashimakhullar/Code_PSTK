@@ -59,6 +59,8 @@ C:\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.csprojResolveAs
 C:\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.csproj.CoreCompileInputs.cache
 C:\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.dll
 C:\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.pdb
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.csprojResolveAssemblyReference.cache
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.csproj.CoreCompileInputs.cache
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\SP_powershell.psd1
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\swagger.json
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\SP_powershell.dll.config
@@ -102,7 +104,5 @@ C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\System.Management.A
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\Vestris.VMWareLib.xml
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\Vestris.VMWareLib.dll.config
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\RestSharp.xml
-C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.csprojResolveAssemblyReference.cache
-C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.csproj.CoreCompileInputs.cache
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.dll
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.pdb

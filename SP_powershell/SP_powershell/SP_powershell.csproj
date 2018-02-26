@@ -97,18 +97,20 @@
     <Compile Include="GetProtectionGroup.cs" />
     <Compile Include="GetSPVM.cs" />
     <Compile Include="HXParameterSet.cs" />
+    <Compile Include="GetHXServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtectedVM.cs" />
+    <Compile Include="Recover\GetRecoverTask.cs" />
     <Compile Include="Recovery\GetRecoveryJobs.cs" />
     <Compile Include="Recovery\RecoveryDetails.cs" />
-    <Compile Include="Recovery\SetFailoverNew.cs" />
-    <Compile Include="Recovery\SetPrepareFailover.cs" />
-    <Compile Include="Recovery\SetPrepareReverseProtect.cs" />
+    <Compile Include="Recover\SetFailoverNew.cs" />
+    <Compile Include="Recover\SetPrepareFailover.cs" />
+    <Compile Include="Recover\SetPrepareReverseProtect.cs" />
     <Compile Include="Recovery\SetReplicationHalt.cs" />
     <Compile Include="Recovery\SetFailover.cs" />
-    <Compile Include="Recovery\SetReverseProtect.cs" />
+    <Compile Include="Recover\SetReverseProtect.cs" />
     <Compile Include="Recovery\SetTestFailover .cs" />
-    <Compile Include="Recovery\SetTestFailoverNew.cs" />
+    <Compile Include="Recover\SetTestFailoverNew.cs" />
     <Compile Include="SetProtectedVM.cs" />
     <Compile Include="SPCmdlet.cs" />
     <Compile Include="Task.cs" />
@@ -130,12 +132,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\csharp-client\src\IO.Swagger\IO.Swagger.csproj">
-      <Project>{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}</Project>
-      <Name>IO.Swagger</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="SP_powershell.Help.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -143,7 +139,12 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\csharp-client\src\IO.Swagger\IO.Swagger.csproj">
+      <Project>{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}</Project>
+      <Name>IO.Swagger</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

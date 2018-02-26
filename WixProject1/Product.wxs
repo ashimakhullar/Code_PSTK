@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <Product Id="*"
-           Name="TelemetryNode"
+  <Product Id="4321067a-2cd6-4d67-a399-6f00c2aa1311"
+           Name="HXConnectPowerShellToolkit"
            Language="1033"
-           Version="1.1.9.0"
-           Manufacturer="Illumio"
+           Version="1.0.0.0"
+           Manufacturer="Cisco"
            UpgradeCode="b3a142c6-4b9f-4af0-9086-232b6342c0fc">
 
     <Package InstallerVersion="200" Compressed="yes"  InstallPrivileges="elevated" InstallScope="perMachine"/>
@@ -51,7 +51,7 @@
 
       <Directory Id="StartMenuFolder" Name="Programs">
         <Component Id="StartMenuShortComponent" Guid="BA970047-A2B1-425C-AE87-47F9C7EAE8F3">
-          <Shortcut Id="Illumio.Shortcut" Name="Telemetry Node" IconIndex="0" Icon="icon.ps1" Target="[WindowsFolder]system32\WindowsPowerShell\v1.0\powershell.exe" Arguments="-File &quot;[INSTALLFOLDER]TelemetryNode.ps1&quot;"/>
+          <Shortcut Id="PSTK.Shortcut" Name="HXConnect PSTK" IconIndex="0" Icon="icon.ps1" Target="[WindowsFolder]system32\WindowsPowerShell\v1.0\powershell.exe" Arguments="-File &quot;[INSTALLFOLDER]PSTKNode.ps1&quot;"/>
           <RegistryKey Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
             <RegistryValue  Type="integer" Value="1" Name="Installed" KeyPath="yes" />
           </RegistryKey>
@@ -59,8 +59,8 @@
         </Component>
       </Directory>
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLILLUMIO" Name="Illumio" >
-          <Directory Id="INSTALLFOLDER" Name="Telemetry Node" >
+        <Directory Id="INSTALLCISCO" Name="CISCO_HX" >
+          <Directory Id="INSTALLFOLDER" Name="PSTK" >
           </Directory>
         </Directory>
       </Directory>

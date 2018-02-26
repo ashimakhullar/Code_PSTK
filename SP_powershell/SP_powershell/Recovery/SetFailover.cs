@@ -223,11 +223,21 @@ namespace SP_powershell
                         List<IO.Swagger.Model.Job> result2 = apiInstance.OpDpVmRecoveryJobsJobIdGet(result1.ToString(), accessTkn.ToString(), "en-US");//43d80de4-f438-4ff0-a3de-b89a62a3ac1f
                                                                                                                                                         //var result2 = apiInstance.OpDpVmRecoveryJobsJobIdGet("43d80de4-f438-4ff0-a3de-b89a62a3ac1f", accessTkn.ToString(), "en-US");
                         DateTime oneMinutesFromNow = GetOneMinutesFromNow();
+                        if (result2[0].State.ToString() == "EXCEPTION")
+                        {
+                            WriteVerbose("Exception in Failover of VM");
+                            WriteObject(result2, true);
 
+                        }
                         while (result2 != null && now < oneMinutesFromNow)
                         {
                             List<IO.Swagger.Model.Job> check1 = apiInstance.OpDpVmRecoveryJobsJobIdGet(result1.ToString(), accessTkn.ToString(), "en-US");
                             if (check1[0].State.ToString() == "COMPLETED")
+                            {
+                                result2 = check1;
+                                break;
+                            }
+                            else if (check1[0].State.ToString() == "EXCEPTION")
                             {
                                 result2 = check1;
                                 break;

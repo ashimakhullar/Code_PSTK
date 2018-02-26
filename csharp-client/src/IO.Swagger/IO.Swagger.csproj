@@ -64,6 +64,7 @@ OpenAPI spec version: 1.0.0
     <Compile Include="Api\AboutApi.cs" />
     <Compile Include="Api\ObtainAccessTokenApi.cs" />
     <Compile Include="Api\ProtectApi.cs" />
+    <Compile Include="Api\RecoverApi.cs" />
     <Compile Include="Api\RecoveryApi.cs" />
     <Compile Include="Api\RefreshAccessTokenApi.cs" />
     <Compile Include="Api\ReplicationApi.cs" />
