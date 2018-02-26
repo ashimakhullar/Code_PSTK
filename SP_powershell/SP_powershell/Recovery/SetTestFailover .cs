@@ -258,6 +258,8 @@ namespace SP_powershell
                         DateTime now = DateTime.Now;
                        // WriteVerbose("The Vm has been halted");
                         result1 = apiInstance.OpDpVmRecoveryTestPut(VMId.ToString(), body, accessTkn.ToString());
+                        var taskID = JsonConvert.SerializeObject(result1);
+                        
                         WriteVerbose("Test Failover of VM done");
                         List<IO.Swagger.Model.Job> result2 = apiInstance.OpDpVmRecoveryJobsJobIdGet(result1.ToString(), accessTkn.ToString(), "en-US");//43d80de4-f438-4ff0-a3de-b89a62a3ac1f
                         //var result2 = apiInstance.OpDpVmRecoveryJobsJobIdGet("43d80de4-f438-4ff0-a3de-b89a62a3ac1f", accessTkn.ToString(), "en-US");

@@ -32,26 +32,19 @@ namespace SP_powershell
         [Alias("srvr")]
         public string Server { get; set; }
         
-        //UserName Parameter contains the Cisco HXConnect UserName
-        [Parameter(Position = 1, ParameterSetName = "UserNamePassword")]
-        [ValidateNotNullOrEmpty]
-        [Alias("user")]
-        public string UserName { get; set; }
-
-        //Password Parameter contains the Cisco HXConnect Password
-        [Parameter(Position = 2, ParameterSetName = "UserNamePassword")]
-        [ValidateNotNullOrEmpty]
-        [Alias("pwd")]
-        public string Password { get; set; }
-
         //VMUid will pass the VM uid
-        //[Parameter(ParameterSetName = "HXUid")]
-        [Parameter()]
+        
+        [Parameter(Mandatory =true)]
         [ValidateNotNullOrEmpty]
         [Alias("vm_id")]
         public string VMID { get; set; }
 
-      
+        //TaskId will pass the taskID uid
+        
+        [Parameter()]
+        [ValidateNotNullOrEmpty]
+        [Alias("task_id")]
+        public string TaskID { get; set; }
         //
         // Cmdlet body
         //
@@ -127,21 +120,21 @@ namespace SP_powershell
                 //
 
 
-                if (VMID != null)
+                if (TaskID != null)
                 {
                     //GetSpecific JobID;
-                    var VMSpecific = VMID.ToString();
+                    var TaskSpecific = TaskID.ToString();
                     //GetSpecific VM;
-                    List<IO.Swagger.Model.Job> result1 = apiInstance.OpDpVmTasksGet(accessTkn, VMSpecific, null, null, null, "en-US");
+                    List<IO.Swagger.Model.Job> result1 = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), TaskSpecific,  null, null, "en-US");
                     WriteObject(result1, true);
                     return;
                 }
 
                 //Guid vm_id = VMID.ToString();
-                var output = apiInstance.OpDpVmTasksGet(VMID.ToString(), null, null, null, "en-US");
+                var output = apiInstance.OpDpVmTasksGet(accessTkn,VMID.ToString(), null, null, null, "en-US");
 
 
-                //WriteObject(output, true);
+                WriteObject(output, true);
               
               
             }

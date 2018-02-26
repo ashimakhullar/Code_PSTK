@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SP_powershell
 {
@@ -96,13 +97,14 @@ namespace SP_powershell
 
             // Configure OAuth2 access token for authorization
             
-            Configuration.Default = new Configuration();
-            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+           
            
             try
             {
                 Configuration.Default = new Configuration();
                 Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+                AccessToken accToken = new AccessToken();
+                string accessTkn = accToken.GetAccessToken(Server.ToString());
                 if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
                 {
                     throw new Exception("No server is connected.");
@@ -119,9 +121,9 @@ namespace SP_powershell
                 }
 
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
-                var apiInstance = new RecoveryApi(apiString);
+                var apiInstance = new RecoverApi(apiString);
 
-                string accessTkn = getAccessToken(Server.ToString());
+               
                 var vResourcePoolName = "";
                 var vResourcePoolID = "";
                 if (ResourcePoolName != null) { vResourcePoolName = ResourcePoolName.ToString(); }
@@ -202,12 +204,12 @@ namespace SP_powershell
                 string result1 = "";
                 if (VMId != null)
                 {
-                    if (Async != true)
+                    if (Async== true)
                     {
 
-                        apiInstance.OpDpVmHaltPut(VMId.ToString(), accessTkn.ToString(), "en-US");
-                        WriteVerbose("The Vm has been halted");
-                        result1 = apiInstance.OpDpVmRecoveryFailoverPut(VMId.ToString(), body, accessTkn.ToString());
+                        //apiInstance.OpDpVmHaltPut(VMId.ToString(), accessTkn.ToString(), "en-US");
+                        //WriteVerbose("The Vm has been halted");
+                        result1 = apiInstance.OpDpVmFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");
                         WriteVerbose("The Vm has been failed over");
                         WriteObject(result1, true);
                         return;
@@ -216,18 +218,36 @@ namespace SP_powershell
                     {
                         
                         DateTime now = DateTime.Now;
-                        apiInstance.OpDpVmHaltPut(VMId.ToString(), accessTkn.ToString(), "en-US");
-                        WriteVerbose("The Vm has been halted");
-                        result1 = apiInstance.OpDpVmRecoveryFailoverPut(VMId.ToString(), body, accessTkn.ToString());
+                        //apiInstance.OpDpVmHaltPut(VMId.ToString(), accessTkn.ToString(), "en-US");
+                        //WriteVerbose("The Vm has been halted");
+                        result1 = apiInstance.OpDpVmFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");//OpDpVmFailoverPut
+                        JObject joResponse = JObject.Parse(result1);
+                        JValue ojObject = (JValue)joResponse["taskId"];
                         WriteVerbose("The Vm has been failed over");
-                        List<IO.Swagger.Model.Job> result2 = apiInstance.OpDpVmRecoveryJobsJobIdGet(result1.ToString(), accessTkn.ToString(), "en-US");//43d80de4-f438-4ff0-a3de-b89a62a3ac1f
-                                                                                                                                                        //var result2 = apiInstance.OpDpVmRecoveryJobsJobIdGet("43d80de4-f438-4ff0-a3de-b89a62a3ac1f", accessTkn.ToString(), "en-US");
+                        List<IO.Swagger.Model.Job> result2 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
+                        //var result2 = apiInstance.OpDpVmRecoveryJobsJobIdGet("43d80de4-f438-4ff0-a3de-b89a62a3ac1f", accessTkn.ToString(), "en-US");
                         DateTime oneMinutesFromNow = GetOneMinutesFromNow();
+                        if (result2[0].State.ToString() == "EXCEPTION")
+                        {
+                            WriteVerbose("Exception in Test Failover of VM");
+                            WriteObject(result2, true);
+
+                        }
+                        if (result2[0].State.ToString() == "COMPLETED")
+                        {
+                            WriteVerbose("Test Failover of VM done");
+                            WriteObject(result2, true);
+                        }
 
                         while (result2 != null && now < oneMinutesFromNow)
                         {
-                            List<IO.Swagger.Model.Job> check1 = apiInstance.OpDpVmRecoveryJobsJobIdGet(result1.ToString(), accessTkn.ToString(), "en-US");
+                            List<IO.Swagger.Model.Job> check1 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
                             if (check1[0].State.ToString() == "COMPLETED")
+                            {
+                                result2 = check1;
+                                break;
+                            }
+                            else if (check1[0].State.ToString() == "EXCEPTION")
                             {
                                 result2 = check1;
                                 break;
@@ -238,13 +258,9 @@ namespace SP_powershell
                                 System.Threading.Thread.Sleep(3000);
                             }
                         }
-                        if (result2[0].State.ToString() == "COMPLETED")
-                        {
-                            WriteVerbose("Test Failover of VM done");
-                            WriteObject(result2, true);
-                        }
+                        WriteObject(result2, true);
 
-                        }
+                    }
                     }
                 
               

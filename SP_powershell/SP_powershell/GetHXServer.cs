@@ -40,13 +40,13 @@ namespace SP_powershell
 
         public static Dictionary<string, dynamic> storageKeyDictionary;
 
-        public DisconnectHXServer()
-        {
-            if (storageKeyDictionary == null)
-            {
-                storageKeyDictionary = new Dictionary<string, dynamic>();
-            }
-        }
+        //public DisconnectHXServer()
+        //{
+        //    if (storageKeyDictionary == null)
+        //    {
+        //        storageKeyDictionary = new Dictionary<string, dynamic>();
+        //    }
+        //}
 
         //
         // Cmdlet body

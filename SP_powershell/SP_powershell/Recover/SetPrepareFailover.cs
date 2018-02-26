@@ -96,15 +96,14 @@ namespace SP_powershell
 
             // Configure OAuth2 access token for authorization
             
-            Configuration.Default = new Configuration();
-            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            //Configuration.Default = new Configuration();
+            //Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
             AccessToken accToken = new AccessToken();
             
            
             try
             {
-                Configuration.Default = new Configuration();
-                Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+               
                 if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
                 {
                     throw new Exception("No server is connected.");
@@ -124,97 +123,11 @@ namespace SP_powershell
                 var apiInstance = new RecoverApi(apiString);
 
                 string accessTkn = accToken.GetAccessToken(Server.ToString());
-                //////////var vResourcePoolName = "";
-                //////////var vResourcePoolID = "";
-                //////////if (ResourcePoolName != null) { vResourcePoolName = ResourcePoolName.ToString(); }
-                //////////if (ResourcePoolID != null) { vResourcePoolID = vResourcePoolID.ToString(); }
-                //////////var objResPoolJson = new EntityDetail
-                //////////{
-                //////////    name = vResourcePoolName,
-                //////////    type = "DP_VM",
-                //////////    id = ResourcePoolID,
-                //////////    idtype = "VCMOID",
-                //////////    confignum = "0"
-                //////////};
-                //////////var vFolderName = "";
-                //////////var vFolderID = "";
-                //////////if (FolderName != null) { vFolderName = FolderName.ToString(); }
-                //////////if (FolderID != null) { vFolderID = FolderID.ToString(); }
-
-                //////////var objFolderJson = new EntityDetail
-                //////////{
-                //////////    name = vFolderName,
-                //////////    type = "DP_VM",
-                //////////    id = vFolderID,
-                //////////    idtype = "VCMOID",
-                //////////    confignum = "0"
-                //////////};
-                //////////string objTestNetwork = null;
-                //////////if (TestNetwork != null) { objTestNetwork = TestNetwork.ToString(); }
-                //////////bool vPowerOn = false;
-                //////////if (PowerOn == true)
-                //////////{
-                //////////    vPowerOn = true;
-                //////////}
-                //////////// List<NetworkMapping> dictNetworkMap=null;
-                //////////string newName = null;
-                //////////if (NewName != null) { newName = NewName.ToString(); }
-
-
-
-                //////////var jsonPool = JsonConvert.SerializeObject(objResPoolJson);
-                //////////var jsonFolder = JsonConvert.SerializeObject(objFolderJson);
-                //////////EntityRef objEF_pool = JsonConvert.DeserializeObject<EntityRef>(jsonPool);
-                //////////EntityRef objEF_folder = JsonConvert.DeserializeObject<EntityRef>(jsonFolder);
-                //////////RecoverVmOptions body = new RecoverVmOptions(objEF_pool, objEF_folder, TestNetwork, vPowerOn, null, newName);
-                ////////////check if either resource pool name or id is provided then pass it to body
-                //////////if (ResourcePoolName != null || ResourcePoolName != null)
-                //////////{
-                //////////    objEF_pool = JsonConvert.DeserializeObject<EntityRef>(jsonPool);
-                //////////    body.ResourcePoolEr = objEF_pool;
-                //////////}
-                //////////else
-                //////////{
-                //////////    objEF_pool = null;
-                //////////    body.ResourcePoolEr = null;
-                //////////}
-                ////////////check if either Folder name or id is provided then pass it to body
-                //////////if (FolderName != null || FolderID != null)
-                //////////{
-                //////////    objEF_folder = JsonConvert.DeserializeObject<EntityRef>(jsonFolder);
-                //////////    body.FolderEr = objEF_folder;
-                //////////}
-                //////////else
-                //////////{
-                //////////    objEF_pool = null;
-                //////////    body.FolderEr = null;
-                //////////}
-                //////////body.NetworkMap = null;
-                //////////body.NewName = null;
-                //////////body.PowerOn = false;
-                //////////if (NewName != null)
-                //////////{
-                //////////    body.NewName = NewName.ToString();
-                //////////}
-                //////////if (PowerOn == true)
-                //////////{
-                //////////    body.PowerOn = true;
-                //////////}
-
-               // string result1 = "";
+                
                 if (VMId != null)
                 {
-                    
-
-                        
-                        string result2 = apiInstance.OpDpVmPrepareFailoverPut(VMId.ToString(), accessTkn.ToString(), "en-US");//43d80de4-f438-4ff0-a3de-b89a62a3ac1f
-                                                                                                                                                        //var result2 = apiInstance.OpDpVmRecoveryJobsJobIdGet("43d80de4-f438-4ff0-a3de-b89a62a3ac1f", accessTkn.ToString(), "en-US");
-                       
-
-                                           }
-                
-              
-
+                  string result2 = apiInstance.OpDpVmPrepareFailoverPut(VMId.ToString(), accessTkn.ToString(), "en-US");//43d80de4-f438-4ff0-a3de-b89a62a3ac1f
+                }
             }
             catch (ArgumentException e)
             {
@@ -224,7 +137,6 @@ namespace SP_powershell
             }
             catch(Exception e)
             {
-                
                 WriteObject("Exception when calling apiInstance.OpDpVmRecoveryFailoverPut: " + e.Message);
             }
          

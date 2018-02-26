@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SP_powershell
 {
@@ -102,19 +103,19 @@ namespace SP_powershell
 
             // Configure OAuth2 access token for authorization
             
-            Configuration.Default = new Configuration();
-            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            
 
             
             try
             {
                 Configuration.Default = new Configuration();
                 Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+                AccessToken accToken = new AccessToken();
                 if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
                 {
                     throw new Exception("No server is connected.");
                 }
-           
+
                 if (Server != null)
                 {
                     Server = Server.ToString().Trim();
@@ -126,42 +127,9 @@ namespace SP_powershell
                 }
 
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
-                var apiInstance = new RecoveryApi(apiString);
+                var apiInstance = new RecoverApi(apiString);
 
-
-                var num = 0;
-                string accessTkn = getAccessToken(Server.ToString());
                 
-
-                dynamic dictServerCnnctd = null;
-                if (ConnectHXServer.storageKeyDictionary != null)
-                {
-                    num = ConnectHXServer.storageKeyDictionary.Count();
-                    if (num == 1)
-                    {
-
-                        dictServerCnnctd = ConnectHXServer.storageKeyDictionary.First(x => x.Key == Server.ToString()).Value;
-
-                    }
-                    else
-                    {
-                        dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
-                    }
-                }
-                else
-                {
-                    num = 0;
-                    throw new Exception("Please connect to a server.");
-                }
-
-                if (dictServerCnnctd != null)
-                {
-                    accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
-                }
-                else
-                {
-                    throw new Exception("The Server is not connected;Please check the IP address of Server");
-                }
                 //check if either resource pool name or id is provided then pass it to body
                 var vResourcePoolName = "";
                 var vResourcePoolID = "";
@@ -241,14 +209,15 @@ namespace SP_powershell
                 }
 
                 string result1;
+                string accessTkn = accToken.GetAccessToken(Server.ToString());
                 if (VMId != null)
                 {
-                    if (Async != true)
+                    if (Async == true)
                     {
 
                         
-                        result1 = apiInstance.OpDpVmRecoveryTestPut(VMId.ToString(), body, accessTkn.ToString());
-
+                        result1 = apiInstance.OpDpVmTestFailoverPut(VMId.ToString(),  accessTkn.ToString(), body,"en-US");
+                        
                         WriteVerbose("Test Failover of VM done");
                         WriteObject(result1, true);
                         return;
@@ -257,22 +226,35 @@ namespace SP_powershell
                     {
                         DateTime now = DateTime.Now;
                        // WriteVerbose("The Vm has been halted");
-                        result1 = apiInstance.OpDpVmRecoveryTestPut(VMId.ToString(), body, accessTkn.ToString());
-                        WriteVerbose("Test Failover of VM done");
-                        List<IO.Swagger.Model.Job> result2 = apiInstance.OpDpVmRecoveryJobsJobIdGet(result1.ToString(), accessTkn.ToString(), "en-US");//43d80de4-f438-4ff0-a3de-b89a62a3ac1f
-                        //var result2 = apiInstance.OpDpVmRecoveryJobsJobIdGet("43d80de4-f438-4ff0-a3de-b89a62a3ac1f", accessTkn.ToString(), "en-US");
-                        DateTime oneMinutesFromNow = GetOneMinutesFromNow();
+                        result1 = apiInstance.OpDpVmTestFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");
                        
-                        //////////{
-                        //////////    //Continue on
-                        //////////}
-                        //////////IO.Swagger.Client.ApiResponse<string> response = null;
+                        JObject joResponse = JObject.Parse(result1);
+                        
+                        JValue ojObject = (JValue)joResponse["taskId"];
+                       
+                        
+                        WriteVerbose("Test Failover of VM done");
+                       // WriteObject(result1[0].taskid.ToString());
+                        List<IO.Swagger.Model.Job> result2 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
+                      
+                        DateTime oneMinutesFromNow = GetOneMinutesFromNow();
 
+                        if (result2[0].State.ToString() == "EXCEPTION")
+                        {
+                            WriteVerbose("Exception in Test Failover of VM");
+                            WriteObject(result2, true);
+
+                        }
                         while (result2 != null && now < oneMinutesFromNow)
                         {
-                            List<IO.Swagger.Model.Job> check1 = apiInstance.OpDpVmRecoveryJobsJobIdGet(result1.ToString(), accessTkn.ToString(), "en-US");
+                            List<IO.Swagger.Model.Job> check1 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
                             // ApiResponse check = api.GetResponse(RequestID);
                             if (check1[0].State.ToString() == "COMPLETED")
+                            {
+                                result2 = check1;
+                                break;
+                            }
+                            else if (check1[0].State.ToString() == "EXCEPTION")
                             {
                                 result2 = check1;
                                 break;
@@ -283,12 +265,19 @@ namespace SP_powershell
                                 System.Threading.Thread.Sleep(3000);
                             }
                         }
+                        if (result2[0].State.ToString() == "EXCEPTION")
+                        {
+                            WriteVerbose("Exception in Test Failover of VM");
+                            WriteObject(result2, true);
+
+                        }
                         if (result2[0].State.ToString() == "COMPLETED")
                         {
                             WriteVerbose("Test Failover of VM done");
                             WriteObject(result2, true);
                         }
-                        
+
+
                     }
                 }
                 
@@ -326,38 +315,7 @@ namespace SP_powershell
         }
 
 
-                private string getAccessToken(string Server)
-        {
-            var num = 0;
-            String accessTkn = "";
-            dynamic dictServerCnnctd = null;
-            if (ConnectHXServer.storageKeyDictionary != null)
-            {
-                num = ConnectHXServer.storageKeyDictionary.Count();
-                if (num == 1)
-                {
-                dictServerCnnctd = ConnectHXServer.storageKeyDictionary.First(x => x.Key == Server.ToString()).Value;
-                }
-                else
-                {
-                dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
-                }
-            }
-            else
-            {
-                num = 0;
-                throw new Exception("Please connect to a server.");
-            }
-            if (dictServerCnnctd != null)
-            {
-                accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
-            }
-            else
-            {
-                throw new Exception("The Server is not connected;Please check the IP address of Server");
-            }
-            return accessTkn;
-        }
+               
     }
    
 }

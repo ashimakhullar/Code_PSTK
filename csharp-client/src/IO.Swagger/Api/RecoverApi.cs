@@ -35,7 +35,7 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        string OpDpVmFailoverPut (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        string OpDpVmFailoverPut (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
 
         /// <summary>
         /// Failover the given VM
@@ -48,7 +48,7 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        ApiResponse<string> OpDpVmFailoverPutWithHttpInfo (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        ApiResponse<string> OpDpVmFailoverPutWithHttpInfo (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
         /// <summary>
         /// Prepare failover for the given VM
         /// </summary>
@@ -158,7 +158,7 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        string OpDpVmTestFailoverPut (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        string OpDpVmTestFailoverPut (string vmId, string accessToken,RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
 
         /// <summary>
         /// Test failover for the given VM
@@ -171,7 +171,7 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        ApiResponse<string> OpDpVmTestFailoverPutWithHttpInfo (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        ApiResponse<string> OpDpVmTestFailoverPutWithHttpInfo (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
         #endregion Synchronous Operations
         #region Asynchronous Operations
         /// <summary>
@@ -442,9 +442,9 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        public string OpDpVmFailoverPut (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
+        public string OpDpVmFailoverPut (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = OpDpVmFailoverPutWithHttpInfo(vmId, failoverVMOptions, acceptLanguage);
+             ApiResponse<string> localVarResponse = OpDpVmFailoverPutWithHttpInfo(vmId, accessToken, failoverVMOptions, acceptLanguage);
              return localVarResponse.Data;
         }
 
@@ -456,7 +456,7 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        public ApiResponse< string > OpDpVmFailoverPutWithHttpInfo (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
+        public ApiResponse< string > OpDpVmFailoverPutWithHttpInfo (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -494,6 +494,8 @@ namespace IO.Swagger.Api
                 localVarPostBody = failoverVMOptions; // byte array
             }
 
+            //change to add the accesstoken
+            localVarHeaderParams.Add("Authorization", accessToken);
 
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
@@ -742,7 +744,7 @@ namespace IO.Swagger.Api
         /// <returns>string</returns>
         public string OpDpVmPrepareReverseProtectPut (string vmId,string accessToken, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = OpDpVmPrepareReverseProtectPutWithHttpInfo(vmId, acceptLanguage);
+             ApiResponse<string> localVarResponse = OpDpVmPrepareReverseProtectPutWithHttpInfo(vmId, accessToken, acceptLanguage);
              return localVarResponse.Data;
         }
 
@@ -1181,9 +1183,9 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        public string OpDpVmTestFailoverPut (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
+        public string OpDpVmTestFailoverPut (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = OpDpVmTestFailoverPutWithHttpInfo(vmId, failoverVMOptions, acceptLanguage);
+             ApiResponse<string> localVarResponse = OpDpVmTestFailoverPutWithHttpInfo(vmId, accessToken, failoverVMOptions, acceptLanguage);
              return localVarResponse.Data;
         }
 
@@ -1195,7 +1197,7 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        public ApiResponse< string > OpDpVmTestFailoverPutWithHttpInfo (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
+        public ApiResponse< string > OpDpVmTestFailoverPutWithHttpInfo (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -1232,7 +1234,8 @@ namespace IO.Swagger.Api
             {
                 localVarPostBody = failoverVMOptions; // byte array
             }
-
+            //change to add the accesstoken
+            localVarHeaderParams.Add("Authorization", accessToken);
 
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
