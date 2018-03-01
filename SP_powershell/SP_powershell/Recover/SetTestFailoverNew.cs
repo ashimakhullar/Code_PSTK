@@ -65,11 +65,21 @@ namespace SP_powershell
         [Alias("testNW")]
         public string TestNetwork { get; set; }
 
-        //[Parameter(ParameterSetName = "networkMap")]
-        [Parameter(Position = 4)]
+        ////[Parameter(ParameterSetName = "networkMap")]
+        //[Parameter(Position = 4)]
+        //[ValidateNotNullOrEmpty]
+        //[Alias("NWMap")]
+        //public string[] NetworkMap { get; set; }
+
+        [Parameter(Position = 0)]
         [ValidateNotNullOrEmpty]
-        [Alias("NWMap")]
-        public string NetworkMap { get; set; }
+        public string[] NetworkMap
+        {
+            get { return nwMaps; }
+            set { nwMaps = value; }
+        }
+        private string[] nwMaps;
+
 
         //[Parameter(ParameterSetName = "newName")]
         [Parameter(Position = 5)]
@@ -156,8 +166,18 @@ namespace SP_powershell
                     idtype = "VCMOID",
                     confignum = "0"
                 };
+                
                 string objTestNetwork = null;
-                if (TestNetwork != null) { objTestNetwork = TestNetwork.ToString(); }
+                Dictionary<string, string> mapDictionary=null;
+                if (NetworkMap != null)
+                {
+                    mapDictionary = this.NetworkMap
+                                                    .Select(x => x.Split(':'))
+                                                    .ToDictionary(x => x[0], x => x[1]);
+
+                }
+                if (TestNetwork != null) { objTestNetwork = TestNetwork.ToString() ; }
+                
                 bool vPowerOn = false;
                 if (PowerOn == true)
                 {
@@ -171,8 +191,10 @@ namespace SP_powershell
 
                 var jsonPool = JsonConvert.SerializeObject(objResPoolJson);
                 var jsonFolder = JsonConvert.SerializeObject(objFolderJson);
+                var jsonNW = JsonConvert.SerializeObject(mapDictionary);
                 EntityRef objEF_pool = JsonConvert.DeserializeObject<EntityRef>(jsonPool);
                 EntityRef objEF_folder = JsonConvert.DeserializeObject<EntityRef>(jsonFolder);
+               
                 RecoverVmOptions body = new RecoverVmOptions(objEF_pool,objEF_folder,TestNetwork,vPowerOn,null, newName);
                 //check if either resource pool name or id is provided then pass it to body
                 if (ResourcePoolName != null || ResourcePoolName != null)
@@ -197,6 +219,26 @@ namespace SP_powershell
                     body.FolderEr = null;
                 }
                 body.NetworkMap = null;
+                List<NetworkMapping> cont1 = new List<NetworkMapping>();
+                if (mapDictionary != null)
+                {
+                    var obj_nw = JsonConvert.DeserializeObject(jsonNW);
+                   // body.NetworkMap = list<networkMapping>obj_nw;
+                    foreach (KeyValuePair<string, string> entry in mapDictionary)
+                    {
+                        NetworkMapping varNW = new NetworkMapping(entry.Key,entry.Value);
+                        cont1.Add(varNW);
+                        // do something with entry.Value or entry.Key
+                    }
+                     body.NetworkMap = cont1;
+                    //for(var i=0;i< NetworkMap.Count();i++)
+                    //{
+                    //    objEF_nw = JsonConvert.DeserializeObject<EntityRef>(jsonFolder);
+                    //    body.NetworkMap[i] = mapDictionary;
+                    //}
+                }
+                else
+                { body.NetworkMap = null; }
                 body.NewName = null;
                 body.PowerOn = false;
                 if (NewName != null)

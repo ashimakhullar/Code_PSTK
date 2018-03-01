@@ -131,10 +131,11 @@ namespace SP_powershell
                 }
 
                 //Guid vm_id = VMID.ToString();
-                var output = apiInstance.OpDpVmTasksGet(accessTkn,VMID.ToString(), null, null, null, "en-US");
+                List<IO.Swagger.Model.Job> output = apiInstance.OpDpVmTasksGet(accessTkn,VMID.ToString(), null, null, null, "en-US");
 
+                WriteTaskrecord(output);
 
-                WriteObject(output, true);
+                //WriteObject(output, true);
               
               
             }
@@ -164,10 +165,64 @@ namespace SP_powershell
             }
             
         }
+        /// <summary>
+        /// Write Task record.
+        /// </summary>
+        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when null values </exception>
+        /// <param name="body">Protect VM Spec</param>
+        /// <returns></returns>
+        private void WriteTaskrecord(List<IO.Swagger.Model.Job> vmTasks)
+        {
+            double val ;
+            foreach (var resultset in vmTasks)
+            {
+                var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
+                if (resultset.State != null)
+                {
+                    WriteObject("STATE : " + resultset.State.ToString());
+                   // WriteObject(resultset.State.);
+                    WriteObject("---------------------------------------------------------------------");
+                }
+                if (resultset.MethodName != null)
+                {
+                    WriteObject("Method Name : " + resultset.MethodName);
+                    WriteObject("---------------------------------------------------------------------");
+                }
+                if (resultset.TimeStartedMillis != null)
+                {
+                   val= (double)resultset.TimeStartedMillis;
+                    WriteObject("TIME STARTED " + posixTime.AddMilliseconds(val));
+                    //WriteObject("---------------------------------------------------------------------");
+                }
+                if (resultset.TimeElapsedMillis != null)
+                {
+                    val = (double)resultset.TimeElapsedMillis;
+                    WriteObject("TIME ELAPSED : " + posixTime.AddMilliseconds(val));
+                    //WriteObject("---------------------------------------------------------------------");
+                }
+                if (resultset.TimeSubmittedMillis != null)
+                {
+                    val = (double)resultset.TimeSubmittedMillis;
+                    WriteObject("TIME SUBMITTED : " + posixTime.AddMilliseconds(val));
+                    //WriteObject("---------------------------------------------------------------------");
+                }
+                if (resultset.LifetimeAfterExitMillis != null)
+                {
+                    val = (double)resultset.LifetimeAfterExitMillis;
+                    WriteObject("LIFETIME AFTER EXIT : " + posixTime.AddMilliseconds(val));
+                }
+                WriteObject("=====================================================================");
+            }
+        }
 
-    
+        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime;
+        }
 
-        
 
         private void WriteErrorRecord(Exception e, string v, ErrorCategory connectionError, string message)
         {

@@ -96,8 +96,6 @@ namespace SP_powershell
                 return;
 
             // Configure OAuth2 access token for authorization
-            
-           
            
             try
             {
