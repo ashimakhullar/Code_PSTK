@@ -133,9 +133,9 @@ namespace SP_powershell
                 //Guid vm_id = VMID.ToString();
                 List<IO.Swagger.Model.Job> output = apiInstance.OpDpVmTasksGet(accessTkn,VMID.ToString(), null, null, null, "en-US");
 
-                WriteTaskrecord(output);
+                //WriteTaskrecord(output);
 
-                //WriteObject(output, true);
+                WriteObject(output, true);
               
               
             }

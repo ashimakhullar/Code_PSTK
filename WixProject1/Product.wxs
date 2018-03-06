@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  
 
   <Product Id="4321067a-2cd6-4d67-a399-6f00c2aa1311"
            Name="HXConnectPowerShellToolkit"
@@ -24,10 +25,10 @@
 
     <Condition Message="A newer version of this software is already installed.">NOT NEWERVERSIONDETECTED</Condition>
 
-    <Property Id="ServiceSharedSecret" Secure="no" Value="NONE"/>
+    <!--Property Id="ServiceSharedSecret" Secure="no" Value="NONE"/>
     <Property Id="ServiceFQDN" Secure="no" Value="NONE"/>
     <Property Id="ServicePort" Secure="no" Value="8445"/>
-    <Property Id="IntervalKeepAliveSec" Secure="no" Value="3600"/>
+    <Property Id="IntervalKeepAliveSec" Secure="no" Value="3600"/-->
 
     <Feature Id="Feature_Main" Title="[ProductName]" Level="1" Absent="disallow" Description="Installs all necessary [ProductName] components." >
       <ComponentGroupRef Id="MainComponents" />
@@ -36,12 +37,15 @@
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
     <!--UIRef Id="WixUI_InstallDir" /-->
-    <!--UIRef Id="SetupDialogUI" /-->
+    <UIRef Id="SetupDialogUI" />
     <Icon Id="icon.ps1" SourceFile="icon.ico"/>
     <Property Id="ARPPRODUCTICON" Value="icon.ps1" />
 
-    <InstallUISequence>
+    <!--<InstallUISequence>
       <Show Dialog="UserInputDlg" After="CostFinalize"/>
+    </InstallUISequence>-->
+   <InstallUISequence>
+      <Show Dialog="WelcomeDlg" After="CostFinalize"/>
     </InstallUISequence>
   </Product>
 
@@ -51,7 +55,7 @@
 
       <Directory Id="StartMenuFolder" Name="Programs">
         <Component Id="StartMenuShortComponent" Guid="BA970047-A2B1-425C-AE87-47F9C7EAE8F3">
-          <Shortcut Id="PSTK.Shortcut" Name="HXConnect PSTK" IconIndex="0" Icon="icon.ps1" Target="[WindowsFolder]system32\WindowsPowerShell\v1.0\powershell.exe" Arguments="-File &quot;[INSTALLFOLDER]PSTKNode.ps1&quot;"/>
+          <Shortcut Id="PSTK.Shortcut" Name="HXConnect PSTK" IconIndex="0" Icon="icon.ps1" Target="[WindowsFolder]system32\WindowsPowerShell\v1.0\powershell_ise.exe" Arguments="-File &quot;[INSTALLFOLDER]PSTKNode.ps1&quot;"/>
           <RegistryKey Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
             <RegistryValue  Type="integer" Value="1" Name="Installed" KeyPath="yes" />
           </RegistryKey>
@@ -77,17 +81,18 @@
     <ComponentGroup Id="MainComponents" Directory="INSTALLFOLDER" >
       <Component Id="CMP_PS_SCRIPT" Guid="CC0E0E77-810F-4DFE-88F8-9FDA840EC0D0"  NeverOverwrite="no" >
 
-     
+       
         <File Source="LICENSE"/>
+        <File Source="$(var.SP_powershell.TargetPath)" />
       </Component>
 
       <Component Id="CMP_REGISTRY" NeverOverwrite="no">
         <RegistryKey Root="HKLM" Key="Software\[Manufacturer]\[ProductName]" >
           <RegistryValue Type="integer" Name="Installed" Value="1" KeyPath="yes"  />
-          <RegistryValue Type="string"  Name="ServiceSharedSecret" Value="[ServiceSharedSecret]" />
+          <!--RegistryValue Type="string"  Name="ServiceSharedSecret" Value="[ServiceSharedSecret]" />
           <RegistryValue Type="string"  Name="ServiceFQDN" Value="[ServiceFQDN]" />
           <RegistryValue Type="string"  Name="ServicePort" Value="[ServicePort]" />
-          <RegistryValue Type="string"  Name="IntervalKeepAliveSec" Value="[IntervalKeepAliveSec]" />
+          <RegistryValue Type="string"  Name="IntervalKeepAliveSec" Value="[IntervalKeepAliveSec]" /-->
         </RegistryKey>
       </Component>
     </ComponentGroup>
@@ -105,12 +110,12 @@
 
   <Fragment>
     <UI Id="SetupDialogUI" >
-
+      <!--
       <Dialog Id="UserInputDlg" Width ="370" Height="270" Title ="[ProductName] Setup" >
-        <Control Id ="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" >
+         <Control Id ="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" >
           <Text>Set Configurations</Text>
         </Control>
-
+      
         <Control Id="LabelKey" Type="Text" X="85" Y="120" Height ="17" Width="65" Transparent="yes" Text="Key" />
         <Control Id="TextBoxKey" Type="Edit" X="150" Y="120" Height ="17" Width="120" Property="SERVICESHAREDSECRET" />
 
@@ -128,6 +133,7 @@
         </Control>
 
       </Dialog>
+      -->
 
       <TextStyle Id="WixUI_Font_Normal"  FaceName="Tahoma" Size="8" />
       <TextStyle Id="WixUI_Font_Bigger"  FaceName="Tahoma" Size="12" />
@@ -143,26 +149,29 @@
       <DialogRef Id="FilesInUse" />
       <DialogRef Id="MsiRMFilesInUse" />
       <DialogRef Id="PrepareDlg" />
-      <!--DialogRef Id="ProgressDlg" /-->
+      <DialogRef Id="ProgressDlg" />
       <DialogRef Id="ResumeDlg" />
       <DialogRef Id="UserExit" />
 
       <Publish Dialog="BrowseDlg" Control="OK" Event="DoAction" Value="WixUIValidatePath" Order="3">1</Publish>
       <Publish Dialog="BrowseDlg" Control="OK" Event="SpawnDialog" Value="InvalidDirDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
 
-      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return">1</Publish>
 
-      <!--Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">NOT Installed</Publish-->
-      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="UserInputDlg">1</Publish>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">NOT Installed</Publish>
+      <!--<Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="UserInputDlg">1</Publish>-->
       <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">Installed AND PATCH</Publish>
 
       <!--Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish-->
-      <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="UserInputDlg">1</Publish>
+      <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
       <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">LicenseAccepted = "1"</Publish>
-
+<!--
       <Publish Dialog="UserInputDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
       <Publish Dialog="UserInputDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
-
+by ashima
+      <Publish Dialog="UserInputDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">0</Publish>
+      <Publish Dialog="UserInputDlg" Control="Next" Event="NewDialog" Value="WelcomeDlg">1</Publish>-->
+      
       <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
       <Publish Dialog="InstallDirDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
       <Publish Dialog="InstallDirDlg" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
@@ -172,6 +181,7 @@
       <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
 
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg" Order="1">NOT Installed</Publish>
+      <Publish Dialog="VerifyReadyDlg" Control="Install" Event="NewDialog" Value="ExitDialog" Order="1">1</Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed AND NOT PATCH</Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">Installed AND PATCH</Publish>
 
