@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  
+
+  <?define SourceDir = "C:\Windows\System32\WindowsPowerShell\v1.0" ?>
+
 
   <Product Id="4321067a-2cd6-4d67-a399-6f00c2aa1311"
            Name="HXConnectPowerShellToolkit"
@@ -33,6 +36,31 @@
     <Feature Id="Feature_Main" Title="[ProductName]" Level="1" Absent="disallow" Description="Installs all necessary [ProductName] components." >
       <ComponentGroupRef Id="MainComponents" />
       <ComponentRef Id="StartMenuShortComponent" />
+       <Component Id="cmp79F6D61F01DD1060F418A05609A6DA70" 
+              Directory="DesktopFolder" Guid="343cd0aa-7bb5-4040-a601-62e8ad1d3c2c"
+                          >
+      <File Id="fil34B100315EFE9D878B5C2227CD1454E1" KeyPath="no"
+            Source="$(var.SourceDir)\powershell_ise.exe">
+        <Shortcut Id="DesktopShortcut"
+                  Directory="DesktopFolder"
+                  Name="HXConnect PSTK"
+                  Description="HXConnect Powershell Toolkit"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="powershell.exe"
+                  IconIndex="0"
+                  
+                  >
+           <Icon Id="powershell.exe" SourceFile="$(var.SourceDir)\powershell_ise.exe"/>
+       
+        </Shortcut>
+      
+        </File>
+       <RegistryKey Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+            <RegistryValue  Type="integer" Value="1" Name="Installed" KeyPath="yes" />
+          </RegistryKey>
+            <RemoveFolder Id="DesktopFolder" On="uninstall"/> 
+    </Component>
+      <!--ComponentRef Id="ApplicationShortcutDesktop"/-->
     </Feature>
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
@@ -52,7 +80,26 @@
   <Fragment>
 
     <Directory Id="TARGETDIR" Name="SourceDir" >
-
+   <!--Component Id="MainApplication" Guid="*"> 
+            <File Id="Life_Balance.exe" Name="Life Balance.exe" Source="..."/> 
+           </Component--> 
+ 
+  <Directory Id="DesktopFolder" Name="Desktop">
+        <!--Component Id="ApplicationShortcutDesktop" Guid="6ecfcf4b-2d10-4e41-ad06-399eb6088cfc">
+            <Shortcut Id="ApplicationDesktopShortcut"
+                Name="Text under your icon"
+                Description="Comment field in your shortcut"
+                Target="%SYSTEMROOT%\System32\WindowsPowerShell\v1.0\powershell.exe"/>
+          <RegistryKey Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+            <RegistryValue  Type="integer" Value="1" Name="Installed" KeyPath="yes" />
+          </RegistryKey>
+            <RemoveFolder Id="DesktopFolder" On="uninstall"/>
+            
+        </Component-->
+      </Directory>
+      
+        
+        
       <Directory Id="StartMenuFolder" Name="Programs">
         <Component Id="StartMenuShortComponent" Guid="BA970047-A2B1-425C-AE87-47F9C7EAE8F3">
           <Shortcut Id="PSTK.Shortcut" Name="HXConnect PSTK" IconIndex="0" Icon="icon.ps1" Target="[WindowsFolder]system32\WindowsPowerShell\v1.0\powershell_ise.exe" Arguments="-File &quot;[INSTALLFOLDER]PSTKNode.ps1&quot;"/>
@@ -84,7 +131,54 @@
        
         <File Source="LICENSE"/>
         <File Source="$(var.SP_powershell.TargetPath)" />
+        
+        <File Id="Swagger.dll" Name="IO.Swagger.dll"  Source="$(var.SP_powershell.TargetDir)" >
+        </File>
+        <File Id="SP_powershell.psd1" Name="SP_powershell.psd1"  Source="$(var.SP_powershell.TargetDir)" >
+          </File>
+        <File Id="SP_powershell.Help.xml" Name="SP_powershell.Help.xml"  Source="$(var.SP_powershell.TargetDir)" >
+          </File>
+        
+        <File Id="RestSharp.dll" Name="RestSharp.dll"  Source="$(var.SP_powershell.TargetDir)" >
+          </File>
+        <!--File Id="RestSharp.xml" Name="RestSharp.xml"  Source="$(var.SP_powershell.TargetDir)" >
+          </File-->
+      <File Id="ICSharpCode.SharpZipLib.dll" Name="ICSharpCode.SharpZipLib.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="InternalVimService50.dll" Name="InternalVimService50.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="Interop.VixCOM.dll" Name="Interop.VixCOM.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="IO.Swagger.pdb" Name="IO.Swagger.pdb"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="log4net.dll" Name="log4net.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="Microsoft.Management.Infrastructure.dll" Name="Microsoft.Management.Infrastructure.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="Microsoft.Practices.EnterpriseLibrary.Common.dll" Name="Microsoft.Practices.EnterpriseLibrary.Common.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="Microsoft.Practices.EnterpriseLibrary.Logging.dll" Name="Microsoft.Practices.EnterpriseLibrary.Logging.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="SP_powershell.dll.config" Name="SP_powershell.dll.config"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="Newtonsoft.Json.xml" Name="Newtonsoft.Json.xml"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="phclient.dll" Name="phclient.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>	
+      <File Id="System.Management.Automation.dll" Name="System.Management.Automation.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="System.Management.Automation.xml" Name="System.Management.Automation.xml"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VimService65.dll" Name="VimService65.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.Security.CredentialStore.dll" Name="VMware.Security.CredentialStore.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.Vim.dll" Name="RestSharp.xml"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.Ceip.dll" Name="VMware.VimAutomation.Ceip.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.Logging.SoapInterceptor.dll" Name="VMware.VimAutomation.Logging.SoapInterceptor.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.Sdk.Impl.dll" Name="VMware.VimAutomation.Sdk.Impl.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.Sdk.Interop.dll" Name="VMware.VimAutomation.Sdk.Interop.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.Sdk.Types.dll" Name="VMware.VimAutomation.Sdk.Types.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.Sdk.Util10.dll" Name="VMware.VimAutomation.Sdk.Util10.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.Sdk.Util10Ps.dll" Name="VMware.VimAutomation.Sdk.Util10Ps.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.Srm.Views.dll" Name="VMware.VimAutomation.Srm.Views.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.Srm.WsdlTypes.dll" Name="VMware.VimAutomation.Srm.WsdlTypes.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.ViCore.Cmdlets.dll" Name="VMware.VimAutomation.ViCore.Cmdlets.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.ViCore.Impl.dll" Name="VMware.VimAutomation.ViCore.Impl.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.ViCore.Interop.dll" Name="VMware.VimAutomation.ViCore.Interop.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.ViCore.Types.dll" Name="VMware.VimAutomation.ViCore.Types.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.ViCore.Util10.dll" Name="VMware.VimAutomation.ViCore.Util10.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+      <File Id="VMware.VimAutomation.ViCore.Util10Ps.dll" Name="VMware.VimAutomation.ViCore.Util10Ps.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
       </Component>
+     
+          
+     
 
       <Component Id="CMP_REGISTRY" NeverOverwrite="no">
         <RegistryKey Root="HKLM" Key="Software\[Manufacturer]\[ProductName]" >
