@@ -32,7 +32,6 @@ namespace SP_powershell
         [Alias("pwd")]
         public string Password { get; set; }
         //Groupid will pass the Group uid
-        //[Parameter(ParameterSetName = "HXGrUid")]
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("Grpid")]
@@ -61,7 +60,7 @@ namespace SP_powershell
                 {
                     throw new Exception("No server is connected.");
                 }
-                //var valServer = "";
+                
                 if (Server != null)
                 {
                     Server = Server.ToString().Trim();
@@ -71,10 +70,12 @@ namespace SP_powershell
                     var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
                     Server = firstElement.Key;
                 }
+
+
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
                 var apiInstance = new ProtectApi(apiString);
                 var num = 0;
-             
+
                 String accessTkn = "";
 
                 dynamic dictServerCnnctd = null;
@@ -97,10 +98,6 @@ namespace SP_powershell
                     num = 0;
                     throw new Exception("Please connect to a server.");
                 }
-
-
-
-
                 if (dictServerCnnctd != null)
                 {
                     accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
@@ -109,9 +106,7 @@ namespace SP_powershell
                 {
                     throw new Exception("The Server is not connected;Please check the IP address of Server");
                 }
-
-               
-
+                
                 List<ProtectionGroupInfo> result = apiInstance.OpDpGroupGet(null, accessTkn.ToString(), "en-US");
 
                 //
@@ -125,9 +120,6 @@ namespace SP_powershell
                     return;
                 }
                 // Find Protection Groups
-
-               // List<ProtectionGroupInfo> result = apiInstance.OpDpGroupGet();
-                //find the Group details matching to the GroupName provided as parameter
                 if (GroupName != null)
                 {
                     var grpMatch = result.FirstOrDefault(vm => vm.Er.Name == GroupName.ToString());
@@ -135,8 +127,8 @@ namespace SP_powershell
                     return;
                 }
 
-               
-                WriteObject(result,true); 
+
+                WriteObject(result, true);
             }
             catch (Exception e)
             {
@@ -147,17 +139,15 @@ namespace SP_powershell
                           ErrorCategory.NotSpecified,
                           e.Message);
                 WriteError(psErrRecord);
-                
+
             }
-            
+
         }
 
 
 
         protected internal override bool ValidateParameters()
         {
-
-
             // Leave this here so that we can add more checks if needed
             // and return all errors if there are multiple without returning
             // on the first one we find.

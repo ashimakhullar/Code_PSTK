@@ -55,17 +55,10 @@ namespace IO.Swagger.Client
         public ApiClient()
         {
             Configuration = Configuration.Default;
-            //AddCertificate(basePath);
+            
         }
 
-        private void AddCertificate(String basePath)
-        {
-            //X509Certificate2 clientCert = GetClientCertificate();
-
-            //RestClient = new RestClient(basePath);
-            //RestClient.ClientCertificates = new X509CertificateCollection();
-            //RestClient.ClientCertificates.Add(clientCert);
-        }
+        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiClient" /> class
@@ -80,7 +73,7 @@ namespace IO.Swagger.Client
                 Configuration = config;
             RestClient = new RestClient(basePath);
             
-            //AddCertificate(basePath);
+           
         }
 
         /// <summary>
@@ -97,7 +90,6 @@ namespace IO.Swagger.Client
 
             RestClient = new RestClient(basePath);
             
-            //AddCertificate(basePath);
             Configuration = Configuration.Default;
             //Code added to pass configuration and encoding it to base 64
             String userpass = Configuration.Username + ":" + Configuration.Password;

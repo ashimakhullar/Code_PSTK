@@ -12,7 +12,7 @@ using System.Management.Automation;
 namespace SP_powershell
 {
     /// <summary>
-    /// The Connect-HXServer PowerShell CmdLet is used to establish sessions with 
+    /// The Disconnect-HXServer PowerShell CmdLet is used to revoke/disconnect sessions with 
     /// HXServer instances.
     /// </summary>
     [Cmdlet(VerbsCommunications.Disconnect, "HXServer")]
@@ -113,7 +113,7 @@ namespace SP_powershell
                 
                  var apiString = "https://" + Server.ToString().Trim() + "/aaa/v1";
                 
-                 RevokeTokenEnvelope body = new RevokeTokenEnvelope(dictServerCnnctd.AccessToken.ToString(), dictServerCnnctd.RefreshToken.ToString(), dictServerCnnctd.TokenType.ToString());
+                RevokeTokenEnvelope body = new RevokeTokenEnvelope(dictServerCnnctd.AccessToken.ToString(), dictServerCnnctd.RefreshToken.ToString(), dictServerCnnctd.TokenType.ToString());
                 var apiInstance = new RevokeTokenApi(apiString);
                 apiInstance.RevokeToken1(body, accessTkn.ToString());
                 ConnectHXServer.storageKeyDictionary.Remove(Server.ToString());

@@ -225,7 +225,7 @@ namespace SP_powershell
         /// <c>false</c> otherwise.</returns>
         private bool HXServerExists(IHXServer tintriServer)
         {
-            //if (tintriServer.) { }
+            //if (HXServer.) { }
                 return true;
         }
 

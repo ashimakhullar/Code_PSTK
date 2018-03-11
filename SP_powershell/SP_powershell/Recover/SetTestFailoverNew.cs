@@ -70,7 +70,7 @@ namespace SP_powershell
         //[ValidateNotNullOrEmpty]
         //[Alias("NWMap")]
         //public string[] NetworkMap { get; set; }
-
+        //NetworkMap defines the mapping
         [Parameter(Position = 0)]
         [ValidateNotNullOrEmpty]
         public string[] NetworkMap
@@ -81,21 +81,21 @@ namespace SP_powershell
         private string[] nwMaps;
 
 
-        //[Parameter(ParameterSetName = "newName")]
+        //NewName will change the name of the existing vm to newname after failover
         [Parameter(Position = 5)]
         [ValidateNotNullOrEmpty]
         public string NewName { get; set; }
 
-        //[Parameter(ParameterSetName = "PowerOn")]
+        //PowerOn will pass if the VM has to be powered on after Test failover
         [Parameter( Position = 6)]
         [ValidateNotNullOrEmpty]
         public SwitchParameter PowerOn { get; set; }
 
-        //[Parameter(ParameterSetName = "Async")]
+        //Async will return the task id for asynchronous call to cmdlet-switch parameter
         [Parameter()]
         [ValidateNotNullOrEmpty]
         public SwitchParameter Async { get; set; }
-
+        //Server will pass the Server for which api call has to be made using the corresponding token
         [Parameter(Mandatory = true)]
         [Alias("srvr")]
         public string Server { get; set; }
@@ -110,17 +110,11 @@ namespace SP_powershell
             //ValidateServerSessions();
             if (ValidateParameters() == false)
                 return;
-
-            // Configure OAuth2 access token for authorization
-            
-            
-
-            
             try
             {
-                Configuration.Default = new Configuration();
-                Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+                // Configure OAuth2 access token for authorization
                 AccessToken accToken = new AccessToken();
+
                 if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
                 {
                     throw new Exception("No server is connected.");
@@ -183,12 +177,10 @@ namespace SP_powershell
                 {
                     vPowerOn = true;
                 }
-                // List<NetworkMapping> dictNetworkMap=null;
+               
                 string newName = null;
                 if (NewName != null) { newName = NewName.ToString(); }
                
- 
-
                 var jsonPool = JsonConvert.SerializeObject(objResPoolJson);
                 var jsonFolder = JsonConvert.SerializeObject(objFolderJson);
                 var jsonNW = JsonConvert.SerializeObject(mapDictionary);
@@ -276,7 +268,6 @@ namespace SP_powershell
                        
                         
                         WriteVerbose("Test Failover of VM done");
-                       // WriteObject(result1[0].taskid.ToString());
                         List<IO.Swagger.Model.Job> result2 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
                       
                         DateTime oneMinutesFromNow = GetOneMinutesFromNow();
@@ -290,7 +281,7 @@ namespace SP_powershell
                         while (result2 != null && now < oneMinutesFromNow)
                         {
                             List<IO.Swagger.Model.Job> check1 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
-                            // ApiResponse check = api.GetResponse(RequestID);
+                           
                             if (check1[0].State.ToString() == "COMPLETED")
                             {
                                 result2 = check1;
@@ -322,9 +313,7 @@ namespace SP_powershell
 
                     }
                 }
-                
-
-                
+                   
             }
             catch (ArgumentException e)
             {
@@ -340,6 +329,11 @@ namespace SP_powershell
          
         }
 
+
+        /// <summary>
+        /// get one minute from the current time
+        /// </summary>
+        /// <returns></returns>
         private DateTime GetOneMinutesFromNow()
         {
             DateTime otherDate = DateTime.Now.AddMinutes(2);

@@ -27,17 +27,18 @@ namespace SP_powershell
         [Alias("name")]
         public string VMName { get; set; }
 
-        //[Parameter(ParameterSetName = "HXName")]
+        //VMId will pass the VM uid
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         [Alias("vmid1")]
         public string VMId { get; set; }
-        
+
+        //Server Parameter contains the Cisco HXConnect IP
         [Parameter(Mandatory = true)]
         [Alias("srvr")]
         public string Server { get; set; }
 
-        //[Parameter(ParameterSetName = "Async")]
+        //Async will return the task id for asynchronous call to cmdlet-switch parameter
         [Parameter()]
         [ValidateNotNullOrEmpty]
         public SwitchParameter Async { get; set; }
@@ -51,15 +52,9 @@ namespace SP_powershell
             //ValidateServerSessions();
             if (ValidateParameters() == false)
                 return;
-
-            // Configure OAuth2 access token for authorization
-            
-           
-
             try
             {
-                //Configuration.Default = new Configuration();
-                //Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+                // Configure OAuth2 access token for authorization
                 AccessToken accToken = new AccessToken();
                 if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
                 {
@@ -80,7 +75,7 @@ namespace SP_powershell
                 var apiInstance = new RecoverApi(apiString);
 
                 string accessTkn = accToken.GetAccessToken(Server.ToString());
-               string result1 = "";
+                string result1 = "";
                 if (VMId != null)
                 {
                 if (Async == true)
@@ -92,8 +87,6 @@ namespace SP_powershell
                 else
                 {
                     DateTime now = DateTime.Now;
-                    //apiInstance.OpDpVmHaltPut(VMId.ToString(), accessTkn.ToString(), "en-US");
-                    //WriteVerbose("The Vm has been halted");
                     result1 = apiInstance.OpDpVmReverseProtectPut(VMId.ToString(), accessTkn.ToString(), "en-US");
                     JObject joResponse = JObject.Parse(result1);
                     JValue ojObject = (JValue)joResponse["taskId"];

@@ -49,8 +49,6 @@ namespace SP_powershell
                 return;
             try
             {
-                // Configure OAuth2 access token for authorization: petstore_auth
-                //Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
                 Configuration.Default = new Configuration();
                 Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
                 Configuration.Default.Username = UserName.ToString();

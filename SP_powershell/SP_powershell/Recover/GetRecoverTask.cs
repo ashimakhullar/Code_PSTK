@@ -26,21 +26,21 @@ namespace SP_powershell
 
 
         //Server Parameter contains the Cisco HXConnect IP
-  
-        [Parameter()] 
+
+        [Parameter()]
         [ValidateNotNull]
         [Alias("srvr")]
         public string Server { get; set; }
-        
+
         //VMUid will pass the VM uid
-        
-        [Parameter(Mandatory =true)]
+
+        [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         [Alias("vm_id")]
         public string VMID { get; set; }
 
         //TaskId will pass the taskID uid
-        
+
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("task_id")]
@@ -54,20 +54,16 @@ namespace SP_powershell
             if (ValidateParameters() == false)
                 return;
             // Configure access token for authorization
-            
-           
+            AccessToken accToken = new AccessToken();
+
             try
             {
-
-
-                Configuration.Default = new Configuration();
-                Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
                 if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
                 {
                     throw new Exception("No server is connected.");
                 }
                 //var valServer = "";
-                if (Server!=null )
+                if (Server != null)
                 {
                     Server = Server.ToString().Trim();
                 }
@@ -79,65 +75,23 @@ namespace SP_powershell
 
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
                 var apiInstance = new RecoverApi(apiString);
-                var num=0;
-               String accessTkn = "";
-
-                dynamic dictServerCnnctd = null;
-                if (ConnectHXServer.storageKeyDictionary != null)
-                {
-                    num= ConnectHXServer.storageKeyDictionary.Count();
-                    if (num == 1)
-                    {
-                        
-                        dictServerCnnctd = ConnectHXServer.storageKeyDictionary.First(x => x.Key == Server.ToString()).Value;
-
-                    }
-                    else
-                    {
-                         dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
-                    }
-                }
-                else
-                {
-                    num = 0;
-                    throw new Exception("Please connect to a server.");
-                }
-                
-
-               
-
-                    if (dictServerCnnctd != null)
-                    {
-                        accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
-                    }
-                    else
-                    {
-                        throw new Exception("The Server is not connected;Please check the IP address of Server");
-                    }
-
-                //
-                // Find a specific Protected VM
-                //
-
-
+                string accessTkn = accToken.GetAccessToken(Server.ToString());
+       
                 if (TaskID != null)
                 {
                     //GetSpecific JobID;
                     var TaskSpecific = TaskID.ToString();
-                    //GetSpecific VM;
-                    List<IO.Swagger.Model.Job> result1 = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), TaskSpecific,  null, null, "en-US");
+                    List<IO.Swagger.Model.Job> result1 = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), TaskSpecific, null, null, "en-US");
                     WriteObject(result1, true);
                     return;
                 }
 
-                //Guid vm_id = VMID.ToString();
-                List<IO.Swagger.Model.Job> output = apiInstance.OpDpVmTasksGet(accessTkn,VMID.ToString(), null, null, null, "en-US");
-
+                //api response returning the task for the vmid passed
+                List<IO.Swagger.Model.Job> output = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), null, null, null, "en-US");
                 //WriteTaskrecord(output);
-
                 WriteObject(output, true);
-              
-              
+
+
             }
             catch (ApiException e)
             {
@@ -153,34 +107,30 @@ namespace SP_powershell
             }
             catch (Exception e)
             {
-               
                 ErrorRecord psErrRecord = new ErrorRecord(
                           e,
                           "Exception when calling apiInstance.OpDpVmGet: ",
                           ErrorCategory.NotSpecified,
                           e.Message);
                 WriteError(psErrRecord);
-                //WriteWarning(psErrRecord.Exception.Message);
-                //WriteErrorRecord(e,"Exception when calling apiInstance.OpDpVmGet: ", ErrorCategory.ConnectionError, e.Message);
             }
-            
+
         }
         /// <summary>
         /// Write Task record.
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when null values </exception>
-        /// <param name="body">Protect VM Spec</param>
+        /// <param name="vmTasks">Tasks for each vm</param>
         /// <returns></returns>
         private void WriteTaskrecord(List<IO.Swagger.Model.Job> vmTasks)
         {
-            double val ;
+            double val;
             foreach (var resultset in vmTasks)
             {
                 var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
                 if (resultset.State != null)
                 {
                     WriteObject("STATE : " + resultset.State.ToString());
-                   // WriteObject(resultset.State.);
                     WriteObject("---------------------------------------------------------------------");
                 }
                 if (resultset.MethodName != null)
@@ -190,7 +140,7 @@ namespace SP_powershell
                 }
                 if (resultset.TimeStartedMillis != null)
                 {
-                   val= (double)resultset.TimeStartedMillis;
+                    val = (double)resultset.TimeStartedMillis;
                     WriteObject("TIME STARTED " + posixTime.AddMilliseconds(val));
                     //WriteObject("---------------------------------------------------------------------");
                 }
@@ -231,19 +181,10 @@ namespace SP_powershell
 
         protected internal override bool ValidateParameters()
         {
-
-
             // Leave this here so that we can add more checks if needed
             // and return all errors if there are multiple without returning
             // on the first one we find.
             return true;
         }
     }
-   
-
-
-
-   
-
-
 }

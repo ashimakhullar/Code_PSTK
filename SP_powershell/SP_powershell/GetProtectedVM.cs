@@ -26,12 +26,12 @@ namespace SP_powershell
 
 
         //Server Parameter contains the Cisco HXConnect IP
-  
-        [Parameter()] 
+
+        [Parameter()]
         [ValidateNotNull]
         [Alias("srvr")]
         public string Server { get; set; }
-        
+
         //////UserName Parameter contains the Cisco HXConnect UserName
         ////[Parameter(Position = 1, ParameterSetName = "UserNamePassword")]
         ////[ValidateNotNullOrEmpty]
@@ -45,7 +45,7 @@ namespace SP_powershell
         ////public string Password { get; set; }
 
         //VMUid will pass the VM uid
-  
+
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("vmid")]
@@ -69,11 +69,11 @@ namespace SP_powershell
         //
         protected override void ProcessSPRecord()
         {
-         if (ValidateParameters() == false)
-         return;
+            if (ValidateParameters() == false)
+                return;
             // Configure access token for authorization
-            
-           
+
+
             try
             {
                 Configuration.Default = new Configuration();
@@ -82,7 +82,7 @@ namespace SP_powershell
                 {
                     throw new Exception("No server is connected.");
                 }
-                if (Server!=null )
+                if (Server != null)
                 {
                     Server = Server.ToString().Trim();
                 }
@@ -93,25 +93,25 @@ namespace SP_powershell
                 }
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
                 var apiInstance = new ProtectApi(apiString);
-                           
+
                 // Find All Protected VMs
                 ////////////VMHXobject objVmJson = new VMHXobject();
-                var num=0;
+                var num = 0;
                 String accessTkn = "";
 
                 dynamic dictServerCnnctd = null;
                 if (ConnectHXServer.storageKeyDictionary != null)
                 {
-                    num= ConnectHXServer.storageKeyDictionary.Count();
+                    num = ConnectHXServer.storageKeyDictionary.Count();
                     if (num == 1)
                     {
-                        
+
                         dictServerCnnctd = ConnectHXServer.storageKeyDictionary.First(x => x.Key == Server.ToString()).Value;
 
                     }
                     else
                     {
-                         dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
+                        dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
                     }
                 }
                 else
@@ -119,18 +119,18 @@ namespace SP_powershell
                     num = 0;
                     throw new Exception("Please connect to a server.");
                 }
-                
 
-               
 
-                    if (dictServerCnnctd != null)
-                    {
-                        accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
-                    }
-                    else
-                    {
-                        throw new Exception("The Server is not connected;Please check the IP address of Server");
-                    }
+
+
+                if (dictServerCnnctd != null)
+                {
+                    accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
+                }
+                else
+                {
+                    throw new Exception("The Server is not connected;Please check the IP address of Server");
+                }
 
                 //
                 // Find a specific Protected VM
@@ -141,12 +141,12 @@ namespace SP_powershell
                 {
                     var VmSpecific = VMUid.ToString();
                     //GetSpecific VM;
-                    ProtectedVMInfo result1 = apiInstance.OpDpVmVmidGet1(VmSpecific, accessTkn,"en-US");
+                    ProtectedVMInfo result1 = apiInstance.OpDpVmVmidGet1(VmSpecific, accessTkn, "en-US");
                     WriteObject(result1, true);
                     return;
                 }
-               // VMware.Vim.VirtualMachine vm = new VMware.Vim.VirtualMachine();
-               
+                // VMware.Vim.VirtualMachine vm = new VMware.Vim.VirtualMachine();
+
                 var output = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
                 //List<VMware.VimAutomation.ViCore.Types.V1.VM.Guest.VMGuest> result = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
                 List<ProtectedVMInfo> result = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
@@ -154,23 +154,23 @@ namespace SP_powershell
                 List<VMHXobject> myresult2 = GetVirtualMachineResources(output);
                 List<containerHXobject> myresult3 = GetVirtualMachineDetail(output);
                 //find the vm details matching to the vmName provided as parameter
-                if (VMname!=null)
-                { 
-                    var vmMatch= result.FirstOrDefault(vm => vm.Er.Name == VMname.ToString());
+                if (VMname != null)
+                {
+                    var vmMatch = result.FirstOrDefault(vm => vm.Er.Name == VMname.ToString());
                     WriteObject(vmMatch, true);
                     return;
                 }
                 //find the vm details matching to the state provided as parameter-"ACTIVE", "HALTED", "RECOVERED", "FAILED", "IN_PROGRESS"
-                if (State!=null)
+                if (State != null)
                 {
                     List<ProtectedVMInfo> vmStateMatch = result.FindAll(vm => vm.ProtectionStatus.ToString() == State.ToString());
                     WriteObject(vmStateMatch, true);
                     return;
                 }
-               // WriteContainerecord(myresult3);
+                // WriteContainerecord(myresult3);
                 WriteObject(result, true);
                 // WriteVMrecord(result);
-               
+
             }
             catch (ApiException e)
             {
@@ -186,7 +186,7 @@ namespace SP_powershell
             }
             catch (Exception e)
             {
-               
+
                 ErrorRecord psErrRecord = new ErrorRecord(
                           e,
                           "Exception when calling apiInstance.OpDpVmGet: ",
@@ -196,15 +196,16 @@ namespace SP_powershell
                 //WriteWarning(psErrRecord.Exception.Message);
                 //WriteErrorRecord(e,"Exception when calling apiInstance.OpDpVmGet: ", ErrorCategory.ConnectionError, e.Message);
             }
-            
+
         }
 
-       
+
         private void WriteContainerecord(List<containerHXobject> myresult3)
         {
             foreach (var resultset in myresult3)
-            {   if (resultset.VMHXobject != null)
-                { 
+            {
+                if (resultset.VMHXobject != null)
+                {
                     WriteObject(resultset.VMHXobject);
                     WriteObject("---------------------------------------------------------------------");
                 }
@@ -230,7 +231,7 @@ namespace SP_powershell
         {
             foreach (var resultset in myresult)
             {
-                if(resultset.Er!=null)
+                if (resultset.Er != null)
                 {
                     WriteObject(resultset.Er.ToString());
                     WriteObject(resultset.Er);
@@ -251,34 +252,34 @@ namespace SP_powershell
 
         private List<containerHXobject> GetVirtualMachineDetail(List<ProtectedVMInfo> output)
         {
-            
-                List<containerHXobject> list = new List<containerHXobject>();
+
+            List<containerHXobject> list = new List<containerHXobject>();
             try
             {
                 foreach (var virtualMachineHostResource in output)
                 {
                     containerHXobject obj = new containerHXobject();
                     obj.VMHXobject = new VMHXobject(virtualMachineHostResource.Er.Name, virtualMachineHostResource.Er.Id, virtualMachineHostResource.Er.Type);
-                    if (virtualMachineHostResource.ClusterEr==null)
+                    if (virtualMachineHostResource.ClusterEr == null)
                     {
                         obj.ClusterHXobject = new ClusterHXobject();
                     }
                     else
-                    { 
+                    {
                         obj.ClusterHXobject = new ClusterHXobject(virtualMachineHostResource.ClusterEr);
                     }
                     if (virtualMachineHostResource.ProtectionInfo == null)
                     {
                         obj.VmInfoHXobject = new VmInfoHXobject();
-                    } 
+                    }
                     else
-                    { 
+                    {
                         obj.VmInfoHXobject = new VmInfoHXobject(virtualMachineHostResource.ProtectionInfo.VmCurrentProtectionInfo);
                     }
                     //list.Add(new VMHXobject(virtualMachineHostResource.Er.Name, virtualMachineHostResource.Er.Id, virtualMachineHostResource.Er.Type)); // Read variables from item...
                     list.Add(obj);
 
-                                                                                                                                                       ////    virtualMachineHostResource.ApplianceUuid = tintriServer.Uuid;
+                    ////    virtualMachineHostResource.ApplianceUuid = tintriServer.Uuid;
                 }
                 return list;
 
@@ -296,7 +297,7 @@ namespace SP_powershell
             }
 
 
-           
+
         }
 
         private List<VMHXobject> GetVirtualMachineResources(List<ProtectedVMInfo> output)
@@ -304,7 +305,7 @@ namespace SP_powershell
 
             //var ts = serverMap[tintriServer];
             //var hostResources = vminfo;
-            List<VMHXobject> list = new List<VMHXobject>(); 
+            List<VMHXobject> list = new List<VMHXobject>();
             // var hostResources = ts.Datastore.GetVMHostResources().Result.ToList();
 
             //if (!string.IsNullOrEmpty(tintriServer.ApplianceHostName) &&
@@ -356,7 +357,7 @@ namespace SP_powershell
 
     public class ClusterHXobject
     {
-       
+
         public EntityRef clusterEr;
 
         public ClusterHXobject()
@@ -378,7 +379,7 @@ namespace SP_powershell
         public VmInfoHXobject()
         {
         }
-        
+
         public VmInfoHXobject(SnapshotInfo vmCurrentProtectionInfo)
         {
             this.vmCurrentProtectionInfo = vmCurrentProtectionInfo;
@@ -399,7 +400,7 @@ namespace SP_powershell
 
 
 
-   
+
 
 
 }

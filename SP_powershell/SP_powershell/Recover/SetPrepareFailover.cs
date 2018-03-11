@@ -21,65 +21,19 @@ namespace SP_powershell
         // 
         // Properties (PowerShell Parameters) to be defined below
         //
+        //VMName will pass the VM name to the cmdlet
         [Parameter(ParameterSetName = "HXName")]
         [ValidateNotNullOrEmpty]
         [Alias("name")]
         public string VMName { get; set; }
 
-        //[Parameter(ParameterSetName = "HXName")]
+        //VMId will pass the VM uid
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         [Alias("vmid1")]
         public string VMId { get; set; }
-        ////////////[Parameter(ParameterSetName = "RPName")]
-        //////////[Parameter()]
-        //////////[ValidateNotNullOrEmpty]
-        //////////[Alias("RPName")]
-        //////////public string ResourcePoolName { get; set; }
-        ////////////[Parameter(ParameterSetName = "RPID")]
-        //////////[Parameter()]
-        //////////[ValidateNotNullOrEmpty]
-        //////////[Alias("RPID")]
-        //////////public string ResourcePoolID { get; set; }
-        ////////////[Parameter(ParameterSetName = "FolderName")]
-        //////////[Parameter()]
-        //////////[ValidateNotNullOrEmpty]
-        //////////[Alias("FName")]
-        //////////public string FolderName { get; set; }
-        ////////////[Parameter(ParameterSetName = "RPID")]
-        //////////[Parameter()]
-        //////////[ValidateNotNullOrEmpty]
-        //////////[Alias("FID")]
-        //////////public string FolderID { get; set; }
 
-        ////////////[Parameter(ParameterSetName = "testNetwork")]
-        //////////[Parameter(Position = 3)]
-        //////////[ValidateNotNullOrEmpty]
-        //////////[Alias("testNW")]
-        //////////public string TestNetwork { get; set; }
-
-        ////////////[Parameter(ParameterSetName = "networkMap")]
-        //////////[Parameter(Position = 4)]
-        //////////[ValidateNotNullOrEmpty]
-        //////////[Alias("NWMap")]
-        //////////public string NetworkMap { get; set; }
-
-        ////////////[Parameter(ParameterSetName = "newName")]
-        //////////[Parameter(Position = 5)]
-        //////////[ValidateNotNullOrEmpty]
-        //////////public string NewName { get; set; }
-
-        ////////////[Parameter(ParameterSetName = "PowerOn")]
-        //////////[Parameter(Position = 6)]
-        //////////[ValidateNotNullOrEmpty]
-        //////////public SwitchParameter PowerOn { get; set; }
-
-        ////////////[Parameter(ParameterSetName = "Async")]
-        //////////[Parameter()]
-        //////////[ValidateNotNullOrEmpty]
-        //////////public SwitchParameter Async { get; set; }
-
-
+        //Server Parameter contains the Cisco HXConnect IP
         [Parameter(Mandatory = true)]
         [Alias("srvr")]
         public string Server { get; set; }
@@ -96,11 +50,8 @@ namespace SP_powershell
 
             // Configure OAuth2 access token for authorization
             
-            //Configuration.Default = new Configuration();
-            //Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
             AccessToken accToken = new AccessToken();
-            
-           
+                       
             try
             {
                

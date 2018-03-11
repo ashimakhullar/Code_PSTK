@@ -4,7 +4,6 @@ using IO.Swagger.Client;
 using System.Management.Automation;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
-using System.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,60 +26,60 @@ namespace SP_powershell
         [Alias("name")]
         public string VMName { get; set; }
 
-        //[Parameter(ParameterSetName = "HXName")]
+        //VMUid will pass the VM uid
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         [Alias("vmid1")]
         public string VMId { get; set; }
-        //[Parameter(ParameterSetName = "RPName")]
+        //ResourcePoolName will pass the ResourcePoolName
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("RPName")]
         public string ResourcePoolName { get; set; }
-        //[Parameter(ParameterSetName = "RPID")]
+        //ResourcePoolID
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("RPID")]
         public string ResourcePoolID { get; set; }
-        //[Parameter(ParameterSetName = "FolderName")]
+        //FolderName 
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("FName")]
         public string FolderName { get; set; }
-        //[Parameter(ParameterSetName = "RPID")]
+        //FolderID will pass the folder id
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("FID")]
         public string FolderID { get; set; }
 
-        //[Parameter(ParameterSetName = "testNetwork")]
+        //NetworkMap defines the mapping
         [Parameter(Position = 3)]
         [ValidateNotNullOrEmpty]
         [Alias("testNW")]
         public string TestNetwork { get; set; }
 
-        //[Parameter(ParameterSetName = "networkMap")]
+        //VMUid will pass the VM uid
         [Parameter(Position = 4)]
         [ValidateNotNullOrEmpty]
         [Alias("NWMap")]
         public string NetworkMap { get; set; }
 
-        //[Parameter(ParameterSetName = "newName")]
+        //NewName will change the name of the existing vm to newname after failover
         [Parameter(Position = 5)]
         [ValidateNotNullOrEmpty]
         public string NewName { get; set; }
 
-        //[Parameter(ParameterSetName = "PowerOn")]
+        //PowerOn will pass if the VM has to be powered on after failover
         [Parameter(Position = 6)]
         [ValidateNotNullOrEmpty]
         public SwitchParameter PowerOn { get; set; }
 
-        //[Parameter(ParameterSetName = "Async")]
+        //Async will return the task id for asynchronous call to cmdlet-switch parameter
         [Parameter()]
         [ValidateNotNullOrEmpty]
         public SwitchParameter Async { get; set; }
 
-
+        //Server will pass the Server for which api call has to be made using the corresponding token
         [Parameter(Mandatory = true)]
         [Alias("srvr")]
         public string Server { get; set; }
@@ -154,12 +153,9 @@ namespace SP_powershell
                 {
                     vPowerOn = true;
                 }
-                // List<NetworkMapping> dictNetworkMap=null;
+                
                 string newName = null;
                 if (NewName != null) { newName = NewName.ToString(); }
-
-
-
                 var jsonPool = JsonConvert.SerializeObject(objResPoolJson);
                 var jsonFolder = JsonConvert.SerializeObject(objFolderJson);
                 EntityRef objEF_pool = JsonConvert.DeserializeObject<EntityRef>(jsonPool);
@@ -203,10 +199,7 @@ namespace SP_powershell
                 if (VMId != null)
                 {
                     if (Async== true)
-                    {
-
-                        //apiInstance.OpDpVmHaltPut(VMId.ToString(), accessTkn.ToString(), "en-US");
-                        //WriteVerbose("The Vm has been halted");
+                    {                        
                         result1 = apiInstance.OpDpVmFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");
                         WriteVerbose("The Vm has been failed over");
                         WriteObject(result1, true);
@@ -214,16 +207,12 @@ namespace SP_powershell
                     }
                     else
                     {
-                        
                         DateTime now = DateTime.Now;
-                        //apiInstance.OpDpVmHaltPut(VMId.ToString(), accessTkn.ToString(), "en-US");
-                        //WriteVerbose("The Vm has been halted");
                         result1 = apiInstance.OpDpVmFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");//OpDpVmFailoverPut
                         JObject joResponse = JObject.Parse(result1);
                         JValue ojObject = (JValue)joResponse["taskId"];
                         WriteVerbose("The Vm has been failed over");
                         List<IO.Swagger.Model.Job> result2 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
-                        //var result2 = apiInstance.OpDpVmRecoveryJobsJobIdGet("43d80de4-f438-4ff0-a3de-b89a62a3ac1f", accessTkn.ToString(), "en-US");
                         DateTime oneMinutesFromNow = GetOneMinutesFromNow();
                         if (result2[0].State.ToString() == "EXCEPTION")
                         {
