@@ -6,10 +6,10 @@ using IO.Swagger.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
-
-
+using System.Text.RegularExpressions;
 
 namespace SP_powershell
 {
@@ -54,6 +54,7 @@ namespace SP_powershell
         //VMname will pass the VM name
         //[Parameter(ParameterSetName = "HXVMname")]
         [Parameter()]
+        [SupportsWildcards()]
         [ValidateNotNullOrEmpty]
         [Alias("name")]
         public string VMname { get; set; }
@@ -72,12 +73,13 @@ namespace SP_powershell
             if (ValidateParameters() == false)
                 return;
             // Configure access token for authorization
+           
+            AccessToken accToken = new AccessToken();
 
 
             try
             {
-                Configuration.Default = new Configuration();
-                Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+                
                 if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
                 {
                     throw new Exception("No server is connected.");
@@ -93,48 +95,14 @@ namespace SP_powershell
                 }
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
                 var apiInstance = new ProtectApi(apiString);
-
+                string accessTkn = accToken.GetAccessToken(Server.ToString());
                 // Find All Protected VMs
                 ////////////VMHXobject objVmJson = new VMHXobject();
-                var num = 0;
-                String accessTkn = "";
-
-                dynamic dictServerCnnctd = null;
-                if (ConnectHXServer.storageKeyDictionary != null)
-                {
-                    num = ConnectHXServer.storageKeyDictionary.Count();
-                    if (num == 1)
-                    {
-
-                        dictServerCnnctd = ConnectHXServer.storageKeyDictionary.First(x => x.Key == Server.ToString()).Value;
-
-                    }
-                    else
-                    {
-                        dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
-                    }
-                }
-                else
-                {
-                    num = 0;
-                    throw new Exception("Please connect to a server.");
-                }
-
-
-
-
-                if (dictServerCnnctd != null)
-                {
-                    accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
-                }
-                else
-                {
-                    throw new Exception("The Server is not connected;Please check the IP address of Server");
-                }
 
                 //
                 // Find a specific Protected VM
                 //
+                
 
 
                 if (VMUid != null)
@@ -156,8 +124,17 @@ namespace SP_powershell
                 //find the vm details matching to the vmName provided as parameter
                 if (VMname != null)
                 {
+                    Debug.Assert(!string.IsNullOrWhiteSpace(VMname));
+                    var cleanedHostName =   Regex.Escape(VMname).
+                                          Replace("\\*", "").
+                                          Replace("\\?", "") ;
+
+                    var namePatternMatchFound = result
+                               .Where(ts => ts.Er.Name.IndexOf(
+                                   cleanedHostName, StringComparison.OrdinalIgnoreCase) >= 0)
+                               .ToList();
                     var vmMatch = result.FirstOrDefault(vm => vm.Er.Name == VMname.ToString());
-                    WriteObject(vmMatch, true);
+                    WriteObject(namePatternMatchFound, true);
                     return;
                 }
                 //find the vm details matching to the state provided as parameter-"ACTIVE", "HALTED", "RECOVERED", "FAILED", "IN_PROGRESS"

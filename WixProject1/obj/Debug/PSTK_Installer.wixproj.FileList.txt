@@ -1,6 +1,6 @@
-obj\Debug\Product.wixobj
 C:\temp\test\Code_PSTK\WixProject1\bin\Debug\PSTK_Installer.msi
 C:\temp\test\Code_PSTK\WixProject1\bin\Debug\PSTK_Installer.wixpdb
+obj\Debug\Product.wixobj
 obj\Debug\PSTK_Installer.wixproj.BindContentsFileListnull.txt
 obj\Debug\PSTK_Installer.wixproj.BindOutputsFileListnull.txt
 obj\Debug\PSTK_Installer.wixproj.BindBuiltOutputsFileListnull.txt

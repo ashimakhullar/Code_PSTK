@@ -102,8 +102,7 @@ namespace SP_powershell
 
             // Configure OAuth2 access token for authorization
             
-            Configuration.Default = new Configuration();
-            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            
 
             
             try

@@ -95,7 +95,6 @@
     <Compile Include="GetPeers.cs" />
     <Compile Include="GetProtectedVM.cs" />
     <Compile Include="GetProtectionGroup.cs" />
-    <Compile Include="GetSPVM.cs" />
     <Compile Include="HXParameterSet.cs" />
     <Compile Include="GetHXServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -120,7 +119,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Product.wxs" />
     <None Include="SP_powershell.format.ps1xml">
       <SubType>Designer</SubType>
     </None>

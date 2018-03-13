@@ -125,6 +125,7 @@ namespace SP_powershell
         private void WriteTaskrecord(List<IO.Swagger.Model.Job> vmTasks)
         {
             double val;
+            double timeStarted=0;
             foreach (var resultset in vmTasks)
             {
                 var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
@@ -135,18 +136,24 @@ namespace SP_powershell
                 }
                 if (resultset.MethodName != null)
                 {
-                    WriteObject("Method Name : " + resultset.MethodName);
+                    WriteObject("METHOD NAME : " + resultset.MethodName);
+                    WriteObject("---------------------------------------------------------------------");
+                }
+                if (resultset.Jobid != null)
+                {
+                    WriteObject("JOB ID : " + resultset.Jobid);
                     WriteObject("---------------------------------------------------------------------");
                 }
                 if (resultset.TimeStartedMillis != null)
                 {
-                    val = (double)resultset.TimeStartedMillis;
-                    WriteObject("TIME STARTED " + posixTime.AddMilliseconds(val));
+                    timeStarted = (double)resultset.TimeStartedMillis;
+                    WriteObject("TIME STARTED " + posixTime.AddMilliseconds(timeStarted));
                     //WriteObject("---------------------------------------------------------------------");
                 }
                 if (resultset.TimeElapsedMillis != null)
                 {
                     val = (double)resultset.TimeElapsedMillis;
+                    val = timeStarted + val;
                     WriteObject("TIME ELAPSED : " + posixTime.AddMilliseconds(val));
                     //WriteObject("---------------------------------------------------------------------");
                 }

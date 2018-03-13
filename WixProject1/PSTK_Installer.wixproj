@@ -33,8 +33,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bobpl.rtf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="icon.ico" />
-    <Content Include="LICENSE" />
+    <Content Include="LICENSE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
