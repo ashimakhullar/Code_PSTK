@@ -25,34 +25,44 @@
                 IncludeMaximum="no"
                 Property="PREVIOUSFOUND" />
     </Upgrade>
+    <Property Id="SYBASE_10INSTALLATION">
+      <RegistrySearch Id="RegSearch_Sybase_MajorVersion"  Type="raw"
+                      Root="HKLM"
+                      Key="SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell"
+                      Name="Path"  />
+    </Property>
+
+    <Condition Message="MyApp requires Sybase 10.0. Please make sure it is installed.">SYBASE_10INSTALLATION</Condition>
 
     <Condition Message="A newer version of this software is already installed.">NOT NEWERVERSIONDETECTED</Condition>
 
     <Feature Id="Feature_Main" Title="[ProductName]" Level="1" Absent="disallow" Description="Installs all necessary [ProductName] components." >
       <ComponentGroupRef Id="MainComponents" />
-      
+
       <!--ashima starts-->
       <ComponentRef Id="StartMenuShortComponent"  />
+      <ComponentRef Id="DeskMenu"></ComponentRef>
       <!--Desktop shortcut with default folder -->
-      <Component Id="cmp79F6D61F01DD1060F418A05609A6DA70"
-             Directory="DesktopFolder" Guid="343cd0aa-7bb5-4040-a601-62e8ad1d3c2c"  
+      <Component Id="DeskMenu"
+             Directory="DesktopFolder" Guid="343cd0aa-7bb5-4040-a601-62e8ad1d3c2c"
                           >
-        <File Id="fil34B100315EFE9D878B5C2227CD1454E1" KeyPath="no"
-              Source="$(var.SourceDir)\powershell_ise.exe" >
-          <Shortcut Id="DesktopShortcut"
-                    Directory="DesktopFolder"
-                    Name="HXConnect PSTK"
-                    Description="HXConnect Powershell Toolkit"
-                    WorkingDirectory="INSTALLFOLDER"
-                    Arguments="-c &quot;. \&quot;C:\Program Files (x86)\VMware\Infrastructure\PowerCLI\Scripts\Initialize-PowerCLIEnvironment.ps1\&quot; $true&quot;" 
-                    Icon="deskpowershell.exe"
-                    IconIndex="0"
+
+        <Shortcut Id="DesktopShortcut"
+                  Directory="DesktopFolder"
+                  Name="HXConnect PSTK"
+                  Description="HXConnect Powershell Toolkit"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Target="[WindowsFolder]system32\WindowsPowerShell\v1.0\powershell.exe"
+                  Arguments="-noe -c &quot;. \&quot;C:\Program Files (x86)\CISCO_HX\PSTK\PSTK_service_install.ps1\&quot; $true&quot;"
+                  Icon="deskpowershell.exe"
+                  IconIndex="0"
+                    
             >
-            <Icon Id="deskpowershell.exe" SourceFile="$(var.SourceDir)\powershell_ise.exe"/>
+          <Icon Id="deskpowershell.exe" SourceFile="$(var.SourceDir)\powershell_ise.exe"/>
 
-          </Shortcut>
+        </Shortcut>
 
-        </File>
+
         <RegistryKey Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
           <RegistryValue  Type="integer" Value="1" Name="Installed" KeyPath="yes" />
         </RegistryKey>
@@ -63,7 +73,7 @@
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
     <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />
-<Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />
+    <Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />
     <!--UIRef Id="WixUI_InstallDir" /-->
     <UIRef Id="SetupDialogUI" />
     <Icon Id="icon.ps1" SourceFile="icon.ico"/>
@@ -84,7 +94,7 @@
       </Directory>
 
 
-<!--SHprtcut on Program menu-->
+      <!--SHprtcut on Program menu-->
       <Directory Id="StartMenuFolder" Name="Programs">
         <Component Id="StartMenuShortComponent" Guid="BA970047-A2B1-425C-AE87-47F9C7EAE8F3">
           <Shortcut Id="PSTK.Shortcut" Name="HXConnect PSTK" IconIndex="0" Icon="icon.ps1" WorkingDirectory="INSTALLFOLDER" Target="[WindowsFolder]system32\WindowsPowerShell\v1.0\powershell.exe" Arguments="-noe -c &quot;. \&quot;C:\Program Files (x86)\VMware\Infrastructure\PowerCLI\Scripts\Initialize-PowerCLIEnvironment.ps1\&quot; $true&quot;" />
@@ -105,7 +115,12 @@
 
 
   </Fragment>
-
+ <Fragment Id="fm35">
+    <PropertyRef Id="NETFRAMEWORK35" />
+    <Condition Message="framework 3.5 is not installed">
+      <![CDATA[Installed OR NETFRAMEWORK35]]>
+    </Condition>
+  </Fragment>
 
   <Fragment>
     <Feature Id="TNReinstall" Title="IllRegistry" Level="1">
@@ -119,13 +134,7 @@
     </Feature>
     <!-- Copy the files -->
     <DirectoryRef Id="IISTIERINSTALLATION">
-      <!--Component Id ="C2WTS_update_file" Guid="11960C39-12EB-4777-B43F-394ADB352DD3">
-      <File Id="C2WTSmsu" Name="Windows6.1-KB974405-x64.msu" Source="C:\PS Scripts\Windows6.1-KB974405-x64.msu" />
-      </Component>
 
-      <Component Id ="C2WTSxmlScript" Guid="AF1F85A7-88F7-4BBA-89D9-6817CFAA74F9">
-      <File Id="C2WTSscript2" Name="Edit_c2wts_config.ps1" Source="C:\PS Scripts\Edit_c2wts_config.ps1" />
-      </Component-->
       <Component Id ="PSTKInstallScript" Guid="1bba3d42-0c9d-4a3b-b38c-e078c5c85c90">
         <File Id="PSTKscript1" Name="PSTK_service_install.ps1" Source="PSTK_service_install.ps1" />
       </Component>
@@ -161,7 +170,8 @@
 
         <File Source="LICENSE"/>
         <File Source="$(var.SP_powershell.TargetPath)" />
-        <!--File Id="bobpl.rtf" Name="bobpl.rtf"  Source="$(var.SP_powershell.TargetDir)" ></File-->
+        <!--File Source="$(PSTK_service_install.ps1)" />
+        <File Id="bobpl.rtf" Name="bobpl.rtf"  Source="$(var.SP_powershell.TargetDir)" ></File-->
         <File Id="Swagger.dll" Name="IO.Swagger.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
         <File Id="SP_powershell.psd1" Name="SP_powershell.psd1"  Source="$(var.SP_powershell.TargetDir)" ></File>
         <File Id="SP_powershell.Help.xml" Name="SP_powershell.Help.xml"  Source="$(var.SP_powershell.TargetDir)"></File>

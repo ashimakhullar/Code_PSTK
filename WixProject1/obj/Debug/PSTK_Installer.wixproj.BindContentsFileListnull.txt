@@ -1,4 +1,3 @@
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell_ise.exe
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\ICSharpCode.SharpZipLib.dll
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\InternalVimService50.dll
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\Interop.VixCOM.dll
