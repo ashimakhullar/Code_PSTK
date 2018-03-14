@@ -58,7 +58,7 @@
                   IconIndex="0"
                     
             >
-          <Icon Id="deskpowershell.exe" SourceFile="$(var.SourceDir)\powershell_ise.exe"/>
+          <Icon Id="deskpowershell.exe" SourceFile="icon.ico"/>
 
         </Shortcut>
 
