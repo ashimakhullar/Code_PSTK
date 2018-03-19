@@ -3,6 +3,8 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <?define SourceDir = "C:\Windows\System32\WindowsPowerShell\v1.0" ?>
+  <?define ResourcesDir = "C:\Program Files (x86)\CISCO_HX\PSTK\" ?>
+  <?define ResourcesDir1 = "C:\Img\" ?>
 
 
   <Product Id="4321067a-2cd6-4d67-a399-6f00c2aa1311"
@@ -13,6 +15,8 @@
            UpgradeCode="b3a142c6-4b9f-4af0-9086-232b6342c0fc">
 
     <Package InstallerVersion="200" Compressed="yes"  InstallPrivileges="elevated" InstallScope="perMachine"/>
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.ResourcesDir1)ciscobanner.png" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.ResourcesDir1)cisco1.png" />
     <WixVariable Id="WixUILicenseRtf" Value="bobpl.rtf" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed."  AllowSameVersionUpgrades="yes" IgnoreRemoveFailure="no" />
     <MediaTemplate EmbedCab="yes" />
@@ -25,21 +29,18 @@
                 IncludeMaximum="no"
                 Property="PREVIOUSFOUND" />
     </Upgrade>
-    <Property Id="SYBASE_10INSTALLATION">
-      <RegistrySearch Id="RegSearch_Sybase_MajorVersion"  Type="raw"
-                      Root="HKLM"
-                      Key="SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell"
-                      Name="Path"  />
+    <Property Id="POWERCLI9INSTALLED">
+      <RegistrySearch Id="PCINSTALLED_REGSEARCH"
+Key="SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{2E4FAF13-B720-4385-A23C-5C38D742D6C6}" Root="HKLM" Type="raw" Name="DisplayVersion"
+/>
     </Property>
-
-    <Condition Message="MyApp requires Sybase 10.0. Please make sure it is installed.">SYBASE_10INSTALLATION</Condition>
-
+    <Condition Message="[ProductName] requires Vmware PowerCLI 6.5 Please make sure you have installed it.">POWERCLI9INSTALLED</Condition>
     <Condition Message="A newer version of this software is already installed.">NOT NEWERVERSIONDETECTED</Condition>
 
     <Feature Id="Feature_Main" Title="[ProductName]" Level="1" Absent="disallow" Description="Installs all necessary [ProductName] components." >
       <ComponentGroupRef Id="MainComponents" />
 
-      <!--ashima starts-->
+     
       <ComponentRef Id="StartMenuShortComponent"  />
       <ComponentRef Id="DeskMenu"></ComponentRef>
       <!--Desktop shortcut with default folder -->
@@ -72,10 +73,33 @@
     </Feature>
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
-    <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />
-    <Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />
+    <!--Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />
+    <Property Id="ARPNOMODIFY" Value="yes" Secure="yes" /-->
     <!--UIRef Id="WixUI_InstallDir" /-->
+    <!--added for logging-->
+    <Property Id="MsiLogging" Value="v" />
     <UIRef Id="SetupDialogUI" />
+
+
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="View Installation Log" />
+
+
+    <!--added for logging-->
+    <Property Id="WixShellExecTarget" Value="[MsiLogFileLocation]" />
+    <CustomAction Id="CopyLog" Execute="immediate"
+                  ExeCommand="cmd /c copy [MsiLogFileLocation] C:\temp\log.txt"
+                  Directory="TARGETDIR"
+                  Impersonate="no"
+                  Return="asyncNoWait" />
+
+    <InstallExecuteSequence>
+      <Custom Action="CopyLog" OnExit="success" />
+    </InstallExecuteSequence>
+
+    <!--added for logging ends-->
+
+
+
     <Icon Id="icon.ps1" SourceFile="icon.ico"/>
     <Property Id="ARPPRODUCTICON" Value="icon.ps1" />
 
@@ -94,7 +118,7 @@
       </Directory>
 
 
-      <!--SHprtcut on Program menu-->
+      <!--Shortcut on Program menu-->
       <Directory Id="StartMenuFolder" Name="Programs">
         <Component Id="StartMenuShortComponent" Guid="BA970047-A2B1-425C-AE87-47F9C7EAE8F3">
           <Shortcut Id="PSTK.Shortcut" Name="HXConnect PSTK" IconIndex="0" Icon="icon.ps1" WorkingDirectory="INSTALLFOLDER" Target="[WindowsFolder]system32\WindowsPowerShell\v1.0\powershell.exe" Arguments="-noe -c &quot;. \&quot;C:\Program Files (x86)\VMware\Infrastructure\PowerCLI\Scripts\Initialize-PowerCLIEnvironment.ps1\&quot; $true&quot;" />
@@ -115,7 +139,7 @@
 
 
   </Fragment>
- <Fragment Id="fm35">
+  <Fragment Id="fm35">
     <PropertyRef Id="NETFRAMEWORK35" />
     <Condition Message="framework 3.5 is not installed">
       <![CDATA[Installed OR NETFRAMEWORK35]]>
@@ -163,15 +187,40 @@
     <!--Custom Action="RunPSscript" After="InstallFiles">
     <![CDATA[NOT Installed]]>
   </Custom-->
+    <!-- Run custom action to run the powershell script-->
+    <Property Id="POWERCLIEXE">
+      <RegistrySearch Id="POWERCLIEXE"
+                      Type="raw"
+                      Root="HKLM"
+                      Key="SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{2E4FAF13-B720-4385-A23C-5C38D742D6C6}"
+                      Name="InstallLocation" />
+    </Property>
 
+    <SetProperty Id="RunPSCLIscript"
+             After="InstallFiles"
+             Sequence="execute"
+             Value ="&quot;[POWERSHELL.EXE]&quot; -Version 2.0 -NoProfile -NonInteractive -InputFormat None -ExecutionPolicy Bypass -Command &quot;&amp; '[#PSTK_service_install.ps1]' ; exit $$($Error.Count)&quot;" />
+
+    <CustomAction Id="RunPSCLIscript"
+                  BinaryKey="WixCA"
+                  DllEntry="CAQuietExec"
+                  Execute="deferred"
+                  Return="check"
+                  Impersonate="yes" />
+
+    <!--Custom Action="RunPSCLIscript" After="InstallCLIFiles">
+    <![CDATA[NOT Installed]]>
+  </Custom-->
     <ComponentGroup Id="MainComponents" Directory="INSTALLFOLDER" >
       <Component Id="CMP_PS_SCRIPT" Guid="CC0E0E77-810F-4DFE-88F8-9FDA840EC0D0"  NeverOverwrite="no" >
 
 
         <File Source="LICENSE"/>
         <File Source="$(var.SP_powershell.TargetPath)" />
-        <!--File Source="$(PSTK_service_install.ps1)" />
-        <File Id="bobpl.rtf" Name="bobpl.rtf"  Source="$(var.SP_powershell.TargetDir)" ></File-->
+        <File Source="cisco.bmp" />
+        <File Source="cisco.png" />
+        <File Source="PSTK_service_install.ps1" />
+        <!--File Id="bobpl.rtf" Name="bobpl.rtf"  Source="$(var.SP_powershell.TargetDir)" ></File-->
         <File Id="Swagger.dll" Name="IO.Swagger.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
         <File Id="SP_powershell.psd1" Name="SP_powershell.psd1"  Source="$(var.SP_powershell.TargetDir)" ></File>
         <File Id="SP_powershell.Help.xml" Name="SP_powershell.Help.xml"  Source="$(var.SP_powershell.TargetDir)"></File>
@@ -191,6 +240,7 @@
         <File Id="phclient.dll" Name="phclient.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
         <File Id="System.Management.Automation.dll" Name="System.Management.Automation.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
         <File Id="System.Management.Automation.xml" Name="System.Management.Automation.xml"  Source="$(var.SP_powershell.TargetDir)" ></File>
+        <!--
         <File Id="VimService65.dll" Name="VimService65.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
         <File Id="VMware.Security.CredentialStore.dll" Name="VMware.Security.CredentialStore.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
         <File Id="VMware.Vim.dll" Name="RestSharp.xml"  Source="$(var.SP_powershell.TargetDir)" ></File>
@@ -209,6 +259,7 @@
         <File Id="VMware.VimAutomation.ViCore.Types.dll" Name="VMware.VimAutomation.ViCore.Types.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
         <File Id="VMware.VimAutomation.ViCore.Util10.dll" Name="VMware.VimAutomation.ViCore.Util10.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
         <File Id="VMware.VimAutomation.ViCore.Util10Ps.dll" Name="VMware.VimAutomation.ViCore.Util10Ps.dll"  Source="$(var.SP_powershell.TargetDir)" ></File>
+        -->
       </Component>
 
 
@@ -281,6 +332,7 @@ by ashima
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg" Order="1">NOT Installed</Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Install" Event="NewDialog" Value="ExitDialog" Order="1">1</Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed AND NOT PATCH</Publish>
+      <!--Publish Dialog="VerifyReadyDlg" Control="Next" Event="NewDialog" Value="ExitDialog" Order="2">Installed AND NOT PATCH</Publish-->
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">Installed AND PATCH</Publish>
 
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
@@ -288,8 +340,6 @@ by ashima
       <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
       <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
       <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
-
-      <!--Property Id="ARPNOMODIFY" Value="1" /-->
 
     </UI>
     <UIRef Id="WixUI_Common" />
