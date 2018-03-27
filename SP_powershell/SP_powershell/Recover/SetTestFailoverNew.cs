@@ -1,10 +1,9 @@
 ﻿// Author(s): 
 // Ashima Bahl, asbahl@cisco.com 
-using IO.Swagger.Client;
+
 using System.Management.Automation;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
-using System.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,11 +64,7 @@ namespace SP_powershell
         [Alias("testNW")]
         public string TestNetwork { get; set; }
 
-        ////[Parameter(ParameterSetName = "networkMap")]
-        //[Parameter(Position = 4)]
-        //[ValidateNotNullOrEmpty]
-        //[Alias("NWMap")]
-        //public string[] NetworkMap { get; set; }
+        //Either TestNetwork or NetworkMap is provided
         //NetworkMap defines the mapping
         [Parameter(Position = 0)]
         [ValidateNotNullOrEmpty]
@@ -142,9 +137,9 @@ namespace SP_powershell
                 var objResPoolJson = new EntityDetail
                     {
                         name = vResourcePoolName,
-                        type = "DP_VM",
+                        type = erType.DP_VM,
                         id = ResourcePoolID,
-                        idtype = "VCMOID",
+                        idtype = erIDType.VCMOID,
                         confignum = "0"
                     };
                 var vFolderName = "";
@@ -155,9 +150,9 @@ namespace SP_powershell
                 var objFolderJson = new EntityDetail
                 {
                     name = vFolderName,
-                    type = "DP_VM",
+                    type = erType.DP_VM,
                     id = vFolderID,
-                    idtype = "VCMOID",
+                    idtype = erIDType.VCMOID,
                     confignum = "0"
                 };
                 
@@ -215,22 +210,19 @@ namespace SP_powershell
                 if (mapDictionary != null)
                 {
                     var obj_nw = JsonConvert.DeserializeObject(jsonNW);
-                   // body.NetworkMap = list<networkMapping>obj_nw;
                     foreach (KeyValuePair<string, string> entry in mapDictionary)
                     {
                         NetworkMapping varNW = new NetworkMapping(entry.Key,entry.Value);
                         cont1.Add(varNW);
                         // do something with entry.Value or entry.Key
                     }
-                     body.NetworkMap = cont1;
-                    //for(var i=0;i< NetworkMap.Count();i++)
-                    //{
-                    //    objEF_nw = JsonConvert.DeserializeObject<EntityRef>(jsonFolder);
-                    //    body.NetworkMap[i] = mapDictionary;
-                    //}
+                    body.NetworkMap = cont1;
+                    
                 }
                 else
-                { body.NetworkMap = null; }
+                {
+                    body.NetworkMap = null;
+                }
                 body.NewName = null;
                 body.PowerOn = false;
                 if (NewName != null)
@@ -242,54 +234,51 @@ namespace SP_powershell
                     body.PowerOn = true;
                 }
 
-                string result1;
+                string respVMTestFailover=string.Empty;
                 string accessTkn = accToken.GetAccessToken(Server.ToString());
                 if (VMId != null)
                 {
                     if (Async == true)
                     {
-
-                        
-                        result1 = apiInstance.OpDpVmTestFailoverPut(VMId.ToString(),  accessTkn.ToString(), body,"en-US");
-                        
+                        respVMTestFailover = apiInstance.OpDpVmTestFailoverPut(VMId.ToString(),  accessTkn.ToString(), body,"en-US");
                         WriteVerbose("Test Failover of VM done");
-                        WriteObject(result1, true);
+                        WriteObject(respVMTestFailover, true);
                         return;
                     }
                     else
                     {
                         DateTime now = DateTime.Now;
-                       // WriteVerbose("The Vm has been halted");
-                        result1 = apiInstance.OpDpVmTestFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");
+                        // WriteVerbose("The Vm has been halted");
+                        respVMTestFailover = apiInstance.OpDpVmTestFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");
                        
-                        JObject joResponse = JObject.Parse(result1);
+                        JObject joResponse = JObject.Parse(respVMTestFailover);
                         
                         JValue ojObject = (JValue)joResponse["taskId"];
                        
                         
                         WriteVerbose("Test Failover of VM done");
-                        List<IO.Swagger.Model.Job> result2 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
+                        List<IO.Swagger.Model.Job> respVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
                       
                         DateTime oneMinutesFromNow = GetOneMinutesFromNow();
 
-                        if (result2[0].State.ToString() == "EXCEPTION")
+                        if (respVMTaskGet[0].State.ToString() == "EXCEPTION")
                         {
                             WriteVerbose("Exception in Test Failover of VM");
-                            WriteObject(result2, true);
+                            WriteObject(respVMTaskGet, true);
 
                         }
-                        while (result2 != null && now < oneMinutesFromNow)
+                        while (respVMTaskGet != null && now < oneMinutesFromNow)
                         {
-                            List<IO.Swagger.Model.Job> check1 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
+                            List<IO.Swagger.Model.Job> checkVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
                            
-                            if (check1[0].State.ToString() == "COMPLETED")
+                            if (checkVMTaskGet[0].State.ToString() == "COMPLETED")
                             {
-                                result2 = check1;
+                                respVMTaskGet = checkVMTaskGet;
                                 break;
                             }
-                            else if (check1[0].State.ToString() == "EXCEPTION")
+                            else if (checkVMTaskGet[0].State.ToString() == "EXCEPTION")
                             {
-                                result2 = check1;
+                                respVMTaskGet = checkVMTaskGet;
                                 break;
                             }
                             else
@@ -298,16 +287,16 @@ namespace SP_powershell
                                 System.Threading.Thread.Sleep(3000);
                             }
                         }
-                        if (result2[0].State.ToString() == "EXCEPTION")
+                        if (respVMTaskGet[0].State.ToString() == "EXCEPTION")
                         {
                             WriteVerbose("Exception in Test Failover of VM");
-                            WriteObject(result2, true);
+                            WriteObject(respVMTaskGet, true);
 
                         }
-                        if (result2[0].State.ToString() == "COMPLETED")
+                        if (respVMTaskGet[0].State.ToString() == "COMPLETED")
                         {
-                            WriteVerbose("Test Failover of VM done");
-                            WriteObject(result2, true);
+                            WriteVerbose("Test Failover of VM Completed");
+                            WriteObject(respVMTaskGet, true);
                         }
 
 

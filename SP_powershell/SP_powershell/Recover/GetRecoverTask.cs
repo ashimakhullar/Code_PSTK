@@ -3,7 +3,6 @@
 using IO.Swagger.Api;
 using IO.Swagger.Client;
 using IO.Swagger.Model;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +61,7 @@ namespace SP_powershell
                 {
                     throw new Exception("No server is connected.");
                 }
-                //var valServer = "";
+                WriteDebug("The Server connected : " + Server.ToString());
                 if (Server != null)
                 {
                     Server = Server.ToString().Trim();
@@ -74,22 +73,24 @@ namespace SP_powershell
                 }
 
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
+                WriteDebug("apiString : " + apiString.ToString());
                 var apiInstance = new RecoverApi(apiString);
                 string accessTkn = accToken.GetAccessToken(Server.ToString());
        
                 if (TaskID != null)
                 {
-                    //GetSpecific JobID;
+                    //GetSpecific TaskID;
                     var TaskSpecific = TaskID.ToString();
-                    List<IO.Swagger.Model.Job> result1 = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), TaskSpecific, null, null, "en-US");
-                    WriteObject(result1, true);
+                    WriteDebug("TaskSpecific : " + TaskSpecific.ToString());
+                    List<IO.Swagger.Model.Job> respTaskList = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), TaskSpecific, null, null, "en-US");
+                    WriteObject(respTaskList, true);
                     return;
                 }
 
                 //api response returning the task for the vmid passed
-                List<IO.Swagger.Model.Job> output = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), null, null, null, "en-US");
+                List<IO.Swagger.Model.Job> respVMTask = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), null, null, null, "en-US");
                 //WriteTaskrecord(output);
-                WriteObject(output, true);
+                WriteObject(respVMTask, true);
 
 
             }
@@ -171,6 +172,12 @@ namespace SP_powershell
                 WriteObject("=====================================================================");
             }
         }
+        /// <summary>
+        /// Convert unixTimestamp to DateTime format
+        /// </summary>
+        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when null values </exception>
+        /// <param name="unixTimeStamp">double</param>
+        /// <returns></returns>
 
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {

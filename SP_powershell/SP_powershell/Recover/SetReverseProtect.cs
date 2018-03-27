@@ -1,14 +1,12 @@
 ﻿// Author(s): 
 // Ashima Bahl, asbahl@cisco.com 
-using IO.Swagger.Client;
+
 using System.Management.Automation;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
-using System.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace SP_powershell
@@ -75,59 +73,59 @@ namespace SP_powershell
                 var apiInstance = new RecoverApi(apiString);
 
                 string accessTkn = accToken.GetAccessToken(Server.ToString());
-                string result1 = "";
+                string respVMReverseProtect = "";
                 if (VMId != null)
                 {
-                if (Async == true)
-                {
-                    result1 = apiInstance.OpDpVmReverseProtectPut(VMId.ToString(), accessTkn.ToString(),"en-US");
-                    WriteVerbose("The Vm has been reverse protected!");
-                    WriteObject(result1, true);
-                }
-                else
-                {
-                    DateTime now = DateTime.Now;
-                    result1 = apiInstance.OpDpVmReverseProtectPut(VMId.ToString(), accessTkn.ToString(), "en-US");
-                    JObject joResponse = JObject.Parse(result1);
-                    JValue ojObject = (JValue)joResponse["taskId"];
-                    WriteVerbose("The Vm has been failed over");
-                    List<IO.Swagger.Model.Job> result2 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
-                    
-                    DateTime oneMinutesFromNow = GetOneMinutesFromNow();
-                    if (result2[0].State.ToString() == "EXCEPTION")
+                    if (Async == true)
                     {
-                        WriteVerbose("Exception in Test Failover of VM");
-                        WriteObject(result2, true);
+                        respVMReverseProtect = apiInstance.OpDpVmReverseProtectPut(VMId.ToString(), accessTkn.ToString(), "en-US");
+                        WriteVerbose("The Vm has been reverse protected!");
+                        WriteObject(respVMReverseProtect, true);
+                    }
+                    else
+                    {
+                        DateTime now = DateTime.Now;
+                        respVMReverseProtect = apiInstance.OpDpVmReverseProtectPut(VMId.ToString(), accessTkn.ToString(), "en-US");
+                        JObject joResponse = JObject.Parse(respVMReverseProtect);
+                        JValue ojObject = (JValue)joResponse["taskId"];
+                        WriteVerbose("The Vm has been failed over");
+                        List<IO.Swagger.Model.Job> respVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
 
-                    }
-                    if (result2[0].State.ToString() == "COMPLETED")
-                    {
-                        WriteVerbose("Test Failover of VM done");
-                        WriteObject(result2, true);
-                    }
+                        DateTime oneMinutesFromNow = GetOneMinutesFromNow();
+                        if (respVMTaskGet[0].State.ToString() == "EXCEPTION")
+                        {
+                            WriteVerbose("Exception in Test Failover of VM");
+                            WriteObject(respVMTaskGet, true);
 
-                    while (result2 != null && now < oneMinutesFromNow)
-                    {
-                        List<IO.Swagger.Model.Job> check1 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
-                        if (check1[0].State.ToString() == "COMPLETED")
-                        {
-                            result2 = check1;
-                            break;
                         }
-                        else if (check1[0].State.ToString() == "EXCEPTION")
+                        if (respVMTaskGet[0].State.ToString() == "COMPLETED")
                         {
-                            result2 = check1;
-                            break;
+                            WriteVerbose("Test Failover of VM done");
+                            WriteObject(respVMTaskGet, true);
                         }
-                        else
+
+                        while (respVMTaskGet != null && now < oneMinutesFromNow)
                         {
-                            //Wait for 3 seconds
-                            System.Threading.Thread.Sleep(3000);
+                            List<IO.Swagger.Model.Job> checkVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
+                            if (checkVMTaskGet[0].State.ToString() == "COMPLETED")
+                            {
+                                respVMTaskGet = checkVMTaskGet;
+                                break;
+                            }
+                            else if (checkVMTaskGet[0].State.ToString() == "EXCEPTION")
+                            {
+                                respVMTaskGet = checkVMTaskGet;
+                                break;
+                            }
+                            else
+                            {
+                                //Wait for 3 seconds
+                                System.Threading.Thread.Sleep(3000);
+                            }
                         }
+                        WriteObject(respVMTaskGet, true);
                     }
-                    WriteObject(result2, true);
                 }
-            }
 
             }
             catch (ArgumentException e)
@@ -136,12 +134,12 @@ namespace SP_powershell
                            e, "Arguments not provided.", ErrorCategory.AuthenticationError, e.Message);
                 WriteError(psErrRecord);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                
+
                 WriteObject("Exception when calling apiInstance.OpDpVmReverseProtectPut: " + e.Message);
             }
-         
+
         }
 
         private DateTime GetOneMinutesFromNow()
@@ -160,5 +158,5 @@ namespace SP_powershell
             return true;
         }
     }
-    
+
 }

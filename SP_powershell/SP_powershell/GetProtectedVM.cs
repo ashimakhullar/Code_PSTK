@@ -3,7 +3,6 @@
 using IO.Swagger.Api;
 using IO.Swagger.Client;
 using IO.Swagger.Model;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

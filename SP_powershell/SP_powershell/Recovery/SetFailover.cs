@@ -129,9 +129,9 @@ namespace SP_powershell
                 var objResPoolJson = new EntityDetail
                 {
                     name = vResourcePoolName,
-                    type = "DP_VM",
+                    type = erType.DP_VM,
                     id = ResourcePoolID,
-                    idtype = "VCMOID",
+                    idtype = erIDType.VCMOID,
                     confignum = "0"
                 };
                 var vFolderName = "";
@@ -142,9 +142,9 @@ namespace SP_powershell
                 var objFolderJson = new EntityDetail
                 {
                     name = vFolderName,
-                    type = "DP_VM",
+                    type = erType.DP_VM,
                     id = vFolderID,
-                    idtype = "VCMOID",
+                    idtype = erIDType.VCMOID,
                     confignum = "0"
                 };
                 string objTestNetwork = null;

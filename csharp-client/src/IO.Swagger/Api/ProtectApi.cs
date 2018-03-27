@@ -35,10 +35,11 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="name">name of the Group to look for, perhaps we can support wild card here (optional)</param>
+        /// <param name="accessToken"></param>
         /// <param name="type">Limits the search to incoming or outgoing groups (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>List&lt;ProtectionGroupInfo&gt;</returns>
-        List<ProtectionGroupInfo> OpDpGroupGet(string name = null, string type = null, string acceptLanguage = null);
+        List<ProtectionGroupInfo> OpDpGroupGet(string accessToken, string name = null, string type = null, string acceptLanguage = null);
 
         /// <summary>
         /// Gets list of protection groups
@@ -48,10 +49,11 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="name">name of the Group to look for, perhaps we can support wild card here (optional)</param>
+        /// <param name="accessToken"></param>
         /// <param name="type">Limits the search to incoming or outgoing groups (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of List&lt;ProtectionGroupInfo&gt;</returns>
-        ApiResponse<List<ProtectionGroupInfo>> OpDpGroupGetWithHttpInfo(string name = null, string type = null, string acceptLanguage = null);
+        ApiResponse<List<ProtectionGroupInfo>> OpDpGroupGetWithHttpInfo(string accessToken, string name = null, string type = null, string acceptLanguage = null);
         /// <summary>
         /// Deletes the protection group
         /// </summary>
@@ -742,12 +744,12 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="name">name of the Group to look for, perhaps we can support wild card here (optional)</param>
-        /// <param name="type">Limits the search to incoming or outgoing groups (optional)</param>
+        /// <param name="accessToken">Limits the search to incoming or outgoing groups (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>List&lt;ProtectionGroupInfo&gt;</returns>
-        public List<ProtectionGroupInfo> OpDpGroupGet(string name = null, string type = null, string acceptLanguage = null)
+        public List<ProtectionGroupInfo> OpDpGroupGet(string accessToken, string name = null, string type = null, string acceptLanguage = null)
         {
-            ApiResponse<List<ProtectionGroupInfo>> localVarResponse = OpDpGroupGetWithHttpInfo(name, type, acceptLanguage);
+            ApiResponse<List<ProtectionGroupInfo>> localVarResponse = OpDpGroupGetWithHttpInfo(name, accessToken,type, acceptLanguage);
             return localVarResponse.Data;
         }
 
@@ -756,10 +758,11 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="name">name of the Group to look for, perhaps we can support wild card here (optional)</param>
+        /// <param name="accessToken">Limits the search to incoming or outgoing groups (optional)</param>
         /// <param name="type">Limits the search to incoming or outgoing groups (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of List&lt;ProtectionGroupInfo&gt;</returns>
-        public ApiResponse<List<ProtectionGroupInfo>> OpDpGroupGetWithHttpInfo(string name = null, string type = null, string acceptLanguage = null)
+        public ApiResponse<List<ProtectionGroupInfo>> OpDpGroupGetWithHttpInfo(string accessToken, string name = null, string type = null, string acceptLanguage = null)
         {
 
             var localVarPath = "/groups";
@@ -791,9 +794,8 @@ namespace IO.Swagger.Api
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
             //adding the Authorization to the Header Parameter
 
-             localVarHeaderParams.Add("Authorization", type);
-            //localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
-            //localVarHeaderParams.Add("Authorization", "Basic eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2Vycy9sb2NhbC9yb290IiwiZXhwIjoxNTE3NzQ0OTUzLCJ1c2VyIjoibG9jYWwvcm9vdCIsInRva2VuIjoiY205dmREcERhWE5qYnpFeU13PT0iLCJzY29wZSI6IlJFQUQsTU9ESUZZIiwiaXNzdWVkQXQiOjE1MTYxODk3NTMyNTksInRva2VuTGlmZVRpbWUiOjE1NTUyMDAwMDAsImlkbGVUaW1lb3V0IjoxODAwMDAwLCJ3YXJuSWRsZVRpbWVvdXQiOjEwMDAwfQ.BjjlIGt5hroP4hlKh9KsJK3t5C9rEVkqUvh5lCRQfkg");
+             localVarHeaderParams.Add("Authorization", accessToken);
+            
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.GET, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
@@ -2556,11 +2558,12 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ProtectedVMInfo</returns>
-        public ProtectedVMInfo OpDpVmVmidGet1(string vmId,string type, string acceptLanguage = null)
+        public ProtectedVMInfo OpDpVmVmidGet1(string vmId,string accessToken, string acceptLanguage = null)
         {
-            ApiResponse<ProtectedVMInfo> localVarResponse = OpDpVmVmidGetWithHttpInfo1(vmId,type, acceptLanguage);
+            ApiResponse<ProtectedVMInfo> localVarResponse = OpDpVmVmidGetHttpInfo(vmId, accessToken, acceptLanguage);
             return localVarResponse.Data;
         }
 
@@ -2571,7 +2574,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of ProtectedVMInfo</returns>
-        public ApiResponse<ProtectedVMInfo> OpDpVmVmidGetWithHttpInfo1(string vmId,string type, string acceptLanguage = null)
+        public ApiResponse<ProtectedVMInfo> OpDpVmVmidGetHttpInfo(string vmId,string accessToken, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -2602,8 +2605,8 @@ namespace IO.Swagger.Api
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter
             Configuration = Configuration.Default;
             string base64Encoded = GetBase64Encoded(Configuration);
-            //localVarHeaderParams.Add("Authorization", "Basic " + base64Encoded);
-            localVarHeaderParams.Add("Authorization", type);
+            
+            localVarHeaderParams.Add("Authorization", accessToken);
             // make the HTTP request
             IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.GET, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,

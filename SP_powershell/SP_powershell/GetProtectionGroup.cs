@@ -1,6 +1,6 @@
 ﻿// Author(s): 
 // Ashima Bahl, asbahl@cisco.com 
-using IO.Swagger.Client;
+
 using System.Management.Automation;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
@@ -67,11 +67,11 @@ namespace SP_powershell
 
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
                 var apiInstance = new ProtectApi(apiString);
-                var num = 0;
+                
                 string accessTkn = accToken.GetAccessToken(Server.ToString());
                 
                 
-                List<ProtectionGroupInfo> result = apiInstance.OpDpGroupGet(null, accessTkn.ToString(), "en-US");
+                List<ProtectionGroupInfo> result = apiInstance.OpDpGroupGet( accessTkn.ToString(), null, null, "en-US");
 
                 //
                 // Find a specific Protected Group

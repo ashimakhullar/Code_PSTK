@@ -309,6 +309,11 @@ namespace IO.Swagger.Api
                 (AboutInfo) Configuration.ApiClient.Deserialize(localVarResponse, typeof(AboutInfo)));
         }
 
+        /// <summary>
+        /// get Base64 encoding information 
+        /// </summary>
+        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <returns>string</returns>
         private string GetBase64Encoded()
         {
             Configuration.Username = "root";

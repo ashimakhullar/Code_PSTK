@@ -32,10 +32,11 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        string OpDpVmFailoverPut (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        string OpDpVmFailoverPut(string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
 
         /// <summary>
         /// Failover the given VM
@@ -45,10 +46,24 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        ApiResponse<string> OpDpVmFailoverPutWithHttpInfo (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        ApiResponse<string> OpDpVmFailoverPutWithHttpInfo(string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        /// <summary>
+        /// Prepare failover for the given VM
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="acceptLanguage"> (optional)</param>
+        /// <returns>string</returns>
+        string OpDpVmPrepareFailoverPut(string vmId, string accessToken, string acceptLanguage = null);
+
         /// <summary>
         /// Prepare failover for the given VM
         /// </summary>
@@ -58,20 +73,8 @@ namespace IO.Swagger.Api
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
-        /// <returns>string</returns>
-        string OpDpVmPrepareFailoverPut (string vmId, string accessToken, string acceptLanguage = null);
-
-        /// <summary>
-        /// Prepare failover for the given VM
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="vmId"></param>
-        /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        ApiResponse<string> OpDpVmPrepareFailoverPutWithHttpInfo (string vmId, string accessToken, string acceptLanguage = null);
+        ApiResponse<string> OpDpVmPrepareFailoverPutWithHttpInfo(string vmId, string accessToken, string acceptLanguage = null);
         /// <summary>
         /// Prepare reverse protect for the given VM
         /// </summary>
@@ -80,9 +83,10 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        string OpDpVmPrepareReverseProtectPut (string vmId, string accessToken,string acceptLanguage = null);
+        string OpDpVmPrepareReverseProtectPut(string vmId, string accessToken, string acceptLanguage = null);
 
         /// <summary>
         /// Prepare reverse protect for the given VM
@@ -92,9 +96,10 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        ApiResponse<string> OpDpVmPrepareReverseProtectPutWithHttpInfo (string vmId,string accessToken,string acceptLanguage = null);
+        ApiResponse<string> OpDpVmPrepareReverseProtectPutWithHttpInfo(string vmId, string accessToken, string acceptLanguage = null);
         /// <summary>
         /// Reverse protect for the given VM
         /// </summary>
@@ -103,9 +108,10 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        string OpDpVmReverseProtectPut (string vmId, string accessToken, string acceptLanguage = null);
+        string OpDpVmReverseProtectPut(string vmId, string accessToken, string acceptLanguage = null);
 
         /// <summary>
         /// Reverse protect for the given VM
@@ -117,7 +123,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        ApiResponse<string> OpDpVmReverseProtectPutWithHttpInfo (string vmId, string accessToken, string acceptLanguage = null);
+        ApiResponse<string> OpDpVmReverseProtectPutWithHttpInfo(string vmId, string accessToken, string acceptLanguage = null);
         /// <summary>
         /// Recover task status for the given VM
         /// </summary>
@@ -125,13 +131,14 @@ namespace IO.Swagger.Api
         /// 
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="accessToken"></param>
         /// <param name="vmId"></param>
         /// <param name="taskId">Task Id for the underlying recover task (optional)</param>
         /// <param name="taskName">Limits the search to tasks based on task names (optional)</param>
         /// <param name="taskState">State of the task, whether Running, Completed or Exception (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>List&lt;Job&gt;</returns>
-        List<Job> OpDpVmTasksGet (string accesstoken,string vmId, string taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null);
+        List<Job> OpDpVmTasksGet(string accesstoken, string vmId, string taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null);
 
         /// <summary>
         /// Recover task status for the given VM
@@ -146,7 +153,7 @@ namespace IO.Swagger.Api
         /// <param name="taskState">State of the task, whether Running, Completed or Exception (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of List&lt;Job&gt;</returns>
-        ApiResponse<List<Job>> OpDpVmTasksGetWithHttpInfo (string accesstoken, string vmId, string taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null);
+        ApiResponse<List<Job>> OpDpVmTasksGetWithHttpInfo(string accesstoken, string vmId, string taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null);
         /// <summary>
         /// Test failover for the given VM
         /// </summary>
@@ -155,10 +162,11 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        string OpDpVmTestFailoverPut (string vmId, string accessToken,RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        string OpDpVmTestFailoverPut(string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
 
         /// <summary>
         /// Test failover for the given VM
@@ -168,10 +176,11 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        ApiResponse<string> OpDpVmTestFailoverPutWithHttpInfo (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        ApiResponse<string> OpDpVmTestFailoverPutWithHttpInfo(string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
         #endregion Synchronous Operations
         #region Asynchronous Operations
         /// <summary>
@@ -185,7 +194,7 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of string</returns>
-        System.Threading.Tasks.Task<string> OpDpVmFailoverPutAsync (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        System.Threading.Tasks.Task<string> OpDpVmFailoverPutAsync(Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
 
         /// <summary>
         /// Failover the given VM
@@ -198,7 +207,7 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of ApiResponse (string)</returns>
-        System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmFailoverPutAsyncWithHttpInfo (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmFailoverPutAsyncWithHttpInfo(Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
         /// <summary>
         /// Prepare failover for the given VM
         /// </summary>
@@ -209,7 +218,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of string</returns>
-        System.Threading.Tasks.Task<string> OpDpVmPrepareFailoverPutAsync (Guid? vmId, string acceptLanguage = null);
+        System.Threading.Tasks.Task<string> OpDpVmPrepareFailoverPutAsync(Guid? vmId, string acceptLanguage = null);
 
         /// <summary>
         /// Prepare failover for the given VM
@@ -221,7 +230,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of ApiResponse (string)</returns>
-        System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmPrepareFailoverPutAsyncWithHttpInfo (Guid? vmId, string acceptLanguage = null);
+        System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmPrepareFailoverPutAsyncWithHttpInfo(Guid? vmId, string acceptLanguage = null);
         /// <summary>
         /// Prepare reverse protect for the given VM
         /// </summary>
@@ -232,7 +241,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of string</returns>
-        System.Threading.Tasks.Task<string> OpDpVmPrepareReverseProtectPutAsync (Guid? vmId, string acceptLanguage = null);
+        System.Threading.Tasks.Task<string> OpDpVmPrepareReverseProtectPutAsync(Guid? vmId, string acceptLanguage = null);
 
         /// <summary>
         /// Prepare reverse protect for the given VM
@@ -244,7 +253,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of ApiResponse (string)</returns>
-        System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmPrepareReverseProtectPutAsyncWithHttpInfo (Guid? vmId, string acceptLanguage = null);
+        System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmPrepareReverseProtectPutAsyncWithHttpInfo(Guid? vmId, string acceptLanguage = null);
         /// <summary>
         /// Reverse protect for the given VM
         /// </summary>
@@ -255,7 +264,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of string</returns>
-        System.Threading.Tasks.Task<string> OpDpVmReverseProtectPutAsync (Guid? vmId, string acceptLanguage = null);
+        System.Threading.Tasks.Task<string> OpDpVmReverseProtectPutAsync(Guid? vmId, string acceptLanguage = null);
 
         /// <summary>
         /// Reverse protect for the given VM
@@ -267,7 +276,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of ApiResponse (string)</returns>
-        System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmReverseProtectPutAsyncWithHttpInfo (Guid? vmId, string acceptLanguage = null);
+        System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmReverseProtectPutAsyncWithHttpInfo(Guid? vmId, string acceptLanguage = null);
         /// <summary>
         /// Recover task status for the given VM
         /// </summary>
@@ -281,7 +290,7 @@ namespace IO.Swagger.Api
         /// <param name="taskState">State of the task, whether Running, Completed or Exception (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of List&lt;Job&gt;</returns>
-        System.Threading.Tasks.Task<List<Job>> OpDpVmTasksGetAsync (Guid? vmId, Guid? taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null);
+        System.Threading.Tasks.Task<List<Job>> OpDpVmTasksGetAsync(Guid? vmId, Guid? taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null);
 
         /// <summary>
         /// Recover task status for the given VM
@@ -296,7 +305,7 @@ namespace IO.Swagger.Api
         /// <param name="taskState">State of the task, whether Running, Completed or Exception (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;Job&gt;)</returns>
-        System.Threading.Tasks.Task<ApiResponse<List<Job>>> OpDpVmTasksGetAsyncWithHttpInfo (Guid? vmId, Guid? taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null);
+        System.Threading.Tasks.Task<ApiResponse<List<Job>>> OpDpVmTasksGetAsyncWithHttpInfo(Guid? vmId, Guid? taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null);
         /// <summary>
         /// Test failover for the given VM
         /// </summary>
@@ -308,7 +317,7 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of string</returns>
-        System.Threading.Tasks.Task<string> OpDpVmTestFailoverPutAsync (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        System.Threading.Tasks.Task<string> OpDpVmTestFailoverPutAsync(Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
 
         /// <summary>
         /// Test failover for the given VM
@@ -321,7 +330,7 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of ApiResponse (string)</returns>
-        System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmTestFailoverPutAsyncWithHttpInfo (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
+        System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmTestFailoverPutAsyncWithHttpInfo(Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null);
         #endregion Asynchronous Operations
     }
 
@@ -394,7 +403,7 @@ namespace IO.Swagger.Api
         /// Gets or sets the configuration object
         /// </summary>
         /// <value>An instance of the Configuration</value>
-        public Configuration Configuration {get; set;}
+        public Configuration Configuration { get; set; }
 
         /// <summary>
         /// Provides a factory method hook for the creation of exceptions.
@@ -439,13 +448,14 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        ///  <param name="accessToken"></param>
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        public string OpDpVmFailoverPut (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
+        public string OpDpVmFailoverPut(string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = OpDpVmFailoverPutWithHttpInfo(vmId, accessToken, failoverVMOptions, acceptLanguage);
-             return localVarResponse.Data;
+            ApiResponse<string> localVarResponse = OpDpVmFailoverPutWithHttpInfo(vmId, accessToken, failoverVMOptions, acceptLanguage);
+            return localVarResponse.Data;
         }
 
         /// <summary>
@@ -453,10 +463,11 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        ///  <param name="accessToken"></param>
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        public ApiResponse< string > OpDpVmFailoverPutWithHttpInfo (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
+        public ApiResponse<string> OpDpVmFailoverPutWithHttpInfo(string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -498,11 +509,11 @@ namespace IO.Swagger.Api
             localVarHeaderParams.Add("Authorization", accessToken);
 
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (ExceptionFactory != null)
             {
@@ -512,7 +523,7 @@ namespace IO.Swagger.Api
 
             return new ApiResponse<string>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                (string) Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
+                (string)Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
         }
 
         /// <summary>
@@ -523,10 +534,10 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of string</returns>
-        public async System.Threading.Tasks.Task<string> OpDpVmFailoverPutAsync (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
+        public async System.Threading.Tasks.Task<string> OpDpVmFailoverPutAsync(Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = await OpDpVmFailoverPutAsyncWithHttpInfo(vmId, failoverVMOptions, acceptLanguage);
-             return localVarResponse.Data;
+            ApiResponse<string> localVarResponse = await OpDpVmFailoverPutAsyncWithHttpInfo(vmId, failoverVMOptions, acceptLanguage);
+            return localVarResponse.Data;
 
         }
 
@@ -538,7 +549,7 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of ApiResponse (string)</returns>
-        public async System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmFailoverPutAsyncWithHttpInfo (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
+        public async System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmFailoverPutAsyncWithHttpInfo(Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -578,11 +589,11 @@ namespace IO.Swagger.Api
 
 
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) await Configuration.ApiClient.CallApiAsync(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)await Configuration.ApiClient.CallApiAsync(localVarPath,
                 Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (ExceptionFactory != null)
             {
@@ -592,7 +603,7 @@ namespace IO.Swagger.Api
 
             return new ApiResponse<string>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                (string) Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
+                (string)Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
         }
 
         /// <summary>
@@ -600,12 +611,13 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        ///  <param name="accessToken"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        public string OpDpVmPrepareFailoverPut (string vmId, string accessToken, string acceptLanguage = null)
+        public string OpDpVmPrepareFailoverPut(string vmId, string accessToken, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = OpDpVmPrepareFailoverPutWithHttpInfo(vmId,accessToken, acceptLanguage);
-             return localVarResponse.Data;
+            ApiResponse<string> localVarResponse = OpDpVmPrepareFailoverPutWithHttpInfo(vmId, accessToken, acceptLanguage);
+            return localVarResponse.Data;
         }
 
         /// <summary>
@@ -613,9 +625,10 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        ///  <param name="accessToken"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        public ApiResponse< string > OpDpVmPrepareFailoverPutWithHttpInfo (string vmId, string accessToken, string acceptLanguage = null)
+        public ApiResponse<string> OpDpVmPrepareFailoverPutWithHttpInfo(string vmId, string accessToken, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -648,11 +661,11 @@ namespace IO.Swagger.Api
             //change to add the accesstoken
             localVarHeaderParams.Add("Authorization", accessToken);
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (ExceptionFactory != null)
             {
@@ -662,7 +675,7 @@ namespace IO.Swagger.Api
 
             return new ApiResponse<string>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                (string) Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
+                (string)Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
         }
 
         /// <summary>
@@ -672,10 +685,10 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of string</returns>
-        public async System.Threading.Tasks.Task<string> OpDpVmPrepareFailoverPutAsync (Guid? vmId, string acceptLanguage = null)
+        public async System.Threading.Tasks.Task<string> OpDpVmPrepareFailoverPutAsync(Guid? vmId, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = await OpDpVmPrepareFailoverPutAsyncWithHttpInfo(vmId, acceptLanguage);
-             return localVarResponse.Data;
+            ApiResponse<string> localVarResponse = await OpDpVmPrepareFailoverPutAsyncWithHttpInfo(vmId, acceptLanguage);
+            return localVarResponse.Data;
 
         }
 
@@ -686,7 +699,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of ApiResponse (string)</returns>
-        public async System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmPrepareFailoverPutAsyncWithHttpInfo (Guid? vmId, string acceptLanguage = null)
+        public async System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmPrepareFailoverPutAsyncWithHttpInfo(Guid? vmId, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -718,11 +731,11 @@ namespace IO.Swagger.Api
 
 
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) await Configuration.ApiClient.CallApiAsync(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)await Configuration.ApiClient.CallApiAsync(localVarPath,
                 Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (ExceptionFactory != null)
             {
@@ -732,7 +745,7 @@ namespace IO.Swagger.Api
 
             return new ApiResponse<string>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                (string) Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
+                (string)Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
         }
 
         /// <summary>
@@ -742,10 +755,10 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        public string OpDpVmPrepareReverseProtectPut (string vmId,string accessToken, string acceptLanguage = null)
+        public string OpDpVmPrepareReverseProtectPut(string vmId, string accessToken, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = OpDpVmPrepareReverseProtectPutWithHttpInfo(vmId, accessToken, acceptLanguage);
-             return localVarResponse.Data;
+            ApiResponse<string> localVarResponse = OpDpVmPrepareReverseProtectPutWithHttpInfo(vmId, accessToken, acceptLanguage);
+            return localVarResponse.Data;
         }
 
         /// <summary>
@@ -753,9 +766,10 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        ///  <param name="accessToken"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        public ApiResponse< string > OpDpVmPrepareReverseProtectPutWithHttpInfo (string vmId,string accessToken, string acceptLanguage = null)
+        public ApiResponse<string> OpDpVmPrepareReverseProtectPutWithHttpInfo(string vmId, string accessToken, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -789,11 +803,11 @@ namespace IO.Swagger.Api
             //change to add the accesstoken
             localVarHeaderParams.Add("Authorization", accessToken);
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (ExceptionFactory != null)
             {
@@ -803,7 +817,7 @@ namespace IO.Swagger.Api
 
             return new ApiResponse<string>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                (string) Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
+                (string)Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
         }
 
         /// <summary>
@@ -813,10 +827,10 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of string</returns>
-        public async System.Threading.Tasks.Task<string> OpDpVmPrepareReverseProtectPutAsync (Guid? vmId, string acceptLanguage = null)
+        public async System.Threading.Tasks.Task<string> OpDpVmPrepareReverseProtectPutAsync(Guid? vmId, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = await OpDpVmPrepareReverseProtectPutAsyncWithHttpInfo(vmId, acceptLanguage);
-             return localVarResponse.Data;
+            ApiResponse<string> localVarResponse = await OpDpVmPrepareReverseProtectPutAsyncWithHttpInfo(vmId, acceptLanguage);
+            return localVarResponse.Data;
 
         }
 
@@ -827,7 +841,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of ApiResponse (string)</returns>
-        public async System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmPrepareReverseProtectPutAsyncWithHttpInfo (Guid? vmId, string acceptLanguage = null)
+        public async System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmPrepareReverseProtectPutAsyncWithHttpInfo(Guid? vmId, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -859,11 +873,11 @@ namespace IO.Swagger.Api
 
 
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) await Configuration.ApiClient.CallApiAsync(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)await Configuration.ApiClient.CallApiAsync(localVarPath,
                 Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (ExceptionFactory != null)
             {
@@ -873,7 +887,7 @@ namespace IO.Swagger.Api
 
             return new ApiResponse<string>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                (string) Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
+                (string)Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
         }
 
         /// <summary>
@@ -881,12 +895,13 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        public string OpDpVmReverseProtectPut (string vmId, string accessToken, string acceptLanguage = null)
+        public string OpDpVmReverseProtectPut(string vmId, string accessToken, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = OpDpVmReverseProtectPutWithHttpInfo(vmId, accessToken, acceptLanguage);
-             return localVarResponse.Data;
+            ApiResponse<string> localVarResponse = OpDpVmReverseProtectPutWithHttpInfo(vmId, accessToken, acceptLanguage);
+            return localVarResponse.Data;
         }
 
         /// <summary>
@@ -894,9 +909,10 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        public ApiResponse< string > OpDpVmReverseProtectPutWithHttpInfo (string vmId, string accessToken, string acceptLanguage = null)
+        public ApiResponse<string> OpDpVmReverseProtectPutWithHttpInfo(string vmId, string accessToken, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -930,11 +946,11 @@ namespace IO.Swagger.Api
             //change to add the accesstoken
             localVarHeaderParams.Add("Authorization", accessToken);
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (ExceptionFactory != null)
             {
@@ -944,7 +960,7 @@ namespace IO.Swagger.Api
 
             return new ApiResponse<string>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                (string) Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
+                (string)Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
         }
 
         /// <summary>
@@ -954,10 +970,10 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of string</returns>
-        public async System.Threading.Tasks.Task<string> OpDpVmReverseProtectPutAsync (Guid? vmId, string acceptLanguage = null)
+        public async System.Threading.Tasks.Task<string> OpDpVmReverseProtectPutAsync(Guid? vmId, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = await OpDpVmReverseProtectPutAsyncWithHttpInfo(vmId, acceptLanguage);
-             return localVarResponse.Data;
+            ApiResponse<string> localVarResponse = await OpDpVmReverseProtectPutAsyncWithHttpInfo(vmId, acceptLanguage);
+            return localVarResponse.Data;
 
         }
 
@@ -968,7 +984,7 @@ namespace IO.Swagger.Api
         /// <param name="vmId"></param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of ApiResponse (string)</returns>
-        public async System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmReverseProtectPutAsyncWithHttpInfo (Guid? vmId, string acceptLanguage = null)
+        public async System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmReverseProtectPutAsyncWithHttpInfo(Guid? vmId, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -1000,11 +1016,11 @@ namespace IO.Swagger.Api
 
 
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) await Configuration.ApiClient.CallApiAsync(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)await Configuration.ApiClient.CallApiAsync(localVarPath,
                 Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (ExceptionFactory != null)
             {
@@ -1014,36 +1030,38 @@ namespace IO.Swagger.Api
 
             return new ApiResponse<string>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                (string) Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
+                (string)Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
         }
 
         /// <summary>
         /// Recover task status for the given VM 
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="accessToken"></param>
         /// <param name="vmId"></param>
         /// <param name="taskId">Task Id for the underlying recover task (optional)</param>
         /// <param name="taskName">Limits the search to tasks based on task names (optional)</param>
         /// <param name="taskState">State of the task, whether Running, Completed or Exception (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>List&lt;Job&gt;</returns>
-        public List<Job> OpDpVmTasksGet (string accessToken,string vmId, string taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null)
+        public List<Job> OpDpVmTasksGet(string accessToken, string vmId, string taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null)
         {
-             ApiResponse<List<Job>> localVarResponse = OpDpVmTasksGetWithHttpInfo(accessToken, vmId, taskId, taskName, taskState, acceptLanguage);
-             return localVarResponse.Data;
+            ApiResponse<List<Job>> localVarResponse = OpDpVmTasksGetWithHttpInfo(accessToken, vmId, taskId, taskName, taskState, acceptLanguage);
+            return localVarResponse.Data;
         }
 
         /// <summary>
         /// Recover task status for the given VM 
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="accessToken"></param>
         /// <param name="vmId"></param>
         /// <param name="taskId">Task Id for the underlying recover task (optional)</param>
         /// <param name="taskName">Limits the search to tasks based on task names (optional)</param>
         /// <param name="taskState">State of the task, whether Running, Completed or Exception (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>,
         /// <returns>ApiResponse of List&lt;Job&gt;</returns>
-        public ApiResponse< List<Job> > OpDpVmTasksGetWithHttpInfo (string accessToken,string vmId, string taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null)
+        public ApiResponse<List<Job>> OpDpVmTasksGetWithHttpInfo(string accessToken, string vmId, string taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -1079,11 +1097,11 @@ namespace IO.Swagger.Api
             //change to add the accesstoken
             localVarHeaderParams.Add("Authorization", accessToken);
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.GET, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (ExceptionFactory != null)
             {
@@ -1093,7 +1111,7 @@ namespace IO.Swagger.Api
 
             return new ApiResponse<List<Job>>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                (List<Job>) Configuration.ApiClient.Deserialize(localVarResponse, typeof(List<Job>)));
+                (List<Job>)Configuration.ApiClient.Deserialize(localVarResponse, typeof(List<Job>)));
         }
 
         /// <summary>
@@ -1106,10 +1124,10 @@ namespace IO.Swagger.Api
         /// <param name="taskState">State of the task, whether Running, Completed or Exception (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of List&lt;Job&gt;</returns>
-        public async System.Threading.Tasks.Task<List<Job>> OpDpVmTasksGetAsync (Guid? vmId, Guid? taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null)
+        public async System.Threading.Tasks.Task<List<Job>> OpDpVmTasksGetAsync(Guid? vmId, Guid? taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null)
         {
-             ApiResponse<List<Job>> localVarResponse = await OpDpVmTasksGetAsyncWithHttpInfo(vmId, taskId, taskName, taskState, acceptLanguage);
-             return localVarResponse.Data;
+            ApiResponse<List<Job>> localVarResponse = await OpDpVmTasksGetAsyncWithHttpInfo(vmId, taskId, taskName, taskState, acceptLanguage);
+            return localVarResponse.Data;
 
         }
 
@@ -1123,7 +1141,7 @@ namespace IO.Swagger.Api
         /// <param name="taskState">State of the task, whether Running, Completed or Exception (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;Job&gt;)</returns>
-        public async System.Threading.Tasks.Task<ApiResponse<List<Job>>> OpDpVmTasksGetAsyncWithHttpInfo (Guid? vmId, Guid? taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null)
+        public async System.Threading.Tasks.Task<ApiResponse<List<Job>>> OpDpVmTasksGetAsyncWithHttpInfo(Guid? vmId, Guid? taskId = null, string taskName = null, string taskState = null, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -1158,11 +1176,11 @@ namespace IO.Swagger.Api
 
 
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) await Configuration.ApiClient.CallApiAsync(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)await Configuration.ApiClient.CallApiAsync(localVarPath,
                 Method.GET, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (ExceptionFactory != null)
             {
@@ -1172,7 +1190,7 @@ namespace IO.Swagger.Api
 
             return new ApiResponse<List<Job>>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                (List<Job>) Configuration.ApiClient.Deserialize(localVarResponse, typeof(List<Job>)));
+                (List<Job>)Configuration.ApiClient.Deserialize(localVarResponse, typeof(List<Job>)));
         }
 
         /// <summary>
@@ -1180,13 +1198,14 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>string</returns>
-        public string OpDpVmTestFailoverPut (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
+        public string OpDpVmTestFailoverPut(string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = OpDpVmTestFailoverPutWithHttpInfo(vmId, accessToken, failoverVMOptions, acceptLanguage);
-             return localVarResponse.Data;
+            ApiResponse<string> localVarResponse = OpDpVmTestFailoverPutWithHttpInfo(vmId, accessToken, failoverVMOptions, acceptLanguage);
+            return localVarResponse.Data;
         }
 
         /// <summary>
@@ -1194,10 +1213,11 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="vmId"></param>
+        /// <param name="accessToken"></param>
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>ApiResponse of string</returns>
-        public ApiResponse< string > OpDpVmTestFailoverPutWithHttpInfo (string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
+        public ApiResponse<string> OpDpVmTestFailoverPutWithHttpInfo(string vmId, string accessToken, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -1238,11 +1258,11 @@ namespace IO.Swagger.Api
             localVarHeaderParams.Add("Authorization", accessToken);
 
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)Configuration.ApiClient.CallApi(localVarPath,
                 Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (ExceptionFactory != null)
             {
@@ -1252,7 +1272,7 @@ namespace IO.Swagger.Api
 
             return new ApiResponse<string>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                (string) Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
+                (string)Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
         }
 
         /// <summary>
@@ -1263,10 +1283,10 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of string</returns>
-        public async System.Threading.Tasks.Task<string> OpDpVmTestFailoverPutAsync (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
+        public async System.Threading.Tasks.Task<string> OpDpVmTestFailoverPutAsync(Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
         {
-             ApiResponse<string> localVarResponse = await OpDpVmTestFailoverPutAsyncWithHttpInfo(vmId, failoverVMOptions, acceptLanguage);
-             return localVarResponse.Data;
+            ApiResponse<string> localVarResponse = await OpDpVmTestFailoverPutAsyncWithHttpInfo(vmId, failoverVMOptions, acceptLanguage);
+            return localVarResponse.Data;
 
         }
 
@@ -1278,7 +1298,7 @@ namespace IO.Swagger.Api
         /// <param name="failoverVMOptions">Folder, Resource and Network options for recovery (optional)</param>
         /// <param name="acceptLanguage"> (optional)</param>
         /// <returns>Task of ApiResponse (string)</returns>
-        public async System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmTestFailoverPutAsyncWithHttpInfo (Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
+        public async System.Threading.Tasks.Task<ApiResponse<string>> OpDpVmTestFailoverPutAsyncWithHttpInfo(Guid? vmId, RecoverVmOptions failoverVMOptions = null, string acceptLanguage = null)
         {
             // verify the required parameter 'vmId' is set
             if (vmId == null)
@@ -1318,11 +1338,11 @@ namespace IO.Swagger.Api
 
 
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) await Configuration.ApiClient.CallApiAsync(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)await Configuration.ApiClient.CallApiAsync(localVarPath,
                 Method.PUT, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (ExceptionFactory != null)
             {
@@ -1332,7 +1352,7 @@ namespace IO.Swagger.Api
 
             return new ApiResponse<string>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                (string) Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
+                (string)Configuration.ApiClient.Deserialize(localVarResponse, typeof(string)));
         }
 
     }

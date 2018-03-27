@@ -1,6 +1,6 @@
 ﻿// Author(s): 
 // Ashima Bahl, asbahl@cisco.com 
-using IO.Swagger.Client;
+
 using System.Management.Automation;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 
 namespace SP_powershell
 {
@@ -95,12 +96,12 @@ namespace SP_powershell
                 return;
 
             // Configure OAuth2 access token for authorization
-           
+
             try
             {
-                Configuration.Default = new Configuration();
-                Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
                 AccessToken accToken = new AccessToken();
+                // to determine the access Token
                 string accessTkn = accToken.GetAccessToken(Server.ToString());
                 if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
                 {
@@ -116,45 +117,45 @@ namespace SP_powershell
                     var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
                     Server = firstElement.Key;
                 }
-
+                // to determine the api url to be accessed.
                 var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
                 var apiInstance = new RecoverApi(apiString);
 
-               
-                var vResourcePoolName = "";
-                var vResourcePoolID = "";
+                // to determine the various parameters of payload sent to api call
+                string vResourcePoolName = string.Empty;
+                string vResourcePoolID = string.Empty;
                 if (ResourcePoolName != null) { vResourcePoolName = ResourcePoolName.ToString(); }
                 if (ResourcePoolID != null) { vResourcePoolID = vResourcePoolID.ToString(); }
                 var objResPoolJson = new EntityDetail
                 {
                     name = vResourcePoolName,
-                    type = "DP_VM",
-                    id = ResourcePoolID,
-                    idtype = "VCMOID",
+                    type = erType.DP_VM,
+                    id = vResourcePoolID,
+                    idtype = erIDType.VCMOID,
                     confignum = "0"
                 };
-                var vFolderName = "";
-                var vFolderID = "";
+                string vFolderName = string.Empty;
+                string vFolderID = string.Empty;
                 if (FolderName != null) { vFolderName = FolderName.ToString(); }
                 if (FolderID != null) { vFolderID = FolderID.ToString(); }
 
                 var objFolderJson = new EntityDetail
                 {
                     name = vFolderName,
-                    type = "DP_VM",
+                    type = erType.DP_VM,
                     id = vFolderID,
-                    idtype = "VCMOID",
+                    idtype = erIDType.VCMOID,
                     confignum = "0"
                 };
-                string objTestNetwork = null;
+                string objTestNetwork = string.Empty;
                 if (TestNetwork != null) { objTestNetwork = TestNetwork.ToString(); }
                 bool vPowerOn = false;
                 if (PowerOn == true)
                 {
                     vPowerOn = true;
                 }
-                
-                string newName = null;
+
+                string newName = string.Empty;
                 if (NewName != null) { newName = NewName.ToString(); }
                 var jsonPool = JsonConvert.SerializeObject(objResPoolJson);
                 var jsonFolder = JsonConvert.SerializeObject(objFolderJson);
@@ -195,48 +196,52 @@ namespace SP_powershell
                     body.PowerOn = true;
                 }
 
-                string result1 = "";
+                string respVMFailover = string.Empty;
                 if (VMId != null)
                 {
-                    if (Async== true)
-                    {                        
-                        result1 = apiInstance.OpDpVmFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");
+                    // to determine if async task then return the task after failover
+                    if (Async == true)
+                    {
+                        // to determine if async task then return the task after failover
+                        respVMFailover = apiInstance.OpDpVmFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");
                         WriteVerbose("The Vm has been failed over");
-                        WriteObject(result1, true);
+                        WriteObject(respVMFailover, true);
                         return;
                     }
                     else
                     {
+                        // to determine if not async task then loop till task is completed.
                         DateTime now = DateTime.Now;
-                        result1 = apiInstance.OpDpVmFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");//OpDpVmFailoverPut
-                        JObject joResponse = JObject.Parse(result1);
+                        respVMFailover = apiInstance.OpDpVmFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");//OpDpVmFailoverPut
+                        JObject joResponse = JObject.Parse(respVMFailover);
                         JValue ojObject = (JValue)joResponse["taskId"];
                         WriteVerbose("The Vm has been failed over");
-                        List<IO.Swagger.Model.Job> result2 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
+                        List<IO.Swagger.Model.Job> respVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
                         DateTime oneMinutesFromNow = GetOneMinutesFromNow();
-                        if (result2[0].State.ToString() == "EXCEPTION")
+                        if (respVMTaskGet[0].State.ToString() == "EXCEPTION")
                         {
                             WriteVerbose("Exception in Test Failover of VM");
-                            WriteObject(result2, true);
+                            WriteObject(respVMTaskGet, true);
 
                         }
-                        if (result2[0].State.ToString() == "COMPLETED")
+                        if (respVMTaskGet[0].State.ToString() == "COMPLETED")
                         {
                             WriteVerbose("Test Failover of VM done");
-                            WriteObject(result2, true);
+                            WriteObject(respVMTaskGet, true);
                         }
 
-                        while (result2 != null && now < oneMinutesFromNow)
+                        while (respVMTaskGet != null && now < oneMinutesFromNow)
                         {
-                            List<IO.Swagger.Model.Job> check1 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
-                            if (check1[0].State.ToString() == "COMPLETED")
+                            // to check the task and break if status is "COMPLETED" or "EXCEPTION"
+                            List<IO.Swagger.Model.Job> checkVMTask = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
+                            if (checkVMTask[0].State.ToString() == "COMPLETED")
                             {
-                                result2 = check1;
+                                respVMTaskGet = checkVMTask;
                                 break;
                             }
-                            else if (check1[0].State.ToString() == "EXCEPTION")
+                            else if (checkVMTask[0].State.ToString() == "EXCEPTION")
                             {
-                                result2 = check1;
+                                respVMTaskGet = checkVMTask;
                                 break;
                             }
                             else
@@ -245,12 +250,12 @@ namespace SP_powershell
                                 System.Threading.Thread.Sleep(3000);
                             }
                         }
-                        WriteObject(result2, true);
+                        WriteObject(respVMTaskGet, true);
 
                     }
-                    }
-                
-              
+                }
+
+
 
             }
             catch (ArgumentException e)
@@ -259,14 +264,19 @@ namespace SP_powershell
                            e, "Arguments not provided.", ErrorCategory.AuthenticationError, e.Message);
                 WriteError(psErrRecord);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                
+
                 WriteObject("Exception when calling apiInstance.OpDpVmRecoveryFailoverPut: " + e.Message);
             }
-         
+
         }
 
+
+        /// <summary>
+        /// Get value of time after one minute
+        /// </summary>
+        /// <returns>DateTime</returns>
         private DateTime GetOneMinutesFromNow()
         {
             DateTime otherDate = DateTime.Now.AddMinutes(2);
@@ -274,7 +284,10 @@ namespace SP_powershell
         }
 
 
-
+        /// <summary>
+        /// Validates the Parameters entered are correct
+        /// </summary>
+        /// <returns>bool</returns>
         protected internal override bool ValidateParameters()
         {
             // Leave this here so that we can add more checks if needed
@@ -283,5 +296,5 @@ namespace SP_powershell
             return true;
         }
     }
-    
+
 }

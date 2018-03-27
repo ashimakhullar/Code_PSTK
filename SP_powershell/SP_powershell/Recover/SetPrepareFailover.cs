@@ -1,14 +1,12 @@
 ﻿// Author(s): 
 // Ashima Bahl, asbahl@cisco.com 
-using IO.Swagger.Client;
+
 using System.Management.Automation;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
-using System.Diagnostics;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
+
 
 namespace SP_powershell
 {

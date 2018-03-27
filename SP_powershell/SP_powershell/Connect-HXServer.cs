@@ -31,7 +31,7 @@ namespace SP_powershell
         public PSCredential Credential { get; set; }
 
 
-        [Parameter(Position = 0,Mandatory =true)]
+        [Parameter(Position = 0, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         [Alias("Srvr")]
         public string Server { get; set; }
@@ -44,7 +44,7 @@ namespace SP_powershell
         [Parameter(Position = 2)]
         [ValidateNotNullOrEmpty]
         [Alias("Pswrd")]
-        public string Password { get; set ; }
+        public string Password { get; set; }
 
 
         [Parameter]
@@ -85,7 +85,7 @@ namespace SP_powershell
                 ResolveCredentials();
                 if (Username != null && Password != null)
                 {
-                    Username=Username.ToString();
+                    Username = Username.ToString();
                     Password = Password.ToString();
                 }
                 else
@@ -98,7 +98,7 @@ namespace SP_powershell
                 var redirect_uri = "http://localhost/aaa/redirect";
                 Debug.Assert(Username != null);
                 Configuration.Default = new Configuration();
-                
+
                 if (Username != null && Password != null)
                 {
                     Configuration.Default.Username = Username.ToString();
@@ -108,11 +108,11 @@ namespace SP_powershell
                 {
                     throw new ArgumentException("Username/Password has to be provided");
                 }
-                var apiString = "https://" + Server.ToString().Trim() + "/aaa/v1";                          
+                var apiString = "https://" + Server.ToString().Trim() + "/aaa/v1";
                 UserCredentials body = new UserCredentials(Username.ToString().Trim(), Password.ToString().Trim(), client_id.Trim(), client_secret.Trim(), redirect_uri.Trim());
                 var apiInstance = new ObtainAccessTokenApi(apiString);
                 AccessTokenEnvelope result = apiInstance.ObtainAccessToken("password", body);
-                
+
                 // Access Token for each server connected is maintained in Dictionary object
                 //storageKeyDictionary-server ip is key while response token is value;
                 Token vtoken = new Token();
@@ -138,14 +138,14 @@ namespace SP_powershell
                 ErrorRecord psErrRecord = new ErrorRecord(
                            e, "", ErrorCategory.AuthenticationError, e.Message);
                 WriteError(psErrRecord);
-            }      
+            }
         }
 
 
 
         protected internal override bool ValidateParameters()
         {
-             // Leave this here so that we can add more checks if needed
+            // Leave this here so that we can add more checks if needed
             // and return all errors if there are multiple without returning
             // on the first one we find.
             return true;
@@ -170,7 +170,7 @@ namespace SP_powershell
                     string.IsNullOrEmpty(Username)
                         ? "local/root"
                         : Username,
-                    string.Empty, PSCredentialTypes.Generic,PSCredentialUIOptions.ValidateUserNameSyntax);
+                    string.Empty, PSCredentialTypes.Generic, PSCredentialUIOptions.ValidateUserNameSyntax);
 
                 if (Credential == null)
                 {
@@ -179,13 +179,13 @@ namespace SP_powershell
                         "Please retry with valid credentials."));
                 }
             }
-            else
-            {
-                if (Password!=null)
-                {
-                    //
-                }
-            }
+            //////else
+            //////{
+            //////    if (Password != null)
+            //////    {
+            //////        //logic
+            //////    }
+            //////}
         }
 
 
@@ -226,7 +226,7 @@ namespace SP_powershell
         private bool HXServerExists(IHXServer tintriServer)
         {
             //if (HXServer.) { }
-                return true;
+            return true;
         }
 
     }

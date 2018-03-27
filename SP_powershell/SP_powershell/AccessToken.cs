@@ -1,10 +1,8 @@
 ﻿// Author(s): 
 // Ashima Bahl, abahl@cisco.com 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace SP_powershell
 {
@@ -48,7 +46,8 @@ namespace SP_powershell
                 throw new Exception("The Server is not connected;Please check the IP address of Server");
             }
             return accessTkn;
+
         }
     }
-    
+
 }
