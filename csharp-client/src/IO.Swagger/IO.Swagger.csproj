@@ -136,6 +136,9 @@ OpenAPI spec version: 1.0.0
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="swagger.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MsBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

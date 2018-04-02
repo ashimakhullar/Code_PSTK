@@ -8,7 +8,7 @@ using System;
 using System.Linq;
 
 
-namespace SP_powershell
+namespace Cisco.Runbook
 {
     [Cmdlet(VerbsCommon.Set, "PrepareFailover")]
     [OutputType(typeof(VirtualMachine))]
@@ -68,8 +68,8 @@ namespace SP_powershell
                     Server = firstElement.Key;
                 }
 
-                var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
-                var apiInstance = new RecoverApi(apiString);
+                //var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
+                var apiInstance = new RecoverApi(Server);
 
                 string accessTkn = accToken.GetAccessToken(Server.ToString());
                 

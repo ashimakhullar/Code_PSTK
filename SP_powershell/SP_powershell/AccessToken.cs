@@ -4,15 +4,15 @@ using System;
 using System.Linq;
 
 
-namespace SP_powershell
+namespace Cisco.Runbook
 {
     public class AccessToken
     {
-        public string username;
-        public string password;
-        public string client_id;
-        public string client_secret;
-        public string redirect_uri;
+        private string username;
+        private string password;
+        private string client_id;
+        private string client_secret;
+        private string redirect_uri;
 
 
         public string GetAccessToken(string Server)

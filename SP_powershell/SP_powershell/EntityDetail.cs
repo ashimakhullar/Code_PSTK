@@ -3,11 +3,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace SP_powershell
+namespace Cisco.Runbook
 {
-     public enum erType
+    public enum erType
 
-    {       DISK,
+    {
+        DISK,
         PNODE,
         NODE,
         CLUSTER,
@@ -34,11 +35,13 @@ namespace SP_powershell
         DP_VM_SNAPSHOT_POINT,
         CLUSTER_PAIR
     };
-     public enum erIDType { 
-           VCMOID,
-           VMBIOSUUID,
-           VMDSPATH
-     };
+
+    public enum erIDType
+    {
+        VCMOID,
+        VMBIOSUUID,
+        VMDSPATH
+    };
 
     public class EntityDetail
     {
@@ -48,5 +51,5 @@ namespace SP_powershell
         public erIDType idtype;
         public string confignum;
     }
-    
+
 }

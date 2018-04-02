@@ -1,6 +1,6 @@
 ﻿using System.Management.Automation;
 
-namespace SP_powershell
+namespace Cisco.Runbook
 {
     internal class HXParameterSet
     {

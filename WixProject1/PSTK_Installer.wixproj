@@ -23,16 +23,6 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SP_powershell\SP_powershell\SP_powershell.csproj">
-      <Name>SP_powershell</Name>
-      <Project>{c4404c76-f1a4-46e3-8f3f-3207f12ed67f}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="bobpl.rtf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -58,6 +48,16 @@
       <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
       <Name>WixUIExtension</Name>
     </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SP_powershell\SP_powershell\Cisco.Runbook.csproj">
+      <Name>Cisco.Runbook</Name>
+      <Project>{c4404c76-f1a4-46e3-8f3f-3207f12ed67f}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\wix.targets') " />

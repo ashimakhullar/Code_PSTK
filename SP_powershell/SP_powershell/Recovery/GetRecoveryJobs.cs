@@ -11,7 +11,7 @@ using System.Management.Automation;
 
 
 
-namespace SP_powershell
+namespace Cisco.Runbook
 {
     [Cmdlet(VerbsCommon.Get, "RecoveryJobs")]
     [OutputType(typeof(VirtualMachine))]

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
-namespace SP_powershell
+namespace Cisco.Runbook
 {
     [Cmdlet(VerbsCommon.Set, "ReverseProtect")]
     [OutputType(typeof(VirtualMachine))]
@@ -69,8 +69,8 @@ namespace SP_powershell
                     Server = firstElement.Key;
                 }
 
-                var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
-                var apiInstance = new RecoverApi(apiString);
+                //var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
+                var apiInstance = new RecoverApi(Server);
 
                 string accessTkn = accToken.GetAccessToken(Server.ToString());
                 string respVMReverseProtect = "";

@@ -347,7 +347,9 @@ namespace IO.Swagger.Api
         /// <returns></returns>
         public RecoverApi(String basePath)
         {
-            this.Configuration = new Configuration(new ApiClient(basePath));
+            // to determine the api url to be accessed.
+            var apiString = "https://" + basePath.Trim() + "/dataprotection/v1";
+            this.Configuration = new Configuration(new ApiClient(apiString));
 
             ExceptionFactory = IO.Swagger.Client.Configuration.DefaultExceptionFactory;
 

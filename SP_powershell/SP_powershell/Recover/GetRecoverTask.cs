@@ -8,30 +8,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
 
-
-
-namespace SP_powershell
+namespace Cisco.Runbook
 {
     [Cmdlet(VerbsCommon.Get, "RecoverTask")]
     [OutputType(typeof(VirtualMachine))]
 
     public class GetRecoverTask : SPCmdlet
     {
-
         // 
         // Properties (PowerShell Parameters) to be defined below
         //
-        List<string> listParamtersetName = new List<string>();
-
+        //List<string> listParamtersetName = new List<string>();
 
         //Server Parameter contains the Cisco HXConnect IP
 
-        [Parameter()]
+        [Parameter(Mandatory = true)]
         [ValidateNotNull]
-        [Alias("srvr")]
+        [Alias("srv")]
         public string Server { get; set; }
 
-        //VMUid will pass the VM uid
+        //VMID will pass the VM uid
 
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -47,6 +43,11 @@ namespace SP_powershell
         //
         // Cmdlet body
         //
+        /// <summary>
+        /// Process Record.
+        /// </summary>
+        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when null values </exception>
+        /// <returns></returns>
         protected override void ProcessSPRecord()
         {
 
@@ -54,46 +55,40 @@ namespace SP_powershell
                 return;
             // Configure access token for authorization
             AccessToken accToken = new AccessToken();
-
             try
             {
-                if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
+                if (ConnectHXServer.storageKeyDictionary == null)
                 {
                     throw new Exception("No server is connected.");
                 }
-                WriteDebug("The Server connected : " + Server.ToString());
-                if (Server != null)
-                {
-                    Server = Server.ToString().Trim();
-                }
                 else if (ConnectHXServer.storageKeyDictionary != null)
                 {
-                    var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
-                    Server = firstElement.Key;
+                   Server = ConnectHXServer.storageKeyDictionary.FirstOrDefault().Key;
                 }
-
-                var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
-                WriteDebug("apiString : " + apiString.ToString());
-                var apiInstance = new RecoverApi(apiString);
+                WriteDebug("The Server connected : " + Server);
+                if (Server != null)
+                {
+                    Server = Server.Trim();
+                }
+                
+                WriteDebug("Server : " + Server);
+                var apiInstance = new RecoverApi(Server);
                 string accessTkn = accToken.GetAccessToken(Server.ToString());
        
                 if (TaskID != null)
                 {
                     //GetSpecific TaskID;
-                    var TaskSpecific = TaskID.ToString();
-                    WriteDebug("TaskSpecific : " + TaskSpecific.ToString());
+                    string TaskSpecific = TaskID.ToString();
+                    WriteDebug("TaskSpecific : " + TaskSpecific);
                     List<IO.Swagger.Model.Job> respTaskList = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), TaskSpecific, null, null, "en-US");
                     WriteObject(respTaskList, true);
                     return;
                 }
-
-                //api response returning the task for the vmid passed
-                List<IO.Swagger.Model.Job> respVMTask = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), null, null, null, "en-US");
+                //api response returning the tasks for the vmid passed
+                List<IO.Swagger.Model.Job> respVMTaskList = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), null, null, null, "en-US");
                 //WriteTaskrecord(output);
-                WriteObject(respVMTask, true);
-
-
-            }
+                WriteObject(respVMTaskList, true);
+        }
             catch (ApiException e)
             {
                 ErrorRecord psErrRecord = new ErrorRecord(

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
 
-namespace SP_powershell
+namespace Cisco.Runbook
 {
     [Cmdlet(VerbsCommon.Get, "Script")]
     [OutputType(typeof(MapPairErToReplicationPeerInfo), typeof(ReplicationDatastore))]

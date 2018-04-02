@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IO.Swagger.Test", "csharp-client\src\IO.Swagger.Test\IO.Swagger.Test.csproj", "{19F1DEBC-DE5E-4517-8062-F000CD499087}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SP_powershell", "SP_powershell\SP_powershell\SP_powershell.csproj", "{C4404C76-F1A4-46E3-8F3F-3207F12ED67F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cisco.Runbook", "SP_powershell\SP_powershell\Cisco.Runbook.csproj", "{C4404C76-F1A4-46E3-8F3F-3207F12ED67F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IO.Swagger", "csharp-client\src\IO.Swagger\IO.Swagger.csproj", "{3FE73222-5D4C-49B2-A9EF-36833DBFDFAD}"
 EndProject

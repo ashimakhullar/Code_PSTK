@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 
-namespace SP_powershell
+namespace Cisco.Runbook
 {
     [Cmdlet(VerbsCommon.Set, "FailoverNew")]
     [OutputType(typeof(VirtualMachine))]
@@ -30,23 +30,27 @@ namespace SP_powershell
         //VMUid will pass the VM uid
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        [Alias("vmid1")]
+        [Alias("vm")]
         public string VMId { get; set; }
+
         //ResourcePoolName will pass the ResourcePoolName
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("RPName")]
         public string ResourcePoolName { get; set; }
+
         //ResourcePoolID
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("RPID")]
         public string ResourcePoolID { get; set; }
+
         //FolderName 
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("FName")]
         public string FolderName { get; set; }
+
         //FolderID will pass the folder id
         [Parameter()]
         [ValidateNotNullOrEmpty]
@@ -82,7 +86,7 @@ namespace SP_powershell
 
         //Server will pass the Server for which api call has to be made using the corresponding token
         [Parameter(Mandatory = true)]
-        [Alias("srvr")]
+        [Alias("srv")]
         public string Server { get; set; }
 
         //
@@ -93,13 +97,9 @@ namespace SP_powershell
             //Server authentication to be done
             //ValidateServerSessions();
             if (ValidateParameters() == false)
-                return;
-
-            // Configure OAuth2 access token for authorization
-
+            
             try
             {
-
                 AccessToken accToken = new AccessToken();
                 // to determine the access Token
                 string accessTkn = accToken.GetAccessToken(Server.ToString());
@@ -110,22 +110,21 @@ namespace SP_powershell
 
                 if (Server != null)
                 {
-                    Server = Server.ToString().Trim();
+                    Server = Server.Trim();
                 }
                 else if (ConnectHXServer.storageKeyDictionary != null)
                 {
                     var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
                     Server = firstElement.Key;
                 }
-                // to determine the api url to be accessed.
-                var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
-                var apiInstance = new RecoverApi(apiString);
+                
+                var apiInstance = new RecoverApi(Server);
 
                 // to determine the various parameters of payload sent to api call
                 string vResourcePoolName = string.Empty;
                 string vResourcePoolID = string.Empty;
-                if (ResourcePoolName != null) { vResourcePoolName = ResourcePoolName.ToString(); }
-                if (ResourcePoolID != null) { vResourcePoolID = vResourcePoolID.ToString(); }
+                if (ResourcePoolName != null) { vResourcePoolName = ResourcePoolName; }
+                if (ResourcePoolID != null) { vResourcePoolID = ResourcePoolID; }
                 var objResPoolJson = new EntityDetail
                 {
                     name = vResourcePoolName,
@@ -136,8 +135,8 @@ namespace SP_powershell
                 };
                 string vFolderName = string.Empty;
                 string vFolderID = string.Empty;
-                if (FolderName != null) { vFolderName = FolderName.ToString(); }
-                if (FolderID != null) { vFolderID = FolderID.ToString(); }
+                if (FolderName != null) { vFolderName = FolderName; }
+                if (FolderID != null) { vFolderID = FolderID; }
 
                 var objFolderJson = new EntityDetail
                 {
@@ -203,7 +202,7 @@ namespace SP_powershell
                     if (Async == true)
                     {
                         // to determine if async task then return the task after failover
-                        respVMFailover = apiInstance.OpDpVmFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");
+                        respVMFailover = apiInstance.OpDpVmFailoverPut(VMId, accessTkn, body, "en-US");
                         WriteVerbose("The Vm has been failed over");
                         WriteObject(respVMFailover, true);
                         return;
@@ -212,17 +211,17 @@ namespace SP_powershell
                     {
                         // to determine if not async task then loop till task is completed.
                         DateTime now = DateTime.Now;
-                        respVMFailover = apiInstance.OpDpVmFailoverPut(VMId.ToString(), accessTkn.ToString(), body, "en-US");//OpDpVmFailoverPut
+                        respVMFailover = apiInstance.OpDpVmFailoverPut(VMId, accessTkn, body, "en-US");//OpDpVmFailoverPut
                         JObject joResponse = JObject.Parse(respVMFailover);
                         JValue ojObject = (JValue)joResponse["taskId"];
                         WriteVerbose("The Vm has been failed over");
-                        List<IO.Swagger.Model.Job> respVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
+                        List<IO.Swagger.Model.Job> respVMTaskGet = apiInstance.
+                                OpDpVmTasksGet(accessTkn, VMId, ojObject.ToString());
                         DateTime oneMinutesFromNow = GetOneMinutesFromNow();
                         if (respVMTaskGet[0].State.ToString() == "EXCEPTION")
                         {
                             WriteVerbose("Exception in Test Failover of VM");
                             WriteObject(respVMTaskGet, true);
-
                         }
                         if (respVMTaskGet[0].State.ToString() == "COMPLETED")
                         {

@@ -88,7 +88,8 @@ namespace IO.Swagger.Api
         /// <returns></returns>
         public ObtainAccessTokenApi(String basePath)
         {
-            this.Configuration = new Configuration(new ApiClient(basePath));
+            var apiString = "https://" + basePath.Trim() + "/aaa/v1";
+            this.Configuration = new Configuration(new ApiClient(apiString));
 
             ExceptionFactory = IO.Swagger.Client.Configuration.DefaultExceptionFactory;
 

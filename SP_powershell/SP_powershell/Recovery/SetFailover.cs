@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace SP_powershell
+namespace Cisco.Runbook
 {
     [Cmdlet(VerbsCommon.Set, "Failover")]
     [OutputType(typeof(VirtualMachine))]

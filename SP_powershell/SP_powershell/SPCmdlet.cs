@@ -4,8 +4,9 @@ using System;
 using System.Management.Automation;
 using System.Net.Http;
 using System.Linq;
+using System.Collections.Generic;
 
-namespace SP_powershell
+namespace Cisco.Runbook
 {
     /// <summary>
     /// This is the base class for all CmdLets, which pulls in the
@@ -18,10 +19,10 @@ namespace SP_powershell
         protected override void ProcessRecord()
         {
 
-              /// <summary>
-              /// Gets the instance of session state for the current runspace.
-              /// </summary>
-        
+            /// <summary>
+            /// Gets the instance of session state for the current runspace.
+            /// </summary>
+
             try
             {
                 ProcessSPRecord();
@@ -48,6 +49,7 @@ namespace SP_powershell
                 WriteErrorRecord(e, "", ErrorCategory.NotSpecified, "");
             }
         }
+        public static Dictionary<string, dynamic> storageKeyDictionary;
 
         protected abstract void ProcessSPRecord();
         /// <summary>
@@ -61,28 +63,23 @@ namespace SP_powershell
         protected string getAccessToken(string Server)
         {
             var num = 0;
-            String accessTkn = "";
-            dynamic dictServerCnnctd = null;
+            String accessTkn = String.Empty;
+            dynamic serverCnnctd = null;
             if (ConnectHXServer.storageKeyDictionary != null)
             {
                 num = ConnectHXServer.storageKeyDictionary.Count();
-                if (num == 1)
+                if (num >= 1)
                 {
-                    dictServerCnnctd = ConnectHXServer.storageKeyDictionary.First(x => x.Key == Server.ToString()).Value;
-                }
-                else
-                {
-                    dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
+                    serverCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
                 }
             }
             else
             {
-                num = 0;
                 throw new Exception("Please connect to a server.");
             }
-            if (dictServerCnnctd != null)
+            if (serverCnnctd != null)
             {
-                accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
+                accessTkn = serverCnnctd.TokenType + " " + serverCnnctd.AccessToken;
             }
             else
             {
@@ -97,8 +94,6 @@ namespace SP_powershell
         // Properties
         //
 
-
-        //protected internal abstract bool ValidateParameters();
 
         /// <summary>
         /// If the servers PS session variable doesn't exist (no sessions),
