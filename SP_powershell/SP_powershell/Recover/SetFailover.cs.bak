@@ -13,51 +13,45 @@ using static IO.Swagger.Model.Job;
 
 namespace Cisco.Runbook
 {
-    [Cmdlet(VerbsCommon.Set, "TestFailoverNew")]
+    [Cmdlet(VerbsCommon.Set, "Failover")]
     [OutputType(typeof(VirtualMachine))]
 
-    public class SetTestFailoverNew : RecoveryCmdlet
+    public class SetFailover : SPCmdlet
     {
+
         // 
         // Properties (PowerShell Parameters) to be defined below
         //
-        //VM id parameter
+        //VMUid will pass the VM uid
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         [Alias("VM")]
         public string VMId { get; set; }
-
-        //ResourcePool object
-        [Parameter(Position = 1)]
         [ValidateNotNullOrEmpty]
-        [Alias("resourcePoolEr")]
-        public string ResourcePool { get; set; }
+        [Alias("name")]
+        public string VMName { get; set; }
 
-        //Folder object
-        [Parameter(Position = 2)]
-        [ValidateNotNullOrEmpty]
-        [Alias("folderEr")]
-        public string Folder { get; set; }
+ 
 
-        //Resource Pool Name
+        //ResourcePoolName will pass the ResourcePoolName
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("RPName")]
         public string ResourcePoolName { get; set; }
 
-        //ResourcePool Id
+        //ResourcePoolID
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("RPID")]
         public string ResourcePoolID { get; set; }
 
-        //FolderName
+        //FolderName 
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("FName")]
         public string FolderName { get; set; }
 
-        //Folder id
+        //FolderID will pass the folder id
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("FID")]
@@ -66,33 +60,35 @@ namespace Cisco.Runbook
         //TestNetwork
         [Parameter(Position = 3)]
         [ValidateNotNullOrEmpty]
-        [Alias("TestNW")]
+        [Alias("testNW")]
         public string TestNetwork { get; set; }
 
         //Either TestNetwork or NetworkMap is provided
         //NetworkMap defines the mapping
-        [Parameter(Position = 0)]
+        [Parameter(Position = 4)]
         [ValidateNotNullOrEmpty]
-        public string[] NetworkMap { get; set; }
+        [Alias("NWMap")]
+        public string NetworkMap { get; set; }
 
         //NewName will change the name of the existing vm to newname after failover
         [Parameter(Position = 5)]
         [ValidateNotNullOrEmpty]
         public string NewName { get; set; }
 
-        //PowerOn will pass if the VM has to be powered on after Test failover
+        //PowerOn will pass if the VM has to be powered on after failover
         [Parameter(Position = 6)]
         [ValidateNotNullOrEmpty]
         public SwitchParameter PowerOn { get; set; }
 
-        //Async will return the task id for asynchronous call to cmdlet-switch parameter
+        //Async will return the task id for asynchronous call to cmdlet-switch
+		// parameter
         [Parameter()]
         [ValidateNotNullOrEmpty]
         public SwitchParameter Async { get; set; }
 
         //Server will pass the Server for which api call has to be made using the corresponding token
         [Parameter(Mandatory = true)]
-        [Alias("srvr")]
+        [Alias("srv")]
         public string Server { get; set; }
 
         //
@@ -107,96 +103,83 @@ namespace Cisco.Runbook
             try
             {
                 // Configure access token for authorization
-                
+
                 if (Server != null)
                 {
                     Server = Server.Trim();
                 }
                 dynamic value = "";
-                if (ConnectHXServer.storageKeyDictionary.TryGetValue(Server,out value ))
+                if (ConnectHXServer.storageKeyDictionary.TryGetValue(Server,
+                                                                   out value))
                 {
-                    Console.WriteLine("For Server = \"{0}\", Access Token = {1}.",Server, value);
+                    Console.WriteLine("Server = \"{0}\", is connected.", Server);
                 }
                 else
                 {
-                    Console.WriteLine("Server = \"{0}\" is not found.",Server);
+                    Console.WriteLine("Server = \"{0}\" is not found.", Server);
                 }
-                ////AccessToken accToken = new AccessToken();
-                ////if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
-                ////{
-                ////    throw new Exception("No server is connected.");
-                ////}
-                ////if (Server != null)
-                ////{
-                ////    Server = Server.Trim();
-                ////}
-                //commented since server is mandatory but if server is not mandatory 
-                //then first server from the dictionary is treated as default
-                ////else if (ConnectHXServer.storageKeyDictionary != null)
-                ////{
-                ////    Server = ConnectHXServer.storageKeyDictionary.FirstOrDefault().Key;
-                ////}
-
+                string accessTkn = value.TokenType + " " + value.AccessToken;
                 var apiInstance = new RecoverApi(Server);
+                //create body for the API Call
                 RecoverVmOptions bodyPayload = CreatePayload();
 
-                string respVMTestFailover = string.Empty;
-                //string accessTkn = accToken.GetAccessToken(Server.ToString());
-                string accessTkn = value;
+                string respVMFailover = string.Empty;
                 if (VMId != null)
                 {
+                    // to determine if async task then return the task after failover
                     if (Async == true)
                     {
-                        respVMTestFailover = apiInstance.OpDpVmTestFailoverPut(VMId.ToString(), 
-                                                        accessTkn.ToString(),bodyPayload, "en-US");
+                        respVMFailover = apiInstance.OpDpVmTestFailoverPut(VMId.ToString(),
+                                                        accessTkn, bodyPayload, "en-US");
                         WriteVerbose("Test Failover of VM done");
                         WriteObject(respVMTestFailover, true);
                         return;
                     }
                     else
                     {
+                        //if switch parameter is false then keep pinging the api for X minutes
+                        //exit if status ="COMPLETED", "EXCEPTION"
+                        //"SUSPENDED", "SHUTTING_DOWN", "TERMINATED", "CANCELLED", "EXCEPTION","STALLED"
+                        //For "NEW", "STARTING", "RUNNING" status after every 3 seconds ping the API 
+
                         DateTime now = DateTime.Now;
-                        // WriteVerbose("The Vm has been halted");
-                        respVMTestFailover = apiInstance.OpDpVmTestFailoverPut(VMId.ToString(), 
-                                                          accessTkn.ToString(), bodyPayload, "en-US");
+                        respVMTestFailover = apiInstance.OpDpVmTestFailoverPut(VMId,
+                                                          accessTkn, bodyPayload, "en-US");
                         //check if not null
                         JObject joResponse = JObject.Parse(respVMTestFailover);
                         JValue ojObject = (JValue)joResponse["taskId"];
 
                         WriteVerbose("Test Failover of VM done");
-                        List<IO.Swagger.Model.Job> respVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn.ToString(),
+                        List<IO.Swagger.Model.Job> respVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn,
                                                                         VMId.ToString(), ojObject.ToString());
                         //get time X minutes from now
                         DateTime timeMinutesFromNow = GetTimeMinutesFromNow();
-                        //Loop while the repVMTaskGet meet a 
+                        //Loop while the repVMTaskGet is not null and X minutes from now is not over
                         while (respVMTaskGet != null && now < timeMinutesFromNow)
                         {
                             List<IO.Swagger.Model.Job> checkVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn.ToString(),
                                                                                 VMId.ToString(), ojObject.ToString());
-                            if (new string[] { "COMPLETED", "EXCEPTION" }.Contains(checkVMTaskGet[0].State.ToString()))
-                            {
-                                respVMTaskGet = checkVMTaskGet;
-                                break;
-                            }
-                            //check if state is   SUSPENDED,SHUTTING_DOWN,TERMINATED,CANCELLED,EXCEPTION,STALLED
-                            else if (checkVMTaskGet[0].State.ToString() == "EXCEPTION")
+                            //check if state is   SUSPENDED,SHUTTING_DOWN,TERMINATED,CANCELLED,COMPLETED,EXCEPTION,STALLED
+                            if (new string[] {"SUSPENDED", "SHUTTING_DOWN", "TERMINATED", "CANCELLED",
+                                                   "COMPLETED", "EXCEPTION","STALLED"}.Contains(checkVMTaskGet[0].State.ToString()))
                             {
                                 respVMTaskGet = checkVMTaskGet;
                                 break;
                             }
                             //check if state is         NEW,STARTING,RUNNING
-                            else
+                            else if (new string[] { "NEW", "STARTING", "RUNNING" }.Contains(checkVMTaskGet[0].State.ToString()))
                             {
-                                //Wait for 3 seconds
-                                System.Threading.Thread.Sleep(3000);
-                                now = DateTime.Now;
+                                {
+                                    //Wait for 3 seconds
+                                    System.Threading.Thread.Sleep(3000);
+                                    now = DateTime.Now;
+                                }
                             }
-                        }
-                        //call show status to display the status to the user
-                        ShowStatus(respVMTaskGet);
+                         }
+						 //call show status to display the status to the user
+                         ShowStatus(respVMTaskGet);
                     }
                 }
-
             }
             catch (ArgumentException e)
             {
@@ -212,6 +195,10 @@ namespace Cisco.Runbook
 
         }
 
+        /// <summary>
+        /// Create PAyload for the API call
+        /// </summary>
+        /// <returns>RecoverVmOptions</returns>
         private RecoverVmOptions CreatePayload()
         {
             //check if either resource pool name or id is provided then pass it to body
@@ -220,8 +207,8 @@ namespace Cisco.Runbook
             string vFolderName = string.Empty;
             string vFolderID = string.Empty;
 
-            if (ResourcePoolName != null) { vResourcePoolName = ResourcePoolName.ToString(); }
-            if (ResourcePoolID != null) { vResourcePoolID = vResourcePoolID.ToString(); }
+            if (ResourcePoolName != null) { vResourcePoolName = ResourcePoolName.Trim(); }
+            if (ResourcePoolID != null) { vResourcePoolID = ResourcePoolID.Trim(); }
             var objResPoolJson = new EntityDetail
             {
                 name = vResourcePoolName,
@@ -231,8 +218,8 @@ namespace Cisco.Runbook
                 confignum = "0"
             };
 
-            if (FolderName != null) { vFolderName = FolderName.ToString(); }
-            if (FolderID != null) { vFolderID = FolderID.ToString(); }
+            if (FolderName != null) { vFolderName = FolderName.Trim(); }
+            if (FolderID != null) { vFolderID = FolderID.Trim(); }
 
             var objFolderJson = new EntityDetail
             {
@@ -250,9 +237,8 @@ namespace Cisco.Runbook
                 mapDictionary = this.NetworkMap
                                                 .Select(x => x.Split(':'))
                                                 .ToDictionary(x => x[0], x => x[1]);
-
             }
-            if (TestNetwork != null) { objTestNetwork = TestNetwork.ToString(); }
+            if (TestNetwork != null) { objTestNetwork = TestNetwork.Trim(); }
 
             bool vPowerOn = false;
             if (PowerOn == true)
@@ -261,7 +247,7 @@ namespace Cisco.Runbook
             }
 
             string newName = null;
-            if (NewName != null) { newName = NewName.ToString(); }
+            if (NewName != null) { newName = NewName.Trim(); }
 
             var jsonPool = JsonConvert.SerializeObject(objResPoolJson);
             var jsonFolder = JsonConvert.SerializeObject(objFolderJson);
@@ -281,6 +267,7 @@ namespace Cisco.Runbook
                 objEF_pool = null;
                 body.ResourcePoolEr = null;
             }
+
             //check if either Folder name or id is provided then pass it to body
             if (FolderName != null || FolderID != null)
             {
@@ -293,17 +280,17 @@ namespace Cisco.Runbook
                 body.FolderEr = null;
             }
             body.NetworkMap = null;
-            List<NetworkMapping> cont1 = new List<NetworkMapping>();
+            List<NetworkMapping> nwMappings = new List<NetworkMapping>();
             if (mapDictionary != null)
             {
                 var obj_nw = JsonConvert.DeserializeObject(jsonNW);
                 foreach (KeyValuePair<string, string> entry in mapDictionary)
                 {
                     NetworkMapping varNW = new NetworkMapping(entry.Key, entry.Value);
-                    cont1.Add(varNW);
+                    nwMappings.Add(varNW);
                     // do something with entry.Value or entry.Key
                 }
-                body.NetworkMap = cont1;
+                body.NetworkMap = nwMappings;
             }
             else
             {
@@ -313,7 +300,7 @@ namespace Cisco.Runbook
             body.PowerOn = false;
             if (NewName != null)
             {
-                body.NewName = NewName.ToString();
+                body.NewName = NewName.Trim();
             }
             if (PowerOn == true)
             {
@@ -322,42 +309,46 @@ namespace Cisco.Runbook
             return body;
         }
 
+        /// <summary>
+        /// Show Status of the Task corresponding to the state 
+        /// </summary>
+        /// <param name="List<IO.Swagger.Model.Job>">An instance of IO.Swagger.Model.Job</param>
+        /// <returns></returns>
         protected override void ShowStatus(List<IO.Swagger.Model.Job> respVMTaskGet)
         {
             //switch case to display 
             switch (respVMTaskGet[0].State)
             {
                 case StateEnum.CANCELLED:
-                    WriteVerbose("Test Failover of VM Cancelled");
+                    WriteObject("Test Failover of VM Cancelled");
                     WriteObject(respVMTaskGet, true);
                     break;
                 case StateEnum.COMPLETED:
-                    WriteVerbose("Test Failover of VM Cancelled");
+                    WriteObject("Test Failover of VM Completed");
                     WriteObject(respVMTaskGet, true);
                     break;
                 case StateEnum.EXCEPTION:
-                    WriteVerbose("Test Failover of VM Cancelled");
+                    WriteObject("Test Failover of VM faced an Exception");
                     WriteObject(respVMTaskGet, true);
                     break;
                 case StateEnum.SHUTTINGDOWN:
-                    WriteVerbose("Test Failover of VM Cancelled");
+                    WriteObject("Test Failover of VM Shutting Down.");
                     WriteObject(respVMTaskGet, true);
                     break;
                 case StateEnum.STALLED:
-                    WriteVerbose("Test Failover of VM Cancelled");
+                    WriteObject("Test Failover of VM Stalled.");
                     WriteObject(respVMTaskGet, true);
                     break;
                 case StateEnum.SUSPENDED:
-                    WriteVerbose("Test Failover of VM Cancelled");
+                    WriteObject("Test Failover of VM Suspended.");
                     WriteObject(respVMTaskGet, true);
                     break;
                 case StateEnum.TERMINATED:
-                    WriteVerbose("Test Failover of VM Cancelled");
+                    WriteObject("Test Failover of VM Terminated.");
                     WriteObject(respVMTaskGet, true);
                     break;
                 default:
-                    //do a different thing
-                    break;
+                    throw new ArgumentOutOfRangeException("Status not existing");
             }
         }
 

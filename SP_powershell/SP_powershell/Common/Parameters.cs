@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Cisco.Runbook
@@ -14,10 +10,10 @@ namespace Cisco.Runbook
 
         // For a Class Library
         static string exeConfigPath = System.Reflection.Assembly.GetAssembly(typeof(GetHXServer)).Location;
+
         public static string PathConfig { get; private set; } =
             exeConfigPath + ".config";
-            //Path.Combine(exeConfigPath,".config");
-
+            
         public static string getParameter(string paramName)
         {
             string paramValue = string.Empty;

@@ -12,10 +12,10 @@ using Newtonsoft.Json;
 
 namespace Cisco.Runbook
 {
-    [Cmdlet(VerbsCommon.Set, "Failover")]
+    [Cmdlet(VerbsCommon.Set, "Failover26")]
     [OutputType(typeof(VirtualMachine))]
 
-    public class SetFailover : SPCmdlet
+    public class SetFailover26 : SPCmdlet
     {
 
         // 

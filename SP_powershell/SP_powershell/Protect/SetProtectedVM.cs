@@ -4,10 +4,7 @@ using IO.Swagger.Client;
 using System.Management.Automation;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
-using System.Diagnostics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
 
 namespace Cisco.Runbook
@@ -65,11 +62,6 @@ namespace Cisco.Runbook
             //ValidateServerSessions();
             if (ValidateParameters() == false)
                 return;
-
-            // Configure OAuth2 access token for authorization
-            
-            Configuration.Default = new Configuration();
-            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
             if (UserName != null && Password != null)
             {
                 Configuration.Default.Username = UserName.ToString();

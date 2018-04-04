@@ -5,21 +5,19 @@ using IO.Swagger.Client;
 using IO.Swagger.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Management.Automation;
 
 namespace Cisco.Runbook
 {
-    [Cmdlet(VerbsCommon.Get, "RecoverTask")]
+    [Cmdlet(VerbsCommon.Get, "RecoverTasks")]
     [OutputType(typeof(VirtualMachine))]
 
-    public class GetRecoverTask : SPCmdlet
+    public class GetRecoverTasks : SPCmdlet
     {
         // 
         // Properties (PowerShell Parameters) to be defined below
         //
-        //List<string> listParamtersetName = new List<string>();
-
+        
         //Server Parameter contains the Cisco HXConnect IP
 
         [Parameter(Mandatory = true)]
@@ -54,40 +52,41 @@ namespace Cisco.Runbook
             if (ValidateParameters() == false)
                 return;
             // Configure access token for authorization
-            AccessToken accToken = new AccessToken();
+            
             try
             {
-                if (ConnectHXServer.storageKeyDictionary == null)
-                {
-                    throw new Exception("No server is connected.");
-                }
-                else if (ConnectHXServer.storageKeyDictionary != null)
-                {
-                   Server = ConnectHXServer.storageKeyDictionary.FirstOrDefault().Key;
-                }
-                WriteDebug("The Server connected : " + Server);
                 if (Server != null)
                 {
                     Server = Server.Trim();
                 }
-                
+                dynamic value = "";
+                if (ConnectHXServer.storageKeyDictionary.TryGetValue(Server,
+                                                                   out value))
+                {
+                    Console.WriteLine("Server = \"{0}\", is connected.", Server);
+                }
+                else
+                {
+                    Console.WriteLine("Server = \"{0}\" is not found.", Server);
+                }
+                string accessTkn = value.TokenType + " " + value.AccessToken;
                 WriteDebug("Server : " + Server);
                 var apiInstance = new RecoverApi(Server);
-                string accessTkn = accToken.GetAccessToken(Server.ToString());
-       
+                
                 if (TaskID != null)
                 {
                     //GetSpecific TaskID;
-                    string TaskSpecific = TaskID.ToString();
+                    string TaskSpecific = TaskID.Trim();
                     WriteDebug("TaskSpecific : " + TaskSpecific);
-                    List<IO.Swagger.Model.Job> respTaskList = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), TaskSpecific, null, null, "en-US");
+                    List<IO.Swagger.Model.Job> respTaskList = apiInstance.OpDpVmTasksGet(accessTkn, 
+                                                    VMID.ToString(), TaskSpecific, null, null, "en-US");
                     WriteObject(respTaskList, true);
                     return;
                 }
                 //api response returning the tasks for the vmid passed
                 List<IO.Swagger.Model.Job> respVMTaskList = apiInstance.OpDpVmTasksGet(accessTkn, VMID.ToString(), null, null, null, "en-US");
-                //WriteTaskrecord(output);
-                WriteObject(respVMTaskList, true);
+                WriteTaskrecord(respVMTaskList);
+                //WriteObject(respVMTaskList, true);
         }
             catch (ApiException e)
             {
@@ -167,13 +166,13 @@ namespace Cisco.Runbook
                 WriteObject("=====================================================================");
             }
         }
+
         /// <summary>
         /// Convert unixTimestamp to DateTime format
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when null values </exception>
         /// <param name="unixTimeStamp">double</param>
         /// <returns></returns>
-
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
@@ -182,13 +181,7 @@ namespace Cisco.Runbook
             return dtDateTime;
         }
 
-
-        private void WriteErrorRecord(Exception e, string v, ErrorCategory connectionError, string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected internal override bool ValidateParameters()
+      protected internal override bool ValidateParameters()
         {
             // Leave this here so that we can add more checks if needed
             // and return all errors if there are multiple without returning

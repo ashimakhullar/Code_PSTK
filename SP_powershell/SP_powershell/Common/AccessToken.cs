@@ -8,13 +8,7 @@ namespace Cisco.Runbook
 {
     public class AccessToken
     {
-        private string username;
-        private string password;
-        private string client_id;
-        private string client_secret;
-        private string redirect_uri;
-
-
+        
         public string GetAccessToken(string Server)
         {
             var num = 0;

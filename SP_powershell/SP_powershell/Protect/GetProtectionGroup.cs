@@ -47,29 +47,24 @@ namespace Cisco.Runbook
             AccessToken accToken = new AccessToken();
             try
             {
-                // Configure OAuth2 access token for authorization
-
-                if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
-                {
-                    throw new Exception("No server is connected.");
-                }
-                
+                // Configure access token for authorization
                 if (Server != null)
                 {
-                    Server = Server.ToString().Trim();
+                    Server = Server.Trim();
                 }
-                else if (ConnectHXServer.storageKeyDictionary != null)
+                dynamic value = "";
+                if (ConnectHXServer.storageKeyDictionary.TryGetValue(Server,
+                                                                   out value))
                 {
-                    var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
-                    Server = firstElement.Key;
+                    Console.WriteLine("Server = \"{0}\", is connected.", Server);
                 }
-
-
-                var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
-                var apiInstance = new ProtectApi(apiString);
+                else
+                {
+                    Console.WriteLine("Server = \"{0}\" is not found.", Server);
+                }
+                string accessTkn = value.TokenType + " " + value.AccessToken;
                 
-                string accessTkn = accToken.GetAccessToken(Server.ToString());
-                
+                var apiInstance = new ProtectApi(Server.Trim());
                 
                 List<ProtectionGroupInfo> result = apiInstance.OpDpGroupGet( accessTkn.ToString(), null, null, "en-US");
 

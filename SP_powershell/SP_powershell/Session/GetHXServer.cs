@@ -1,13 +1,10 @@
 ﻿// Author(s): 
 // Ashima Bahl, asbahl@cisco.com 26-feb
-using IO.Swagger.Api;
 using IO.Swagger.Client;
 using IO.Swagger.Model;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
-
 
 namespace Cisco.Runbook
 {
@@ -38,32 +35,12 @@ namespace Cisco.Runbook
         [Alias("ignorecerts")]
         public SwitchParameter IgnoreCertificateWarnings { get; set; }
 
-        public static Dictionary<string, dynamic> storageKeyDictionary;
-
-        //public DisconnectHXServer()
-        //{
-        //    if (storageKeyDictionary == null)
-        //    {
-        //        storageKeyDictionary = new Dictionary<string, dynamic>();
-        //    }
-        //}
-
         //
         // Cmdlet body
         //
-
         protected override void ProcessSPRecord()
         {
             ValidateParameters();
-
-            // Callback method for handling the certificates returned by each
-            // Server to which we are trying to establish a session
-
-            //if (Server == null)
-            //{
-            //    throw new InvalidProgramException("Please enter a valid IP Address of a server to continue");
-
-            //}
             try
             {
                 if (ConnectHXServer.storageKeyDictionary == null)
@@ -75,24 +52,19 @@ namespace Cisco.Runbook
                     var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
                     Server = firstElement.Key;
 
-                    var vARR = ConnectHXServer.storageKeyDictionary.ToArray();
-                    var vARR_cnt = vARR.Count();
-                    //WriteObject(vARR);
-                    //WriteObject(vARR_cnt);
-                    
-                    for (int i =0;i<= (vARR_cnt - 1);i++)
+                    var arrayServer = ConnectHXServer.storageKeyDictionary.ToArray();
+                    var serverCount = arrayServer.Count();
+                    for (int i =0;i<= (serverCount - 1);i++)
                     {
-
-                        WriteObject(vARR[i].Key);
-                        // WriteObject("Server IP#" + storageKeyDictionary[i]);
+                        WriteObject(arrayServer[i].Key);
                     }
                 }
-
             }
             catch (ApiException e)
             {
                 ErrorRecord psErrRecord = new ErrorRecord(
-                           e, "Correct Credentials not provided.", ErrorCategory.AuthenticationError, e.Message);
+                           e, "Correct Credentials not provided.", 
+                           ErrorCategory.AuthenticationError, e.Message);
                 WriteError(psErrRecord);
             }
             catch (Exception e)
@@ -102,8 +74,7 @@ namespace Cisco.Runbook
                 WriteError(psErrRecord);
             }
   }
-
-
+        
         protected internal override bool ValidateParameters()
         {
              // Leave this here so that we can add more checks if needed
@@ -111,22 +82,5 @@ namespace Cisco.Runbook
             // on the first one we find.
             return true;
         }
-
-        /// <summary>
-        /// Checks to see if the Server exists (by its IP Address key) in collections.
-        /// </summary>
-        /// <param name="HXServer">An HX ConnectServer instance.</param>
-        /// <returns><c>true</c> if the IP address exists as a key in the dictionaries, 
-        /// <c>false</c> otherwise.</returns>
-        private bool HXServerExists(IHXServer tintriServer)
-        {
-           return true;
-        }
-
     }
-
-    
-
-
-  
 }

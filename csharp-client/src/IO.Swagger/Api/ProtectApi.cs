@@ -639,7 +639,10 @@ namespace IO.Swagger.Api
         /// <returns></returns>
         public ProtectApi(String basePath)
         {
-            ApiClient client = new ApiClient(basePath);
+            // to determine the api url to be accessed.
+
+            var apiString = "https://" + basePath.Trim() + "/dataprotection/v1";
+            ApiClient client = new ApiClient(apiString);
             this.Configuration = new Configuration(client);
 
             ExceptionFactory = IO.Swagger.Client.Configuration.DefaultExceptionFactory;
@@ -749,7 +752,7 @@ namespace IO.Swagger.Api
         /// <returns>List&lt;ProtectionGroupInfo&gt;</returns>
         public List<ProtectionGroupInfo> OpDpGroupGet(string accessToken, string name = null, string type = null, string acceptLanguage = null)
         {
-            ApiResponse<List<ProtectionGroupInfo>> localVarResponse = OpDpGroupGetWithHttpInfo(name, accessToken,type, acceptLanguage);
+            ApiResponse<List<ProtectionGroupInfo>> localVarResponse = OpDpGroupGetWithHttpInfo(accessToken,name, type, acceptLanguage);
             return localVarResponse.Data;
         }
 
@@ -786,9 +789,9 @@ namespace IO.Swagger.Api
             if (localVarHttpHeaderAccept != null)
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
             //set the configuration to default
-            Configuration = Configuration.Default;
+            //Configuration = Configuration.Default;
             //encoding the username and password 
-            string base64Encoded = GetBase64Encoded(Configuration);
+            //string base64Encoded = GetBase64Encoded(Configuration);
             if (name != null) localVarQueryParams.Add("name", Configuration.ApiClient.ParameterToString(name)); // query parameter
             if (type != null) localVarQueryParams.Add("type", Configuration.ApiClient.ParameterToString(type)); // query parameter
             if (acceptLanguage != null) localVarHeaderParams.Add("Accept-Language", Configuration.ApiClient.ParameterToString(acceptLanguage)); // header parameter

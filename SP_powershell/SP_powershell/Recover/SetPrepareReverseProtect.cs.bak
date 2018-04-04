@@ -13,10 +13,10 @@ using static IO.Swagger.Model.Job;
 
 namespace Cisco.Runbook
 {
-    [Cmdlet(VerbsCommon.Set, "ReverseProtect")]
+    [Cmdlet(VerbsCommon.Set, "PrepareReverseProtect")]
     [OutputType(typeof(VirtualMachine))]
 
-    public class SetReverseProtect : RecoveryCmdlet
+    public class SetPrepareReverseProtect : RecoveryCmdlet
     {
 
         // 
@@ -73,16 +73,16 @@ namespace Cisco.Runbook
                 string accessTkn = value.TokenType + " " + value.AccessToken;
                 var apiInstance = new RecoverApi(Server);
 
-                string respVMReverseProtect = String.Empty;
+                string respPrepRevProtect = String.Empty;
                 if (VMId != null)
                 {
                     //if switch parameter is true then return the task and exit
                     if (Async == true)
                     {
-                        respVMReverseProtect = apiInstance.OpDpVmReverseProtectPut(VMId.Trim(), 
-															accessTkn.Trim(), "en-US");
-                        WriteVerbose("The Vm has been reverse protected!");
-                        WriteObject(respVMReverseProtect, true);
+                        respPrepRevProtect = apiInstance.OpDpVmPrepareReverseProtectPut(VMId, 
+															accessTkn, "en-US");
+                        WriteVerbose("The Vm has been prepared for reverse protection");
+                        WriteObject(respPrepRevProtect, true);
 						return;
                     }
                     else
@@ -93,9 +93,9 @@ namespace Cisco.Runbook
                         //For "NEW", "STARTING", "RUNNING" status after every 3 seconds ping the API 
 
                         DateTime now = DateTime.Now;
-                        respVMReverseProtect = apiInstance.OpDpVmReverseProtectPut(VMId,
+                        respPrepRevProtect = apiInstance.OpDpVmPrepareReverseProtectPut(VMId,
 														 accessTkn.Trim(), "en-US");
-                        JObject joResponse = JObject.Parse(respVMReverseProtect);
+                        JObject joResponse = JObject.Parse(respPrepRevProtect);
                         JValue ojObject = (JValue)joResponse["taskId"];
                         WriteVerbose("Reverse Protection of VM done");
                         List<IO.Swagger.Model.Job> respVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn,
@@ -137,8 +137,8 @@ namespace Cisco.Runbook
             }
             catch(Exception e)
             {
-
-                WriteObject("Exception when calling apiInstance.OpDpVmReverseProtectPut: " + e.Message);
+                
+                WriteObject("Exception when calling apiInstance.OpDpVmPrepareReverseProtectPut: " + e.Message);
             }
          
         }

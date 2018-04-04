@@ -30,33 +30,19 @@ namespace Cisco.Runbook
         [ValidateNotNull]
         [Alias("srvr")]
         public string Server { get; set; }
-
-        //////UserName Parameter contains the Cisco HXConnect UserName
-        ////[Parameter(Position = 1, ParameterSetName = "UserNamePassword")]
-        ////[ValidateNotNullOrEmpty]
-        ////[Alias("user")]
-        ////public string UserName { get; set; }
-
-        //////Password Parameter contains the Cisco HXConnect Password
-        ////[Parameter(Position = 2, ParameterSetName = "UserNamePassword")]
-        ////[ValidateNotNullOrEmpty]
-        ////[Alias("pwd")]
-        ////public string Password { get; set; }
-
-        //VMUid will pass the VM uid
-
+        
         [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("vmid")]
         public string VMUid { get; set; }
 
         //VMname will pass the VM name
-        //[Parameter(ParameterSetName = "HXVMname")]
         [Parameter()]
         [SupportsWildcards()]
         [ValidateNotNullOrEmpty]
         [Alias("name")]
         public string VMname { get; set; }
+        
         //VMState will pass the VM name
         [Parameter()]
         [ValidateNotNullOrEmpty]
@@ -72,54 +58,43 @@ namespace Cisco.Runbook
             if (ValidateParameters() == false)
                 return;
             // Configure access token for authorization
-           
             AccessToken accToken = new AccessToken();
-
-
             try
             {
-                
-                if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
-                {
-                    throw new Exception("No server is connected.");
-                }
+                // Configure access token for authorization
                 if (Server != null)
                 {
-                    Server = Server.ToString().Trim();
+                    Server = Server.Trim();
                 }
-                else if (ConnectHXServer.storageKeyDictionary != null)
+                dynamic value = "";
+                if (ConnectHXServer.storageKeyDictionary.TryGetValue(Server,
+                                                                   out value))
                 {
-                    var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
-                    Server = firstElement.Key;
+                    Console.WriteLine("Server = \"{0}\", is connected.", Server);
                 }
-                var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
-                var apiInstance = new ProtectApi(apiString);
-                string accessTkn = accToken.GetAccessToken(Server.ToString());
-                // Find All Protected VMs
-                ////////////VMHXobject objVmJson = new VMHXobject();
-
+                else
+                {
+                    Console.WriteLine("Server = \"{0}\" is not found.", Server);
+                }
+                string accessTkn = value.TokenType + " " + value.AccessToken;
+                var apiInstance = new ProtectApi(Server.Trim());
+                
                 //
                 // Find a specific Protected VM
                 //
-                
-
-
                 if (VMUid != null)
                 {
                     var VmSpecific = VMUid.ToString();
                     //GetSpecific VM;
-                    ProtectedVMInfo result1 = apiInstance.OpDpVmVmidGet1(VmSpecific, accessTkn, "en-US");
-                    WriteObject(result1, true);
+                    ProtectedVMInfo respVMGet = apiInstance.OpDpVmVmidGet1(VmSpecific, accessTkn, "en-US");
+                    WriteObject(respVMGet, true);
                     return;
                 }
-                // VMware.Vim.VirtualMachine vm = new VMware.Vim.VirtualMachine();
-
-                var output = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
-                //List<VMware.VimAutomation.ViCore.Types.V1.VM.Guest.VMGuest> result = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
-                List<ProtectedVMInfo> result = apiInstance.OpDpVmGet(null, accessTkn.ToString(), "en-US");
+                var respVMListGet = apiInstance.OpDpVmGet(null, accessTkn, "en-US");
+                List<ProtectedVMInfo> respVMList1 = apiInstance.OpDpVmGet(null, accessTkn, "en-US");
                 SessionState valc = new SessionState();
-                List<VMHXobject> myresult2 = GetVirtualMachineResources(output);
-                List<containerHXobject> myresult3 = GetVirtualMachineDetail(output);
+                List<VMHXobject> respVMList2 = GetVirtualMachineResources(respVMListGet);
+                List<containerHXobject> respVMList3 = GetVirtualMachineDetail(respVMListGet);
                 //find the vm details matching to the vmName provided as parameter
                 if (VMname != null)
                 {
@@ -128,23 +103,23 @@ namespace Cisco.Runbook
                                           Replace("\\*", "").
                                           Replace("\\?", "") ;
 
-                    var namePatternMatchFound = result
+                    var namePatternMatchFound = respVMList1
                                .Where(ts => ts.Er.Name.IndexOf(
                                    cleanedHostName, StringComparison.OrdinalIgnoreCase) >= 0)
                                .ToList();
-                    var vmMatch = result.FirstOrDefault(vm => vm.Er.Name == VMname.ToString());
+                    var vmMatch = respVMList1.FirstOrDefault(vm => vm.Er.Name == VMname.ToString());
                     WriteObject(namePatternMatchFound, true);
                     return;
                 }
                 //find the vm details matching to the state provided as parameter-"ACTIVE", "HALTED", "RECOVERED", "FAILED", "IN_PROGRESS"
                 if (State != null)
                 {
-                    List<ProtectedVMInfo> vmStateMatch = result.FindAll(vm => vm.ProtectionStatus.ToString() == State.ToString());
+                    List<ProtectedVMInfo> vmStateMatch = respVMList1.FindAll(vm => vm.ProtectionStatus.ToString() == State.ToString());
                     WriteObject(vmStateMatch, true);
                     return;
                 }
                 // WriteContainerecord(myresult3);
-                WriteObject(result, true);
+                WriteObject(respVMList1, true);
                 // WriteVMrecord(result);
 
             }

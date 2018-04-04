@@ -8,15 +8,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using static IO.Swagger.Model.Job;
 
 namespace Cisco.Runbook
 {
-    [Cmdlet(VerbsCommon.Set, "PrepareReverseProtect")]
+    [Cmdlet(VerbsCommon.Move, "OutVMs")]
     [OutputType(typeof(VirtualMachine))]
 
-    public class SetPrepareReverseProtect : SPCmdlet
+    public class MoveOutVMs : SPCmdlet
     {
-
         // 
         // Properties (PowerShell Parameters) to be defined below
         //
@@ -28,7 +28,7 @@ namespace Cisco.Runbook
         //VMId will pass the VM uid
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        [Alias("vmid1")]
+        [Alias("vmid")]
         public string VMId { get; set; }
 
         //Server Parameter contains the Cisco HXConnect IP
@@ -52,80 +52,80 @@ namespace Cisco.Runbook
                 return;
             try
             {
-                // Configure OAuth2 access token for authorization
-                AccessToken accToken = new AccessToken();
-                if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
-                {
-                    throw new Exception("No server is connected.");
-                }
+                // Configure access token for authorization
 
                 if (Server != null)
                 {
-                    Server = Server.ToString().Trim();
+                    Server = Server.Trim();
                 }
-                else if (ConnectHXServer.storageKeyDictionary != null)
+                dynamic value = "";
+                if (ConnectHXServer.storageKeyDictionary.TryGetValue(Server,
+                                                                   out value))
                 {
-                    var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
-                    Server = firstElement.Key;
+                    Console.WriteLine("Server = \"{0}\", is connected.", Server);
                 }
-
-                //var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
+                else
+                {
+                    Console.WriteLine("Server = \"{0}\" is not found.", Server);
+                }
+                string accessTkn = value.TokenType + " " + value.AccessToken;
                 var apiInstance = new RecoverApi(Server);
 
-                string accessTkn = accToken.GetAccessToken(Server.ToString());
-                string result1 = "";
+                string respPrepRevProtect = String.Empty;
                 if (VMId != null)
                 {
+                    //if switch parameter is true then return the task and exit
                     if (Async == true)
                     {
-                        result1 = apiInstance.OpDpVmPrepareReverseProtectPut(VMId.ToString(), accessTkn.ToString(), "en-US");
+                        respPrepRevProtect = apiInstance.OpDpVmPrepareReverseProtectPut(VMId, 
+															accessTkn, "en-US");
                         WriteVerbose("The Vm has been prepared for reverse protection");
-                        WriteObject(result1, true);
+                        WriteObject(respPrepRevProtect, true);
+						return;
                     }
                     else
                     {
+                        //if switch parameter is false then keep pinging the api for X minutes
+                        //exit if status ="COMPLETED", "EXCEPTION"
+                        //"SUSPENDED", "SHUTTING_DOWN", "TERMINATED", "CANCELLED", "EXCEPTION","STALLED"
+                        //For "NEW", "STARTING", "RUNNING" status after every 3 seconds ping the API 
+
                         DateTime now = DateTime.Now;
-                        result1 = apiInstance.OpDpVmPrepareReverseProtectPut(VMId.ToString(), accessTkn.ToString(), "en-US");
-                        JObject joResponse = JObject.Parse(result1);
+                        respPrepRevProtect = apiInstance.OpDpVmPrepareReverseProtectPut(VMId,
+														 accessTkn.Trim(), "en-US");
+                        JObject joResponse = JObject.Parse(respPrepRevProtect);
                         JValue ojObject = (JValue)joResponse["taskId"];
-                        WriteVerbose("The Vm has been failed over");
-                        List<IO.Swagger.Model.Job> result2 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
-                        DateTime oneMinutesFromNow = GetOneMinutesFromNow();
-                        if (result2[0].State.ToString() == "EXCEPTION")
+                        WriteVerbose("Preparation to Reverse Protection of VM done");
+                        List<IO.Swagger.Model.Job> respVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn,
+                                                                        VMId.ToString(), ojObject.ToString());
+                        //get time X minutes from now
+                        DateTime timeMinutesFromNow = GetTimeMinutesFromNow();
+                        //Loop while the repVMTaskGet is not null and X minutes from now is not over
+                        while (respVMTaskGet != null && now < timeMinutesFromNow)
                         {
-                            WriteVerbose("Exception in Test Failover of VM");
-                            WriteObject(result2, true);
-
-                        }
-                        if (result2[0].State.ToString() == "COMPLETED")
-                        {
-                            WriteVerbose("Test Failover of VM done");
-                            WriteObject(result2, true);
-                        }
-
-                        while (result2 != null && now < oneMinutesFromNow)
-                        {
-                            List<IO.Swagger.Model.Job> check1 = apiInstance.OpDpVmTasksGet(accessTkn.ToString(), VMId.ToString(), ojObject.ToString());
-                            if (check1[0].State.ToString() == "COMPLETED")
+                            List<IO.Swagger.Model.Job> checkVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn.ToString(),
+                                                                                VMId.ToString(), ojObject.ToString());
+                            //check if state is   SUSPENDED,SHUTTING_DOWN,TERMINATED,CANCELLED,COMPLETED,EXCEPTION,STALLED
+                            if (new string[] {"SUSPENDED", "SHUTTING_DOWN", "TERMINATED", "CANCELLED",
+                                                   "COMPLETED", "EXCEPTION","STALLED"}.Contains(checkVMTaskGet[0].State.ToString()))
                             {
-                                result2 = check1;
+                                respVMTaskGet = checkVMTaskGet;
                                 break;
                             }
-                            else if (check1[0].State.ToString() == "EXCEPTION")
+                            //check if state is         NEW,STARTING,RUNNING
+                            else if (new string[] { "NEW", "STARTING", "RUNNING" }.Contains(checkVMTaskGet[0].State.ToString()))
                             {
-                                result2 = check1;
-                                break;
+                                {
+                                    //Wait for 3 seconds
+                                    System.Threading.Thread.Sleep(3000);
+                                    now = DateTime.Now;
+                                }
                             }
-                            else
-                            {
-                                //Wait for 3 seconds
-                                System.Threading.Thread.Sleep(3000);
-                            }
-                        }
-                        WriteObject(result2, true);
+                         }
+						 //call show status to display the status to the user
+                         //ShowStatus(respVMTaskGet);
                     }
                 }
-                    
             }
             catch (ArgumentException e)
             {
@@ -140,17 +140,17 @@ namespace Cisco.Runbook
             }
          
         }
+
         /// <summary>
-        /// get one minute from the current time
+        /// gets two minute from the current time
         /// </summary>
         /// <returns></returns>
-        private DateTime GetOneMinutesFromNow()
+        private DateTime GetTimeMinutesFromNow()
         {
+            //time after 2 minutes from the current time
             DateTime otherDate = DateTime.Now.AddMinutes(2);
             return otherDate;
         }
-
-
 
         protected internal override bool ValidateParameters()
         {
@@ -159,6 +159,51 @@ namespace Cisco.Runbook
             // on the first one we find.
             return true;
         }
+
+
+        ///// <summary>
+        ///// Show Status of the Task corresponding to the state 
+        ///// </summary>
+        ///// <param name="List<IO.Swagger.Model.Job>">An instance of IO.Swagger.Model.Job</param>
+        ///// <returns></returns>
+        //protected override void ShowStatus(List<IO.Swagger.Model.Job> respVMTaskGet)
+        //{
+        //    //switch case to display 
+        //    switch (respVMTaskGet[0].State)
+        //    {
+        //        case StateEnum.CANCELLED:
+        //            WriteObject("Test Failover of VM Cancelled");
+        //            WriteObject(respVMTaskGet, true);
+        //            break;
+        //        case StateEnum.COMPLETED:
+        //            WriteObject("Test Failover of VM Completed");
+        //            WriteObject(respVMTaskGet, true);
+        //            break;
+        //        case StateEnum.EXCEPTION:
+        //            WriteObject("Test Failover of VM faced an Exception");
+        //            WriteObject(respVMTaskGet, true);
+        //            break;
+        //        case StateEnum.SHUTTINGDOWN:
+        //            WriteObject("Test Failover of VM Shutting Down.");
+        //            WriteObject(respVMTaskGet, true);
+        //            break;
+        //        case StateEnum.STALLED:
+        //            WriteObject("Test Failover of VM Stalled.");
+        //            WriteObject(respVMTaskGet, true);
+        //            break;
+        //        case StateEnum.SUSPENDED:
+        //            WriteObject("Test Failover of VM Suspended.");
+        //            WriteObject(respVMTaskGet, true);
+        //            break;
+        //        case StateEnum.TERMINATED:
+        //            WriteObject("Test Failover of VM Terminated.");
+        //            WriteObject(respVMTaskGet, true);
+        //            break;
+        //        default:
+        //            throw new ArgumentOutOfRangeException("Status not existing");
+        //    }
+        //}
+
     }
-    
+
 }

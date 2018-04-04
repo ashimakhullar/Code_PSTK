@@ -15,7 +15,16 @@ namespace Cisco.Runbook
 
     public abstract class SPCmdlet : PSCmdlet
     {
-
+        /// <summary>
+        /// ProcessRecord
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="HttpRequestException">Thrown by the HttpClient and HttpMessageHandler classes</exception>
+        /// <exception cref="ArgumentException">arguments does'nt meet the parameter specification</exception>
+        /// <returns></returns>
         protected override void ProcessRecord()
         {
 
@@ -88,19 +97,12 @@ namespace Cisco.Runbook
             return accessTkn;
         }
 
-
-
-        // 
-        // Properties
-        //
-
-
         /// <summary>
         /// If the servers PS session variable doesn't exist (no sessions),
         /// CmdLet's that require existing sessions can easily check with this
         /// method.
         /// </summary>
-        private void WriteErrorRecord(Exception e, string errorCode, ErrorCategory category, string errorMessage)
+        protected void WriteErrorRecord(Exception e, string errorCode, ErrorCategory category, string errorMessage)
         {
             var errRecord =
                 new ErrorRecord(e, errorCode, category, null)

@@ -50,35 +50,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessToken.cs" />
-    <Compile Include="RecoveryCmdlet.cs" />
+    <Compile Include="Common\AccessToken.cs" />
+    <Compile Include="Common\RecoveryCmdlet.cs" />
+    <Compile Include="Protect\MoveOutVMs.cs" />
     <Compile Include="Session\Connect-HXServer.cs" />
     <Compile Include="Session\Disconnect-HXServer.cs" />
-    <Compile Include="EntityDetail.cs" />
+    <Compile Include="Common\EntityDetail.cs" />
     <Compile Include="Protect\GetPeers.cs" />
     <Compile Include="Protect\GetProtectedVM.cs" />
     <Compile Include="Protect\GetProtectionGroup.cs" />
-    <Compile Include="GetScript.cs" />
-    <Compile Include="HXParameterSet.cs" />
-    <Compile Include="GetHXServer.cs" />
-    <Compile Include="Parameters.cs" />
+    <Compile Include="Common\GetScript.cs" />
+    <Compile Include="Session\GetHXServer.cs" />
+    <Compile Include="Common\Parameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Recover\GetRecoverTask.cs" />
+    <Compile Include="Recover\GetRecoverTasks.cs" />
     <Compile Include="Recovery\GetRecoveryJobs.cs" />
     <Compile Include="Recovery\RecoveryDetails.cs" />
-    <Compile Include="Recover\SetFailoverNew.cs" />
+    <Compile Include="Recover\SetFailover.cs" />
     <Compile Include="Recover\SetPrepareFailover.cs" />
     <Compile Include="Recover\SetPrepareReverseProtect.cs" />
     <Compile Include="Recovery\SetReplicationHalt.cs" />
-    <Compile Include="Recovery\SetFailover.cs" />
+    <Compile Include="Recovery\SetFailover26.cs" />
     <Compile Include="Recover\SetReverseProtect.cs" />
-    <Compile Include="Recovery\SetTestFailover .cs" />
-    <Compile Include="Recover\SetTestFailoverNew.cs" />
+    <Compile Include="Recovery\SetTestFailover26 .cs" />
+    <Compile Include="Recover\SetTestFailover.cs" />
     <Compile Include="Protect\SetProtectedVM.cs" />
-    <Compile Include="SPCmdlet.cs" />
-    <Compile Include="Task.cs" />
-    <Compile Include="TCmdLetEx.cs" />
-    <Compile Include="Token.cs" />
+    <Compile Include="Common\SPCmdlet.cs" />
+    <Compile Include="Common\TCmdLetEx.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -107,6 +105,7 @@
       <Name>IO.Swagger</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -4,13 +4,11 @@ using IO.Swagger.Api;
 using IO.Swagger.Client;
 using IO.Swagger.Model;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
 using System.Configuration;
-using System.Collections.Specialized;
-
+using System.Collections.Generic;
 
 namespace Cisco.Runbook
 {
@@ -58,30 +56,25 @@ namespace Cisco.Runbook
         [Alias("ignorecerts")]
         public SwitchParameter IgnoreCertificateWarnings { get; set; }
 
-
-
-        public ConnectHXServer()
-        {
-            if (storageKeyDictionary == null)
-            {
-                storageKeyDictionary = new Dictionary<string, dynamic>();
-            }
-        }
-
-
+        public new static Dictionary<string, dynamic> storageKeyDictionary = 
+                                            new Dictionary<string, dynamic>();
 
         //
         // Cmdlet body
         //
-
+        /// <summary>
+        /// ProcessRecord
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <returns></returns>
         protected override void ProcessSPRecord()
         {
             ValidateParameters();
-
-
             // Callback method for handling the certificates returned by each
             // Server to which we are trying to establish a session
-
             try
             {
                 //attempt for regular login using ip address
@@ -97,6 +90,7 @@ namespace Cisco.Runbook
                     Password = Credential.GetNetworkCredential().Password.ToString();
                 }
                 AccessTokenEnvelope resultToken = GetAccessToken();
+
                 if (resultToken != null)
                 // Access Token for each server connected is maintained in Dictionary object
                 //storageKeyDictionary-server ip is key while response token is value;
@@ -114,7 +108,8 @@ namespace Cisco.Runbook
             catch (ApiException e)
             {
                 ErrorRecord psErrRecord = new ErrorRecord(
-                           e, "Correct Credentials not provided.", ErrorCategory.AuthenticationError, e.Message);
+                           e, "Correct Credentials not provided.", ErrorCategory.AuthenticationError,
+                           e.Message);
                 WriteError(psErrRecord);
             }
             catch (Exception e)
@@ -132,20 +127,17 @@ namespace Cisco.Runbook
                 string exeConfigPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
                 System.Configuration.Configuration configFile = ConfigurationManager.
                                     OpenExeConfiguration(exeConfigPath);
-                //var resourcePoolType = configFile.AppSettings.Settings["resourcePoolType"].Value;
                 var clientId = configFile.AppSettings.Settings["client_id"].Value;
                 var clientSecret = configFile.AppSettings.Settings["client_secret"].Value;
                 var redirectUri = configFile.AppSettings.Settings["redirect_uri"].Value;
                 Debug.Assert(Username != null);
-                //Configuration.Default = new Configuration();
 
                 if (Username == null || Password == null)
                 {
                     throw new ArgumentException("Username/Password has to be provided");
                 }
-                // var apiURI = configFile.AppSettings.Settings["uri_aaa"].Value;
-
-                UserCredentials body = new UserCredentials(Username.ToString().Trim(), Password.ToString().Trim(), clientId.Trim(), clientSecret.Trim(), redirectUri.Trim());
+                UserCredentials body = new UserCredentials(Username.ToString().Trim(), 
+                     Password.ToString().Trim(), clientId.Trim(), clientSecret.Trim(), redirectUri.Trim());
                 var apiInstance = new ObtainAccessTokenApi(Server);
                 AccessTokenEnvelope responseAccessToken = apiInstance.ObtainAccessToken("password", body);
                 return responseAccessToken;
@@ -156,7 +148,6 @@ namespace Cisco.Runbook
                            e, "", ErrorCategory.AuthenticationError, e.Message);
                 WriteError(psErrRecord);
                 throw new Exception(e.Message);
-                //return null;
             }
         }
 
@@ -199,7 +190,6 @@ namespace Cisco.Runbook
 
         }
 
-
         /// <summary>
         /// Checks to see if we need to prompt for credentials.
         /// </summary>
@@ -224,25 +214,7 @@ namespace Cisco.Runbook
             {
                 return false;
             }
-
             return !userNamePassword.All(tf => tf == false);
         }
-
-        /// <summary>
-        /// Checks to see if the Server exists (by its IP Address key) in collections.
-        /// </summary>
-        /// <param name="HXServer">An HX ConnectServer instance.</param>
-        /// <returns><c>true</c> if the IP address exists as a key in the dictionaries, 
-        /// <c>false</c> otherwise.</returns>
-        private bool HXServerExists(IHXServer tintriServer)
-        {
-            //if (HXServer.) { }
-            return true;
-        }
-
-    }
-
-    internal class IHXServer
-    {
     }
 }

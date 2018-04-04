@@ -7,22 +7,20 @@ using IO.Swagger.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static IO.Swagger.Model.Job;
 
 namespace Cisco.Runbook
 {
-    [Cmdlet(VerbsCommon.Set, "ReverseProtect")]
+    [Cmdlet(VerbsCommon.Set, "PrepareReverseProtect")]
     [OutputType(typeof(VirtualMachine))]
 
-    public class SetReverseProtect : RecoveryCmdlet
+    public class SetPrepareReverseProtect : RecoveryCmdlet
     {
 
         // 
         // Properties (PowerShell Parameters) to be defined below
         //
-        [Parameter(ParameterSetName = "HXName")]
         [ValidateNotNullOrEmpty]
         [Alias("name")]
         public string VMName { get; set; }
@@ -30,18 +28,18 @@ namespace Cisco.Runbook
         //VMId will pass the VM uid
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        [Alias("vmid1")]
-        public string VMId { get; set; }
+        [Alias("group")]
+        public string GroupId { get; set; }
 
         //Server Parameter contains the Cisco HXConnect IP
         [Parameter(Mandatory = true)]
         [Alias("srvr")]
         public string Server { get; set; }
 
-        //Async will return the task id for asynchronous call to cmdlet-switch parameter
+        //All will move out all the vms from the Protected group
         [Parameter()]
         [ValidateNotNullOrEmpty]
-        public SwitchParameter Async { get; set; }
+        public SwitchParameter All { get; set; }
 
         //
         // Cmdlet body
@@ -71,62 +69,63 @@ namespace Cisco.Runbook
                     Console.WriteLine("Server = \"{0}\" is not found.", Server);
                 }
                 string accessTkn = value.TokenType + " " + value.AccessToken;
-                var apiInstance = new RecoverApi(Server);
-
-                string respVMReverseProtect = String.Empty;
-                if (VMId != null)
+                var apiInstance = new ProtectApi(Server);
+                //var respGroupMoveOut = null;
+                //string respPrepRevProtect = String.Empty;
+                if (GroupId != null)
                 {
                     //if switch parameter is true then return the task and exit
-                    if (Async == true)
-                    {
-                        respVMReverseProtect = apiInstance.OpDpVmReverseProtectPut(VMId.Trim(), 
-															accessTkn.Trim(), "en-US");
-                        WriteVerbose("The Vm has been reverse protected!");
-                        WriteObject(respVMReverseProtect, true);
-						return;
-                    }
-                    else
-                    {
-                        //if switch parameter is false then keep pinging the api for X minutes
-                        //exit if status ="COMPLETED", "EXCEPTION"
-                        //"SUSPENDED", "SHUTTING_DOWN", "TERMINATED", "CANCELLED", "EXCEPTION","STALLED"
-                        //For "NEW", "STARTING", "RUNNING" status after every 3 seconds ping the API 
+                    //if (Async == true)
+                    //{
+                    GroupEditParams obj = new GroupEditParams();
+               //     respGroupMoveOut = apiInstance.OpDpGroupGroupidPut(GroupId, 
+															//accessTkn, obj, "en-US");
+               //     WriteVerbose("The Vm has been prepared for reverse protection");
+               //     WriteObject(respGroupMoveOut, true);
+					return;
+       //             }
+       //             else
+       //             {
+       //                 //if switch parameter is false then keep pinging the api for X minutes
+       //                 //exit if status ="COMPLETED", "EXCEPTION"
+       //                 //"SUSPENDED", "SHUTTING_DOWN", "TERMINATED", "CANCELLED", "EXCEPTION","STALLED"
+       //                 //For "NEW", "STARTING", "RUNNING" status after every 3 seconds ping the API 
 
-                        DateTime now = DateTime.Now;
-                        respVMReverseProtect = apiInstance.OpDpVmReverseProtectPut(VMId,
-														 accessTkn.Trim(), "en-US");
-                        JObject joResponse = JObject.Parse(respVMReverseProtect);
-                        JValue ojObject = (JValue)joResponse["taskId"];
-                        WriteVerbose("Reverse Protection of VM done");
-                        List<IO.Swagger.Model.Job> respVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn,
-                                                                        VMId.ToString(), ojObject.ToString());
-                        //get time X minutes from now
-                        DateTime timeMinutesFromNow = GetTimeMinutesFromNow();
-                        //Loop while the repVMTaskGet is not null and X minutes from now is not over
-                        while (respVMTaskGet != null && now < timeMinutesFromNow)
-                        {
-                            List<IO.Swagger.Model.Job> checkVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn.ToString(),
-                                                                                VMId.ToString(), ojObject.ToString());
-                            //check if state is   SUSPENDED,SHUTTING_DOWN,TERMINATED,CANCELLED,COMPLETED,EXCEPTION,STALLED
-                            if (new string[] {"SUSPENDED", "SHUTTING_DOWN", "TERMINATED", "CANCELLED",
-                                                   "COMPLETED", "EXCEPTION","STALLED"}.Contains(checkVMTaskGet[0].State.ToString()))
-                            {
-                                respVMTaskGet = checkVMTaskGet;
-                                break;
-                            }
-                            //check if state is         NEW,STARTING,RUNNING
-                            else if (new string[] { "NEW", "STARTING", "RUNNING" }.Contains(checkVMTaskGet[0].State.ToString()))
-                            {
-                                {
-                                    //Wait for 3 seconds
-                                    System.Threading.Thread.Sleep(3000);
-                                    now = DateTime.Now;
-                                }
-                            }
-                         }
-						 //call show status to display the status to the user
-                         ShowStatus(respVMTaskGet);
-                    }
+       //                 DateTime now = DateTime.Now;
+       //                 respPrepRevProtect = apiInstance.OpDpGroupGroupidPut(GroupId,
+							//							 accessTkn.Trim(), "en-US");
+       //                 JObject joResponse = JObject.Parse(respPrepRevProtect);
+       //                 JValue ojObject = (JValue)joResponse["taskId"];
+       //                 WriteVerbose("Preparation to Reverse Protection of VM done");
+       //                 List<IO.Swagger.Model.Job> respVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn,
+       //                                                                 VMId.ToString(), ojObject.ToString());
+       //                 //get time X minutes from now
+       //                 DateTime timeMinutesFromNow = GetTimeMinutesFromNow();
+       //                 //Loop while the repVMTaskGet is not null and X minutes from now is not over
+       //                 while (respVMTaskGet != null && now < timeMinutesFromNow)
+       //                 {
+       //                     List<IO.Swagger.Model.Job> checkVMTaskGet = apiInstance.OpDpVmTasksGet(accessTkn.ToString(),
+       //                                                                         VMId.ToString(), ojObject.ToString());
+       //                     //check if state is   SUSPENDED,SHUTTING_DOWN,TERMINATED,CANCELLED,COMPLETED,EXCEPTION,STALLED
+       //                     if (new string[] {"SUSPENDED", "SHUTTING_DOWN", "TERMINATED", "CANCELLED",
+       //                                            "COMPLETED", "EXCEPTION","STALLED"}.Contains(checkVMTaskGet[0].State.ToString()))
+       //                     {
+       //                         respVMTaskGet = checkVMTaskGet;
+       //                         break;
+       //                     }
+       //                     //check if state is         NEW,STARTING,RUNNING
+       //                     else if (new string[] { "NEW", "STARTING", "RUNNING" }.Contains(checkVMTaskGet[0].State.ToString()))
+       //                     {
+       //                         {
+       //                             //Wait for 3 seconds
+       //                             System.Threading.Thread.Sleep(3000);
+       //                             now = DateTime.Now;
+       //                         }
+       //                     }
+       //                  }
+						 ////call show status to display the status to the user
+       //                  ShowStatus(respVMTaskGet);
+       //             }
                 }
             }
             catch (ArgumentException e)
@@ -137,8 +136,8 @@ namespace Cisco.Runbook
             }
             catch(Exception e)
             {
-
-                WriteObject("Exception when calling apiInstance.OpDpVmReverseProtectPut: " + e.Message);
+                
+                WriteObject("Exception when calling apiInstance.OpDpVmPrepareReverseProtectPut: " + e.Message);
             }
          
         }

@@ -84,7 +84,8 @@ namespace IO.Swagger.Api
         /// <returns></returns>
         public RevokeTokenApi(String basePath)
         {
-            this.Configuration = new Configuration(new ApiClient(basePath));
+            var apiString = "https://" + basePath + "/aaa/v1";
+            this.Configuration = new Configuration(new ApiClient(apiString));
 
             ExceptionFactory = IO.Swagger.Client.Configuration.DefaultExceptionFactory;
 

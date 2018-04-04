@@ -1,9 +1,27 @@
-C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\Cisco.Runbook.csprojResolveAssemblyReference.cache
-C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\Cisco.Runbook.csproj.CoreCompileInputs.cache
-C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.dll
-C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.pdb
-C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\App.config
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\swagger.json
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\Cisco.Runbook.dll-Help.xml
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\App.config
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\Cisco.Runbook.psd1
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\SP_powershell.dll.config
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\SP_powershell.dll
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\SP_powershell.pdb
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\IO.Swagger.dll
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\Newtonsoft.Json.dll
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\System.Management.Automation.dll
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\RestSharp.dll
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\Microsoft.Management.Infrastructure.dll
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\IO.Swagger.pdb
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\Newtonsoft.Json.xml
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\System.Management.Automation.xml
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\bin\Debug\RestSharp.xml
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\obj\Debug\Cisco.Runbook.csprojResolveAssemblyReference.cache
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\obj\Debug\Cisco.Runbook.csproj.CoreCompileInputs.cache
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\obj\Debug\SP_powershell.dll
+C:\temp\test\Code_PSTK - Copy\SP_powershell\SP_powershell\obj\Debug\SP_powershell.pdb
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\swagger.json
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\Cisco.Runbook.dll-Help.xml
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\App.config
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\Cisco.Runbook.psd1
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\SP_powershell.dll.config
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\SP_powershell.dll
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\SP_powershell.pdb
@@ -16,5 +34,7 @@ C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\IO.Swagger.pdb
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\Newtonsoft.Json.xml
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\System.Management.Automation.xml
 C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\RestSharp.xml
-C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\Cisco.Runbook.dll-Help.xml
-C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\bin\Debug\Cisco.Runbook.psd1
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\Cisco.Runbook.csprojResolveAssemblyReference.cache
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\Cisco.Runbook.csproj.CoreCompileInputs.cache
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.dll
+C:\temp\test\Code_PSTK\SP_powershell\SP_powershell\obj\Debug\SP_powershell.pdb

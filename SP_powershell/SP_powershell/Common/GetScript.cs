@@ -47,61 +47,6 @@ namespace Cisco.Runbook
                 return;
             try
             {
-                Configuration.Default = new Configuration();
-                Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-                //if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
-                //{
-                //    throw new Exception("No server is connected.");
-                //}
-                ////var valServer = "";
-                //if (Server != null)
-                //{
-                //    Server = Server.ToString().Trim();
-                //}
-                //else if (ConnectHXServer.storageKeyDictionary != null)
-                //{
-                //    var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
-                //    Server = firstElement.Key;
-                //}
-
-                //var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
-                //var apiInstance = new RecoveryApi(apiString);
-                //var num = 0;
-                //String accessTkn = "";
-
-                //dynamic dictServerCnnctd = null;
-                //if (ConnectHXServer.storageKeyDictionary != null)
-                //{
-                //    num = ConnectHXServer.storageKeyDictionary.Count();
-                //    if (num == 1)
-                //    {
-
-                //        dictServerCnnctd = ConnectHXServer.storageKeyDictionary.First(x => x.Key == Server.ToString()).Value;
-
-                //    }
-                //    else
-                //    {
-                //        dictServerCnnctd = ConnectHXServer.storageKeyDictionary.FirstOrDefault(x => x.Key == Server.ToString()).Value;
-                //    }
-                //}
-                //else
-                //{
-                //    num = 0;
-                //    throw new Exception("Please connect to a server.");
-                //}
-
-
-
-
-                //if (dictServerCnnctd != null)
-                //{
-                //    accessTkn = dictServerCnnctd.TokenType + " " + dictServerCnnctd.AccessToken;
-                //}
-                //else
-                //{
-                //    throw new Exception("The Server is not connected;Please check the IP address of Server");
-                //}
-
                 var lineToWrite = "";
 
                 string[] lines = { "First line", "Second line", "Third line" };
@@ -194,19 +139,19 @@ namespace Cisco.Runbook
 
         }
 
-        private void WritePeerRecord(List<MapPairErToReplicationPeerInfo> result)
-        {
-            List<MapPairErToReplicationPeerInfo> list = new List<MapPairErToReplicationPeerInfo>();
+        //private void WritePeerRecord(List<MapPairErToReplicationPeerInfo> result)
+        //{
+        //    List<MapPairErToReplicationPeerInfo> list = new List<MapPairErToReplicationPeerInfo>();
 
-            foreach (var item in result)
-            {
-                if (item.PeerInfo != null)
-                {
-                    WriteObject(item.PeerInfo);
-                    WriteObject("---------------------------------------------------------------------");
-                }
-            }
-        }
+        //    foreach (var item in result)
+        //    {
+        //        if (item.PeerInfo != null)
+        //        {
+        //            WriteObject(item.PeerInfo);
+        //            WriteObject("---------------------------------------------------------------------");
+        //        }
+        //    }
+        //}
 
         protected internal override bool ValidateParameters()
         {

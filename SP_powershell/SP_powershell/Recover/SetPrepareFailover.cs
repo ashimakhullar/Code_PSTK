@@ -15,7 +15,6 @@ namespace Cisco.Runbook
 
     public class SetPrepareFailover : SPCmdlet
     {
-
         // 
         // Properties (PowerShell Parameters) to be defined below
         //
@@ -45,37 +44,35 @@ namespace Cisco.Runbook
             //ValidateServerSessions();
             if (ValidateParameters() == false)
                 return;
-
-            // Configure OAuth2 access token for authorization
             
-            AccessToken accToken = new AccessToken();
-                       
             try
             {
-               
-                if ((Server == null) && (ConnectHXServer.storageKeyDictionary == null))
-                {
-                    throw new Exception("No server is connected.");
-                }
+                // Configure access token for authorization
 
                 if (Server != null)
                 {
-                    Server = Server.ToString().Trim();
+                    Server = Server.Trim();
                 }
-                else if (ConnectHXServer.storageKeyDictionary != null)
+                dynamic value = "";
+                if (ConnectHXServer.storageKeyDictionary.TryGetValue(Server,
+                                                                   out value))
                 {
-                    var firstElement = ConnectHXServer.storageKeyDictionary.FirstOrDefault();
-                    Server = firstElement.Key;
+                    Console.WriteLine("Server = \"{0}\", is connected.", Server);
                 }
+                else
+                {
+                    Console.WriteLine("Server = \"{0}\" is not found.", Server);
+                }
+                string accessTkn = value.TokenType + " " + value.AccessToken;
 
-                //var apiString = "https://" + Server.ToString().Trim() + "/dataprotection/v1";
                 var apiInstance = new RecoverApi(Server);
-
-                string accessTkn = accToken.GetAccessToken(Server.ToString());
                 
                 if (VMId != null)
                 {
-                  string result2 = apiInstance.OpDpVmPrepareFailoverPut(VMId.ToString(), accessTkn.ToString(), "en-US");//43d80de4-f438-4ff0-a3de-b89a62a3ac1f
+                    string respPrepareFailoverPut = apiInstance.OpDpVmPrepareFailoverPut(VMId.Trim(),
+                                                            accessTkn.Trim(), "en-US");
+                    WriteVerbose("Test Failover of VM done");
+                    WriteObject(respPrepareFailoverPut, true);
                 }
             }
             catch (ArgumentException e)
@@ -90,14 +87,6 @@ namespace Cisco.Runbook
             }
          
         }
-
-        private DateTime GetOneMinutesFromNow()
-        {
-            DateTime otherDate = DateTime.Now.AddMinutes(2);
-            return otherDate;
-        }
-
-
 
         protected internal override bool ValidateParameters()
         {
