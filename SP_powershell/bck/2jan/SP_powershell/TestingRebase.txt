@@ -3,3 +3,4 @@ Testing Rebase Checkin 2
 Testing Rebase Checkin 3
 Testing Rebase Checkin 4
 Testing Rebase Checkin 5
+Testing Rebase Checkin 6
